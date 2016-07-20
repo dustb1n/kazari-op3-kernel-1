@@ -497,9 +497,6 @@ struct synaptics_ts_data {
 	char test_limit_name[TP_FW_NAME_MAX_LEN];
 	char fw_id[12];
 	char manu_name[10];
-#ifdef SUPPORT_VIRTUAL_KEY
-        struct kobject *properties_kobj;
-#endif
 
 	ktime_t timestamp;
 };
