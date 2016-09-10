@@ -26,9 +26,7 @@
 #define DSI_PLL_POLL_TIMEOUT_US                 1000
 #define MSM8996_DSI_PLL_REVISION_2		2
 
-#define DSI_PHY_SPARE_VAL	0x6a
-#define DSI_PLL_DEFAULT_POSTDIV	1
-
+#define DSI_PLL_DEFAULT_POSTDIV			1
 #define CEIL(x, y)		(((x) + ((y)-1)) / (y))
 static void pll_db_commit_8996(struct mdss_pll_resources *pll,
 					struct dsi_pll_db *pdb);

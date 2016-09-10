@@ -89,8 +89,7 @@ const DECLARE_TLV_DB_LINEAR(msm_compr_vol_gain, 0,
  * 40 = size of dts_eagle_param_desc + module_id cast to 64 bits
  */
 #define DTS_EAGLE_MAX_PARAM_SIZE_FOR_ALSA ((64 * 4) - 40)
-//use 24bits to get rid of 16bits innate noise
-int gis_24bits = 0;
+
 struct msm_compr_gapless_state {
 	bool set_next_stream_id;
 	int32_t stream_opened[MAX_NUMBER_OF_STREAMS];
@@ -670,10 +669,9 @@ static int msm_compr_send_media_format_block(struct snd_compr_stream *cstream,
 	union snd_codec_options *codec_options;
 
 	int ret = 0;
-	uint16_t bit_width;
+	uint16_t bit_width = 16;
 	bool use_default_chmap = true;
 	char *chmap = NULL;
-	uint16_t sample_word_size;
 
 	pr_debug("%s: use_gapless_codec_options %d\n",
 			__func__, use_gapless_codec_options);
@@ -697,26 +695,15 @@ static int msm_compr_send_media_format_block(struct snd_compr_stream *cstream,
 			chmap =
 			    pdata->ch_map[rtd->dai_link->be_id]->channel_map;
 		}
-
-		switch (prtd->codec_param.codec.format) {
-		case SNDRV_PCM_FORMAT_S24_LE:
+		if (prtd->codec_param.codec.format == SNDRV_PCM_FORMAT_S24_LE)
 			bit_width = 24;
-			sample_word_size = 32;
-			break;
-		case SNDRV_PCM_FORMAT_S16_LE:
-		default:
-			bit_width = 16;
-			sample_word_size = 16;
-			break;
-		}
-		ret = q6asm_media_format_block_pcm_format_support_v3(
+		ret = q6asm_media_format_block_pcm_format_support_v2(
 							prtd->audio_client,
 							prtd->sample_rate,
 							prtd->num_channels,
 							bit_width, stream_id,
 							use_default_chmap,
-							chmap,
-							sample_word_size);
+							chmap);
 		if (ret < 0)
 			pr_err("%s: CMD Format block failed\n", __func__);
 
@@ -926,7 +913,7 @@ static int msm_compr_configure_dsp(struct snd_compr_stream *cstream)
 	struct snd_compr_runtime *runtime = cstream->runtime;
 	struct msm_compr_audio *prtd = runtime->private_data;
 	struct snd_soc_pcm_runtime *soc_prtd = cstream->private_data;
-    uint16_t bits_per_sample = 16;
+	uint16_t bits_per_sample = 16;
 	int dir = IN, ret = 0;
 	struct audio_client *ac = prtd->audio_client;
 	uint32_t stream_index;
@@ -949,18 +936,10 @@ static int msm_compr_configure_dsp(struct snd_compr_stream *cstream)
 		return -EINVAL;
 	}
 
-	if ((prtd->codec_param.codec.format == SNDRV_PCM_FORMAT_S24_LE) ||
-		(prtd->codec_param.codec.format == SNDRV_PCM_FORMAT_S24_3LE))
+	if (prtd->codec_param.codec.format == SNDRV_PCM_FORMAT_S24_LE)
 		bits_per_sample = 24;
 	else if (prtd->codec_param.codec.format == SNDRV_PCM_FORMAT_S32_LE)
 		bits_per_sample = 32;
-
-    //use 24bits to get rid of 16bits innate noise
-    //mark by globale value to open adm 24bits
-    if (prtd->codec_param.codec.bit_rate == 24) {
-        bits_per_sample = 24;
-        gis_24bits = 1;
-    }
 
 	if (prtd->compr_passthr != LEGACY_PCM) {
 		ret = q6asm_open_write_compressed(ac, prtd->codec,
@@ -986,7 +965,7 @@ static int msm_compr_configure_dsp(struct snd_compr_stream *cstream)
 	} else {
 		pr_debug("%s: stream_id %d bits_per_sample %d\n",
 				__func__, ac->stream_id, bits_per_sample);
-		ret = q6asm_stream_open_write_v3(ac,
+		ret = q6asm_stream_open_write_v2(ac,
 				prtd->codec, bits_per_sample,
 				ac->stream_id,
 				prtd->gapless_state.use_dsp_gapless_mode);
@@ -1012,24 +991,19 @@ static int msm_compr_configure_dsp(struct snd_compr_stream *cstream)
 	if (ret < 0)
 		pr_err("%s : Set Volume failed : %d", __func__, ret);
 
-	if (prtd->compr_passthr != LEGACY_PCM) {
-		pr_debug("%s : Don't send cal and PP params for compress path",
-				__func__);
-	} else {
-		ret = q6asm_send_cal(ac);
-		if (ret < 0)
-			pr_debug("%s : Send cal failed : %d", __func__, ret);
+	ret = q6asm_send_cal(ac);
+	if (ret < 0)
+		pr_debug("%s : Send cal failed : %d", __func__, ret);
 
-		ret = q6asm_set_softpause(ac, &softpause);
-		if (ret < 0)
-			pr_err("%s: Send SoftPause Param failed ret=%d\n",
-					__func__, ret);
+	ret = q6asm_set_softpause(ac, &softpause);
+	if (ret < 0)
+		pr_err("%s: Send SoftPause Param failed ret=%d\n",
+				__func__, ret);
+	ret = q6asm_set_softvolume(ac, &softvol);
+	if (ret < 0)
+		pr_err("%s: Send SoftVolume Param failed ret=%d\n",
+				__func__, ret);
 
-		ret = q6asm_set_softvolume(ac, &softvol);
-		if (ret < 0)
-			pr_err("%s: Send SoftVolume Param failed ret=%d\n",
-					__func__, ret);
-	}
 	ret = q6asm_set_io_mode(ac, (COMPRESSED_STREAM_IO | ASYNC_IO_MODE));
 	if (ret < 0) {
 		pr_err("%s: Set IO mode failed\n", __func__);
@@ -1062,6 +1036,7 @@ static int msm_compr_configure_dsp(struct snd_compr_stream *cstream)
 	if (ret < 0) {
 		pr_err("%s, failed to send media format block\n", __func__);
 	}
+
 	return ret;
 }
 
@@ -1187,7 +1162,6 @@ static int msm_compr_free(struct snd_compr_stream *cstream)
 		pr_err("%s prtd is null\n", __func__);
 		return 0;
 	}
-
 	prtd->cmd_interrupt = 1;
 	wake_up(&prtd->drain_wait);
 	pdata = snd_soc_platform_get_drvdata(soc_prtd->platform);
@@ -1495,12 +1469,7 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 	unsigned long flags;
 	int stream_id;
 	uint32_t stream_index;
-    //use 24bits to get rid of 16bits innate noise
-    //mark by globale value to open adm 24bits
-    uint16_t bits_per_sample = 16;
-    if (prtd->codec_param.codec.bit_rate == 24) {
-        bits_per_sample = 24;
-    }
+	uint16_t bits_per_sample = 16;
 
 	if (cstream->direction != SND_COMPRESS_PLAYBACK) {
 		pr_err("%s: Unsupported stream type\n", __func__);
@@ -1561,15 +1530,8 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 		}
 		if (atomic_read(&prtd->eos)) {
 			pr_debug("%s: interrupt eos wait queues", __func__);
-			/*
-			 * Gapless playback does not wait for eos, do not set
-			 * cmd_int and do not wake up eos_wait during gapless
-			 * transition
-			 */
-			if (!prtd->gapless_state.gapless_transition) {
-				prtd->cmd_interrupt = 1;
-				wake_up(&prtd->eos_wait);
-			}
+			prtd->cmd_interrupt = 1;
+			wake_up(&prtd->eos_wait);
 			atomic_set(&prtd->eos, 0);
 		}
 		if (atomic_read(&prtd->drain)) {
@@ -1755,7 +1717,6 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 		   stream can be used for gapless playback
 		*/
 		prtd->gapless_state.set_next_stream_id = false;
-		prtd->gapless_state.gapless_transition = 0;
 		pr_debug("%s:CMD_EOS stream_id %d\n", __func__, ac->stream_id);
 
 		prtd->eos_ack = 0;
@@ -1891,6 +1852,7 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 			}
 			break;
 		}
+
 		if (prtd->codec_param.codec.format == SNDRV_PCM_FORMAT_S24_LE)
 			bits_per_sample = 24;
 		else if (prtd->codec_param.codec.format ==
@@ -1899,7 +1861,7 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 
 		pr_debug("%s: open_write stream_id %d bits_per_sample %d",
 				__func__, stream_id, bits_per_sample);
-		rc = q6asm_stream_open_write_v3(prtd->audio_client,
+		rc = q6asm_stream_open_write_v2(prtd->audio_client,
 				prtd->codec, bits_per_sample,
 				stream_id,
 				prtd->gapless_state.use_dsp_gapless_mode);
@@ -1908,10 +1870,12 @@ static int msm_compr_trigger(struct snd_compr_stream *cstream, int cmd)
 				 __func__);
 			break;
 		}
+
 		spin_lock_irqsave(&prtd->lock, flags);
 		prtd->gapless_state.stream_opened[stream_index] = 1;
 		prtd->gapless_state.set_next_stream_id = true;
 		spin_unlock_irqrestore(&prtd->lock, flags);
+
 		rc = msm_compr_send_media_format_block(cstream,
 						stream_id, false);
 		if (rc < 0) {
@@ -2116,7 +2080,7 @@ static int msm_compr_get_caps(struct snd_compr_stream *cstream,
 		memcpy(arg, &prtd->compr_cap, sizeof(struct snd_compr_caps));
 	} else {
 		ret = -EINVAL;
-		pr_err("%s: arg (0x%pK), prtd (0x%pK)\n", __func__, arg, prtd);
+		pr_err("%s: arg (0x%p), prtd (0x%p)\n", __func__, arg, prtd);
 	}
 
 	return ret;
@@ -2449,10 +2413,7 @@ static int msm_compr_audio_effects_config_get(struct snd_kcontrol *kcontrol,
 	cstream = pdata->cstream[fe_id];
 	audio_effects = pdata->audio_effects[fe_id];
 	if (!cstream || !audio_effects) {
-        /* If ALSA framework trys to list all controls, too many errors are printed */
-        /* in some cases. Without allocating resources this error is expected. */
-        /* Reduce error level to debug. */
-        pr_debug("%s: stream or effects inactive\n", __func__);
+		pr_err("%s: stream or effects inactive\n", __func__);
 		return -EINVAL;
 	}
 	prtd = cstream->runtime->private_data;

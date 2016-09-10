@@ -1217,7 +1217,11 @@ its demand *in reference to the power-efficient cpu* drops less than 60%
 (sched_downmigrate).
 
 
+<<<<<<< HEAD
 *** 7.18 sched_small_wakee_task_load
+=======
+*** 7.26 sched_small_wakee_task_load
+>>>>>>> FETCH_HEAD
 
 Appears at: /proc/sys/kernel/sched_small_wakee_task_load
 
@@ -1229,7 +1233,11 @@ categorized as small wakee tasks.  Scheduler places small wakee tasks on the
 waker's cluster.
 
 
+<<<<<<< HEAD
 *** 7.19 sched_big_waker_task_load
+=======
+*** 7.26 sched_big_waker_task_load
+>>>>>>> FETCH_HEAD
 
 Appears at: /proc/sys/kernel/sched_big_waker_task_load
 
@@ -1239,6 +1247,7 @@ This tunable is a percentage.  Configure the minimum demand of big sync waker
 task.  Scheduler places small wakee tasks woken up by big sync waker on the
 waker's cluster.
 
+<<<<<<< HEAD
 *** 7.25 sched_prefer_sync_wakee_to_waker
 
 Appears at: /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
@@ -1256,6 +1265,8 @@ However LPM exit latency associated with an idle CPU outweigh the above
 benefits on some targets. When this knob is turned on, the waker CPU is
 selected if it has only 1 runnable task.
 
+=======
+>>>>>>> FETCH_HEAD
 =========================
 8. HMP SCHEDULER TRACE POINTS
 =========================

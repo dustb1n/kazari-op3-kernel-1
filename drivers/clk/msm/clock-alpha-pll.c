@@ -622,6 +622,7 @@ static int alpha_pll_set_rate(struct clk *c, unsigned long rate)
 	 * optimization reasons, assume no downstream clock is actively
 	 * using it.
 	 */
+	spin_lock_irqsave(&c->lock, flags);
 	if (c->count && !pll->dynamic_update)
 		c->ops->disable(c);
 

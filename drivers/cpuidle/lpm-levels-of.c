@@ -110,19 +110,11 @@ static void set_optimum_cluster_residency(struct lpm_cluster *cluster,
 	for (i = 0; i < cluster->nlevels; i++) {
 		struct power_params *pwr = &cluster->levels[i].pwr;
 
-		mode_avail = probe_time ||
-			lpm_cluster_mode_allow(cluster, i,
-					true);
-
-		if (!mode_avail) {
-			pwr->max_residency = 0;
-			continue;
-		}
-
 		pwr->max_residency = ~0;
-		for (j = i+1; j < cluster->nlevels; j++) {
-			mode_avail = probe_time ||
-					lpm_cluster_mode_allow(cluster, j,
+		for (j = 0; j < cluster->nlevels; j++) {
+			if (i >= j)
+				mode_avail = probe_time ||
+					lpm_cluster_mode_allow(cluster, i,
 							true);
 			if (mode_avail &&
 				(pwr->max_residency > pwr->residencies[j]) &&

@@ -1195,11 +1195,14 @@ static inline
 struct related_thread_group *task_related_thread_group(struct task_struct *p)
 {
 	return rcu_dereference(p->grp);
+<<<<<<< HEAD
 }
 
 static inline int is_task_in_related_thread_group(struct task_struct *p)
 {
 	return rcu_access_pointer(p->grp) != NULL;
+=======
+>>>>>>> FETCH_HEAD
 }
 
 #else	/* CONFIG_SCHED_HMP */

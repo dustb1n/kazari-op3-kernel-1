@@ -3835,25 +3835,20 @@ int glink_core_register_transport(struct glink_transport_if *if_ptr,
 	xprt_ptr->remote_neg_completed = false;
 	INIT_LIST_HEAD(&xprt_ptr->channels);
 	INIT_LIST_HEAD(&xprt_ptr->notified);
-
-	spin_lock_init(&xprt_ptr->tx_ready_lock_lhb3);
-	mutex_init(&xprt_ptr->xprt_dbgfs_lock_lhb4);
-	init_kthread_work(&xprt_ptr->tx_kwork, tx_func);
-	init_kthread_worker(&xprt_ptr->tx_wq);
-	xprt_ptr->tx_task = kthread_run(kthread_worker_fn,
-			&xprt_ptr->tx_wq, "%s_%s_glink_tx",
-			xprt_ptr->edge, xprt_ptr->name);
-	if (IS_ERR_OR_NULL(xprt_ptr->tx_task)) {
-		GLINK_ERR("%s: unable to run thread\n", __func__);
-		glink_core_deinit_xprt_qos_cfg(xprt_ptr);
-		kfree(xprt_ptr);
-		return -ENOMEM;
-	}
-
 	ret = glink_core_init_xprt_qos_cfg(xprt_ptr, cfg);
 	if (ret < 0) {
 		kfree(xprt_ptr);
 		return ret;
+	}
+	spin_lock_init(&xprt_ptr->tx_ready_lock_lhb3);
+	mutex_init(&xprt_ptr->xprt_dbgfs_lock_lhb4);
+	INIT_WORK(&xprt_ptr->tx_work, tx_work_func);
+	xprt_ptr->tx_wq = create_singlethread_workqueue("glink_tx");
+	if (IS_ERR_OR_NULL(xprt_ptr->tx_wq)) {
+		GLINK_ERR("%s: unable to allocate workqueue\n", __func__);
+		glink_core_deinit_xprt_qos_cfg(xprt_ptr);
+		kfree(xprt_ptr);
+		return -ENOMEM;
 	}
 	INIT_DELAYED_WORK(&xprt_ptr->pm_qos_work, glink_pm_qos_cancel_worker);
 	pm_qos_add_request(&xprt_ptr->pm_qos_req, PM_QOS_CPU_DMA_LATENCY,
@@ -4720,7 +4715,6 @@ static void glink_core_rx_cmd_ch_open_ack(struct glink_transport_if *if_ptr,
 			"%s: unexpected open ack receive for lcid. Current state: %u. Thread: %u\n",
 				__func__, ctx->local_open_state, current->pid);
 		rwref_put(&ctx->ch_state_lhb2);
-		glink_core_migration_edge_unlock(if_ptr->glink_core_priv);
 		return;
 	}
 
@@ -4739,7 +4733,6 @@ static void glink_core_rx_cmd_ch_open_ack(struct glink_transport_if *if_ptr,
 		}
 	}
 	rwref_put(&ctx->ch_state_lhb2);
-	glink_core_migration_edge_unlock(if_ptr->glink_core_priv);
 }
 
 /**
@@ -5130,7 +5123,8 @@ static void xprt_schedule_tx(struct glink_core_xprt_ctx *xprt_ptr,
 
 	spin_unlock(&ch_ptr->tx_lists_lock_lhc3);
 	spin_unlock_irqrestore(&xprt_ptr->tx_ready_lock_lhb3, flags);
-	queue_kthread_work(&xprt_ptr->tx_wq, &xprt_ptr->tx_kwork);
+
+	queue_work(xprt_ptr->tx_wq, &xprt_ptr->tx_work);
 }
 
 /**

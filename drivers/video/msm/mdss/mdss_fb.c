@@ -55,8 +55,6 @@
 #include "mdss_smmu.h"
 #include "mdss_mdp.h"
 
-#include "mdss_livedisplay.h"
-
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MDSS_FB_NUM 3
 #else
@@ -71,12 +69,6 @@
 
 #define BLANK_FLAG_LP	FB_BLANK_NORMAL
 #define BLANK_FLAG_ULP	FB_BLANK_VSYNC_SUSPEND
-
-#define MDSS_BRIGHT_TO_BL_DIM(out, v) do {\
-			out = (12*v*v+1393*v+3060)/4465;\
-			} while (0)
-bool backlight_dimmer = false;
-module_param(backlight_dimmer, bool, 0755);
 
 static struct fb_info *fbi_list[MAX_FBI_LIST];
 static int fbi_list_index;
@@ -270,14 +262,10 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 	if (value > mfd->panel_info->brightness_max)
 		value = mfd->panel_info->brightness_max;
 
-	if (backlight_dimmer) {
-		MDSS_BRIGHT_TO_BL_DIM(bl_lvl, value);
-	} else {
-		/* This maps android backlight level 0 to 255 into
-		   driver backlight level 0 to bl_max with rounding */
-		MDSS_BRIGHT_TO_BL(bl_lvl, value, mfd->panel_info->bl_max,
-					mfd->panel_info->brightness_max);
-	}
+	/* This maps android backlight level 0 to 255 into
+	   driver backlight level 0 to bl_max with rounding */
+	MDSS_BRIGHT_TO_BL(bl_lvl, value, mfd->panel_info->bl_max,
+				mfd->panel_info->brightness_max);
 
 	if (!bl_lvl && value)
 		bl_lvl = 1;
@@ -598,9 +586,9 @@ static ssize_t mdss_fb_force_panel_dead(struct device *dev,
 		pr_err("no panel connected!\n");
 		return len;
 	}
-	mdss_fb_report_panel_dead(mfd);
-	if (sscanf(buf, "%d", &pdata->panel_info.panel_force_dead) != 1)
-		pr_err("sccanf buf error!\n");
+
+	if (kstrtouint(buf, 0, &pdata->panel_info.panel_force_dead))
+		pr_err("kstrtouint buf error!\n");
 
 	return len;
 }
@@ -713,8 +701,8 @@ static ssize_t mdss_fb_change_dfps_mode(struct device *dev,
 	}
 	pinfo = &pdata->panel_info;
 
-	if (sscanf(buf, "%d", &dfps_mode) != 1) {
-		pr_err("sccanf buf error!\n");
+	if (kstrtouint(buf, 0, &dfps_mode)) {
+		pr_err("kstrtouint buf error!\n");
 		return len;
 	}
 
@@ -805,8 +793,7 @@ static int mdss_fb_create_sysfs(struct msm_fb_data_type *mfd)
 	rc = sysfs_create_group(&mfd->fbi->dev->kobj, &mdss_fb_attr_group);
 	if (rc)
 		pr_err("sysfs group creation failed, rc=%d\n", rc);
-
-	return mdss_livedisplay_create_sysfs(mfd);
+	return rc;
 }
 
 static void mdss_fb_remove_sysfs(struct msm_fb_data_type *mfd)
@@ -1565,10 +1552,7 @@ void mdss_fb_update_backlight(struct msm_fb_data_type *mfd)
 	bool bl_notify = false;
 
 	if (!mfd->unset_bl_level)
-		{
-			mfd->allow_bl_update = true;
-			return;
-		}
+		return;
 	mutex_lock(&mfd->bl_lock);
 	if (!mfd->allow_bl_update) {
 		pdata = dev_get_platdata(&mfd->pdev->dev);
@@ -1792,11 +1776,6 @@ static int mdss_fb_blank_unblank(struct msm_fb_data_type *mfd)
 	}
 
 error:
-	{
-		struct mdss_mdp_ctl *ctl = mfd_to_ctl(mfd);
-		if (!ctl->panel_data->panel_info.cont_splash_enabled)
-		mfd->first_frame = 1;
-	}
 	return ret;
 }
 
@@ -3385,6 +3364,26 @@ static void mdss_fb_var_to_panelinfo(struct fb_var_screeninfo *var,
 		pinfo->clk_rate = var->pixclock;
 	else
 		pinfo->clk_rate = PICOS2KHZ(var->pixclock) * 1000;
+
+	/*
+	 * if it is a DBA panel i.e. HDMI TV connected through
+	 * DSI interface, then store the pixel clock value in
+	 * DSI specific variable.
+	 */
+	if (pinfo->is_dba_panel)
+		pinfo->mipi.dsi_pclk_rate = pinfo->clk_rate;
+
+	if (var->sync & FB_SYNC_HOR_HIGH_ACT)
+		pinfo->lcdc.h_polarity = 0;
+	else
+		pinfo->lcdc.h_polarity = 1;
+
+	if (var->sync & FB_SYNC_VERT_HIGH_ACT)
+		pinfo->lcdc.v_polarity = 0;
+	else
+		pinfo->lcdc.v_polarity = 1;
+
+	pinfo->clk_rate = var->pixclock;
 }
 
 void mdss_panelinfo_to_fb_var(struct mdss_panel_info *pinfo,
@@ -3428,6 +3427,7 @@ static int __mdss_fb_perform_commit(struct msm_fb_data_type *mfd)
 	struct msm_fb_backup_type *fb_backup = &mfd->msm_fb_backup;
 	int ret = -ENOSYS;
 	u32 new_dsi_mode, dynamic_dsi_switch = 0;
+
 	if (!sync_pt_data->async_wait_fences)
 		mdss_fb_wait_for_fence(sync_pt_data);
 	sync_pt_data->flushed = false;
@@ -3469,11 +3469,6 @@ static int __mdss_fb_perform_commit(struct msm_fb_data_type *mfd)
 			pr_err("pan display failed %x on fb%d\n", ret,
 					mfd->index);
 	}
-	if(mfd->first_frame)
-		{
-			mfd->first_frame = 0;
-			mdss_fb_send_panel_event(mfd, MDSS_EVENT_POST_PANEL_ON, NULL);
-		}
 	if (!ret)
 		mdss_fb_update_backlight(mfd);
 
@@ -3487,7 +3482,8 @@ static int __mdss_fb_perform_commit(struct msm_fb_data_type *mfd)
 		mutex_lock(&mfd->switch_lock);
 		mfd->switch_state = MDSS_MDP_NO_UPDATE_REQUESTED;
 		mutex_unlock(&mfd->switch_lock);
-		mfd->panel.type = new_dsi_mode;
+		if (new_dsi_mode != SWITCH_RESOLUTION)
+			mfd->panel.type = new_dsi_mode;
 		pr_debug("Dynamic mode switch completed\n");
 	}
 
@@ -4180,6 +4176,8 @@ static int mdss_fb_atomic_commit_ioctl(struct fb_info *info,
 	struct mdp_scale_data *scale;
 	struct mdp_output_layer *output_layer = NULL;
 	struct mdp_output_layer __user *output_layer_user;
+	struct mdp_frc_info *frc_info = NULL;
+	struct mdp_frc_info __user *frc_info_user;
 
 	ret = copy_from_user(&commit, argp, sizeof(struct mdp_layer_commit));
 	if (ret) {
@@ -4272,6 +4270,26 @@ static int mdss_fb_atomic_commit_ioctl(struct fb_info *info,
 		}
 	}
 
+	/* Copy Deterministic Frame Rate Control info from userspace */
+	frc_info_user = commit.commit_v1.frc_info;
+	if (frc_info_user) {
+		frc_info = kzalloc(sizeof(struct mdp_frc_info), GFP_KERNEL);
+		if (!frc_info) {
+			pr_err("unable to allocate memory for frc\n");
+			ret = -ENOMEM;
+			goto err;
+		}
+
+		ret = copy_from_user(frc_info, frc_info_user,
+			sizeof(struct mdp_frc_info));
+		if (ret) {
+			pr_err("frc info copy from user failed\n");
+			goto frc_err;
+		}
+
+		commit.commit_v1.frc_info = frc_info;
+	}
+
 	ATRACE_BEGIN("ATOMIC_COMMIT");
 	ret = mdss_fb_atomic_commit(info, &commit, file);
 	if (ret)
@@ -4288,12 +4306,15 @@ static int mdss_fb_atomic_commit_ioctl(struct fb_info *info,
 
 		commit.commit_v1.input_layers = input_layer_list;
 		commit.commit_v1.output_layer = output_layer_user;
+		commit.commit_v1.frc_info = frc_info_user;
 		rc = copy_to_user(argp, &commit,
 			sizeof(struct mdp_layer_commit));
 		if (rc)
 			pr_err("copy to user for release & retire fence failed\n");
 	}
 
+frc_err:
+	kfree(frc_info);
 err:
 	for (i--; i >= 0; i--) {
 		kfree(layer_list[i].scale);

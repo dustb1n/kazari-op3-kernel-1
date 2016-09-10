@@ -831,7 +831,8 @@ static void mdss_dsi_ctl_phy_reset(struct mdss_dsi_ctrl_pdata *ctrl, u32 event)
 		if (i == loop) {
 			MDSS_XLOG(ctrl0->ndx, ln0, 0x1f1f);
 			MDSS_XLOG(ctrl1->ndx, ln1, 0x1f1f);
-			pr_err("Clock lane still in stop state");
+			pr_err("%s: Clock lane still in stop state\n",
+					__func__);
 			MDSS_XLOG_TOUT_HANDLER("mdp", "dsi0_ctrl", "dsi0_phy",
 				"dsi1_ctrl", "dsi1_phy", "panic");
 		}
@@ -902,7 +903,8 @@ static void mdss_dsi_ctl_phy_reset(struct mdss_dsi_ctrl_pdata *ctrl, u32 event)
 		}
 		if (i == loop) {
 			MDSS_XLOG(ctrl->ndx, ln0, 0x1f1f);
-			pr_err("Clock lane still in stop state");
+			pr_err("%s: Clock lane still in stop state\n",
+					__func__);
 			MDSS_XLOG_TOUT_HANDLER("mdp", "dsi0_ctrl", "dsi0_phy",
 				"dsi1_ctrl", "dsi1_phy", "panic");
 		}
@@ -2984,9 +2986,12 @@ static void __dsi_error_counter(struct dsi_err_container *err_container)
 	prev_time = err_container->err_time[prev_index];
 
 	if (prev_time &&
-		((curr_time - prev_time) < err_container->err_time_delta))
+		((curr_time - prev_time) < err_container->err_time_delta)) {
+		pr_err("%s: panic in WQ as dsi error intrs within:%dms\n",
+				__func__, err_container->err_time_delta);
 		MDSS_XLOG_TOUT_HANDLER_WQ("mdp", "dsi0_ctrl", "dsi0_phy",
 			"dsi1_ctrl", "dsi1_phy", "panic");
+	}
 }
 
 void mdss_dsi_error(struct mdss_dsi_ctrl_pdata *ctrl)
@@ -3049,6 +3054,7 @@ irqreturn_t mdss_dsi_isr(int irq, void *ptr)
 	}
 
 	if (isr & DSI_INTR_BTA_DONE) {
+		MDSS_XLOG(ctrl->ndx, ctrl->mdp_busy, isr, 0x96);
 		spin_lock(&ctrl->mdp_lock);
 		mdss_dsi_disable_irq_nosync(ctrl, DSI_BTA_TERM);
 		complete(&ctrl->bta_comp);

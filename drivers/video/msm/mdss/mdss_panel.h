@@ -166,11 +166,6 @@ struct mdss_panel_cfg {
 #define MDP_INTF_DSI_CMD_FIFO_UNDERFLOW		0x0001
 #define MDP_INTF_DSI_VIDEO_FIFO_OVERFLOW	0x0002
 
-
-enum {
-	MDP_INTF_CALLBACK_DSI_WAIT,
-};
-
 struct mdss_intf_recovery {
 	void (*fxn)(void *ctx, int event);
 	void *data;
@@ -223,7 +218,6 @@ struct mdss_intf_recovery {
  *				- 1: update to command mode
  * @MDSS_EVENT_REGISTER_RECOVERY_HANDLER: Event to recover the interface in
  *					case there was any errors detected.
- * @MDSS_EVENT_REGISTER_MDP_CALLBACK: Event to register callback to MDP driver.
  * @MDSS_EVENT_DSI_PANEL_STATUS: Event to check the panel status
  *				<= 0: panel check fail
  *				>  0: panel check success
@@ -262,13 +256,11 @@ enum mdss_intf_events {
 	MDSS_EVENT_DSI_STREAM_SIZE,
 	MDSS_EVENT_DSI_UPDATE_PANEL_DATA,
 	MDSS_EVENT_REGISTER_RECOVERY_HANDLER,
-	MDSS_EVENT_REGISTER_MDP_CALLBACK,
 	MDSS_EVENT_DSI_PANEL_STATUS,
 	MDSS_EVENT_DSI_DYNAMIC_SWITCH,
 	MDSS_EVENT_DSI_RECONFIG_CMD,
 	MDSS_EVENT_DSI_RESET_WRITE_PTR,
 	MDSS_EVENT_PANEL_TIMING_SWITCH,
-	MDSS_EVENT_UPDATE_LIVEDISPLAY,
 };
 
 struct lcd_panel_info {
@@ -290,6 +282,8 @@ struct lcd_panel_info {
 	/* Pad height */
 	u32 yres_pad;
 	u32 frame_rate;
+	u32 h_polarity;
+	u32 v_polarity;
 };
 
 
@@ -586,8 +580,6 @@ struct mdss_mdp_pp_tear_check {
 	u32 refx100;
 };
 
-struct mdss_livedisplay_ctx;
-
 struct mdss_panel_info {
 	u32 xres;
 	u32 yres;
@@ -718,8 +710,6 @@ struct mdss_panel_info {
 	 */
 	u32 adjust_timer_delay_ms;
 
-	struct mdss_livedisplay_ctx *livedisplay;
-
 	/* debugfs structure for the panel */
 	struct mdss_panel_debugfs_info *debugfs_info;
 };
@@ -834,7 +824,7 @@ static inline u32 mdss_panel_get_framerate(struct mdss_panel_info *panel_info,
 			  panel_info->lcdc.v_pulse_width +
 			  panel_info->yres);
 		if (pixel_total) {
-			rate = panel_info->clk_rate;
+			rate = panel_info->clk_rate * KHZ_TO_HZ;
 			do_div(rate, pixel_total);
 			frame_rate = (u32)rate;
 		} else {
@@ -1011,12 +1001,17 @@ static inline u8 mdss_panel_calc_frame_rate(struct mdss_panel_info *pinfo)
 {
 		u32 pixel_total = 0;
 		u8 frame_rate = 0;
-		unsigned long pclk_rate = pinfo->clk_rate;
+		unsigned long pclk_rate = pinfo->mipi.dsi_pclk_rate;
+		u32 xres;
+
+		xres = pinfo->xres;
+		if (pinfo->compression_mode == COMPRESSION_DSC)
+			xres /= 3;
 
 		pixel_total = (pinfo->lcdc.h_back_porch +
 			  pinfo->lcdc.h_front_porch +
 			  pinfo->lcdc.h_pulse_width +
-			  pinfo->xres) *
+			  xres) *
 			 (pinfo->lcdc.v_back_porch +
 			  pinfo->lcdc.v_front_porch +
 			  pinfo->lcdc.v_pulse_width +
@@ -1026,7 +1021,7 @@ static inline u8 mdss_panel_calc_frame_rate(struct mdss_panel_info *pinfo)
 			frame_rate =
 				DIV_ROUND_CLOSEST(pclk_rate, pixel_total);
 		else
-			frame_rate = DEFAULT_FRAME_RATE;
+			frame_rate = pinfo->panel_max_fps;
 
 		return frame_rate;
 }

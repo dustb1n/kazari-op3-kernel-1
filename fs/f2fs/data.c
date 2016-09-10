@@ -854,11 +854,9 @@ static int get_data_block_bmap(struct inode *inode, sector_t iblock,
 			struct buffer_head *bh_result, int create)
 {
 	/* Block number less than F2FS MAX BLOCKS */
-	if (unlikely(iblock >= F2FS_I_SB(inode)->max_file_blocks))
+	if (unlikely(iblock >= max_file_size(0)))
 		return -EFBIG;
-
-	return __get_data_block(inode, iblock, bh_result, create,
-						F2FS_GET_BLOCK_BMAP, NULL);
+	return __get_data_block(inode, iblock, bh_result, create, false);
 }
 
 static inline sector_t logical_to_blk(struct inode *inode, loff_t offset)

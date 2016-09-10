@@ -2379,6 +2379,16 @@ unsigned int __read_mostly sysctl_sched_big_waker_task_load_pct = 25;
 unsigned int __read_mostly sysctl_sched_prefer_sync_wakee_to_waker;
 
 /*
+ * Place sync wakee tasks those have less than configured demand to the waker's
+ * cluster.
+ */
+unsigned int __read_mostly sched_small_wakee_task_load;
+unsigned int __read_mostly sysctl_sched_small_wakee_task_load_pct = 10;
+
+unsigned int __read_mostly sched_big_waker_task_load;
+unsigned int __read_mostly sysctl_sched_big_waker_task_load_pct = 25;
+
+/*
  * CPUs with load greater than the sched_spill_load_threshold are not
  * eligible for task placement. When all CPUs in a cluster achieve a
  * load higher than this level, tasks becomes eligible for inter
@@ -3303,20 +3313,12 @@ static int select_best_cpu(struct task_struct *p, int target, int reason,
 		else
 			env.rtg = grp;
 	} else {
-		cluster = cpu_rq(cpu)->cluster;
-		if (wake_to_waker_cluster(&env)) {
-			if (sysctl_sched_prefer_sync_wakee_to_waker &&
-				cpu_rq(cpu)->nr_running == 1 &&
-				cpumask_test_cpu(cpu, tsk_cpus_allowed(p)) &&
-				cpu_active(cpu)) {
-				fast_path = true;
-				target = cpu;
-				goto out;
-			} else if (cluster_allowed(p, cluster)) {
-				env.need_waker_cluster = 1;
-				bitmap_zero(env.candidate_list, NR_CPUS);
-				__set_bit(cluster->id, env.candidate_list);
-			}
+		cluster = cpu_rq(smp_processor_id())->cluster;
+		if (wake_to_waker_cluster(&env) &&
+		    cluster_allowed(p, cluster)) {
+			env.need_waker_cluster = 1;
+			bitmap_zero(env.candidate_list, NR_CPUS);
+			__set_bit(cluster->id, env.candidate_list);
 		} else if (bias_to_prev_cpu(&env, &stats)) {
 			fast_path = true;
 			goto out;
