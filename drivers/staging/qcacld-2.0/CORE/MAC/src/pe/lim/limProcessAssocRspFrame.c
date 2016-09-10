@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -108,8 +112,12 @@ void limUpdateAssocStaDatas(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpSirAsso
                            (tANI_U8)(pAssocRsp->HTCaps.supportedChannelWidthSet ?
                            pAssocRsp->HTInfo.recommendedTxWidthSet :
                            pAssocRsp->HTCaps.supportedChannelWidthSet);
+<<<<<<< HEAD
                }
                else
+=======
+               } else {
+>>>>>>> sultanxda/cm-13.0-sultan
                    pStaDs->htSupportedChannelWidthSet = eHT_CHANNEL_WIDTH_20MHZ;
 
                    pStaDs->htLsigTXOPProtection = ( tANI_U8 ) pAssocRsp->HTCaps.lsigTXOPProtection;
@@ -159,6 +167,10 @@ void limUpdateAssocStaDatas(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tpSirAsso
                               FL("could not retrieve shortGI 40Mhz CFG,setting value to default"));
                        pStaDs->htShortGI40Mhz = WNI_CFG_SHORT_GI_40MHZ_STADEF;
                    }
+<<<<<<< HEAD
+=======
+               }
+>>>>>>> sultanxda/cm-13.0-sultan
            }
        }
 
@@ -520,7 +532,10 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
         "and setting NULL"));
         vos_mem_free(psessionEntry->assocRsp);
         psessionEntry->assocRsp = NULL;
+<<<<<<< HEAD
         psessionEntry->assocRspLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     psessionEntry->assocRsp = vos_mem_malloc(frameLen);
@@ -540,7 +555,10 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
     {
         vos_mem_free(psessionEntry->ricData);
         psessionEntry->ricData = NULL;
+<<<<<<< HEAD
         psessionEntry->RICDataLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
     if(pAssocRsp->ricPresent) {
         psessionEntry->RICDataLen =
@@ -586,7 +604,10 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
     {
         vos_mem_free(psessionEntry->tspecIes);
         psessionEntry->tspecIes = NULL;
+<<<<<<< HEAD
         psessionEntry->tspecLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
     if(pAssocRsp->tspecPresent) {
         limLog(pMac, LOG1, FL("Tspec EID present in assoc rsp"));
@@ -659,6 +680,7 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
 
     if (pAssocRsp->statusCode != eSIR_MAC_SUCCESS_STATUS
 #ifdef WLAN_FEATURE_11W
+<<<<<<< HEAD
        /*
         * Consider eSIR_MAC_TRY_AGAIN_LATER as failure in re-assoc
         * case as waiting for come back time and retrying reassociation
@@ -668,6 +690,10 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
       && (!psessionEntry->limRmfEnabled ||
           pAssocRsp->statusCode != eSIR_MAC_TRY_AGAIN_LATER ||
           (subType == LIM_REASSOC))
+=======
+      && (!psessionEntry->limRmfEnabled ||
+          pAssocRsp->statusCode != eSIR_MAC_TRY_AGAIN_LATER)
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif /* WLAN_FEATURE_11W */
       )
     {
@@ -737,6 +763,7 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
                                 timeout_value)) {
                 PELOGE(limLog(pMac, LOGE,
                        FL("Failed to start comeback timer."));)
+<<<<<<< HEAD
 
                 mlmAssocCnf.resultCode = eSIR_SME_ASSOC_REFUSED;
                 mlmAssocCnf.protStatusCode = eSIR_MAC_UNSPEC_FAILURE_STATUS;
@@ -746,11 +773,14 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
                     limDeletePreAuthNode(pMac, pHdr->sa);
 
                 goto assocReject;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             }
         } else {
             PELOGE(limLog(pMac, LOG1,
                    FL("ASSOC response with eSIR_MAC_TRY_AGAIN_LATER recvd."
                       "But try again time interval IE is wrong."));)
+<<<<<<< HEAD
 
             mlmAssocCnf.resultCode = eSIR_SME_ASSOC_REFUSED;
             mlmAssocCnf.protStatusCode = eSIR_MAC_UNSPEC_FAILURE_STATUS;
@@ -760,6 +790,8 @@ limProcessAssocRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo, tANI_U8 sub
                 limDeletePreAuthNode(pMac, pHdr->sa);
 
             goto assocReject;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         }
         /* callback will send Assoc again */
         /* DO NOT send ASSOC CNF to MLM state machine */

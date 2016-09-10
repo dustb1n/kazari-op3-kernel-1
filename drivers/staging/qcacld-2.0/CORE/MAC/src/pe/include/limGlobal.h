@@ -323,8 +323,12 @@ struct tLimScanResultNode
 typedef struct sLimMlmOemDataReq
 {
     tSirMacAddr           selfMacAddr;
+<<<<<<< HEAD
     uint8_t               data_len;
     uint8_t               *data;
+=======
+    tANI_U8               oemDataReq[OEM_DATA_REQ_SIZE];
+>>>>>>> sultanxda/cm-13.0-sultan
 } tLimMlmOemDataReq, *tpLimMlmOemDataReq;
 
 typedef struct sLimMlmOemDataRsp

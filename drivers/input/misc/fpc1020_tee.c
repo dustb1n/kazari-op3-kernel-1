@@ -52,8 +52,11 @@
 #include <linux/notifier.h>
 #endif
 
+<<<<<<< HEAD
 #include <linux/project_info.h>
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static unsigned int ignor_home_for_ESD = 0;
 module_param(ignor_home_for_ESD, uint, S_IRUGO | S_IWUSR);
 
@@ -339,6 +342,7 @@ static ssize_t report_home_set(struct device *dev,
 }
 static DEVICE_ATTR(report_home, S_IWUSR, NULL, report_home_set);
 
+<<<<<<< HEAD
 static ssize_t update_info_set(struct device *dev,
 	struct device_attribute *attr, const char *buf, size_t count)
 {
@@ -353,6 +357,8 @@ static ssize_t update_info_set(struct device *dev,
 }
 static DEVICE_ATTR(update_info, S_IWUSR, NULL, update_info_set);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static ssize_t screen_state_get(struct device* device,
 			     struct device_attribute* attribute,
 			     char* buffer)
@@ -367,7 +373,10 @@ static struct attribute *attributes[] = {
 	&dev_attr_hw_reset.attr,
 	&dev_attr_irq.attr,
 	&dev_attr_report_home.attr,
+<<<<<<< HEAD
 	&dev_attr_update_info.attr,
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	&dev_attr_screen_state.attr,
 	NULL
 };
@@ -636,6 +645,7 @@ static int fpc1020_probe(struct platform_device *pdev)
     *   DT       0            1
     *   CT       1            0
     */
+<<<<<<< HEAD
 	if(!gpio_get_value(fpc1020->id0_gpio) && !gpio_get_value(fpc1020->id1_gpio))
         push_component_info(FINGERPRINTS,"fpc1245" , "FPC(OF)");
     else if(!gpio_get_value(fpc1020->id0_gpio) && gpio_get_value(fpc1020->id1_gpio))
@@ -644,6 +654,8 @@ static int fpc1020_probe(struct platform_device *pdev)
         push_component_info(FINGERPRINTS,"fpc1245" , "FPC(CT)");
     else
         push_component_info(FINGERPRINTS,"fpc1245" , "FPC");
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	dev_info(dev, "%s: ok\n", __func__);
 exit:

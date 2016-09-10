@@ -153,7 +153,11 @@
 #define CFG_TGT_DEFAULT_MCAST2UCAST_MODE 2
 #endif
 
+<<<<<<< HEAD
 #define CFG_TGT_MAX_MULTICAST_FILTER_ENTRIES 16
+=======
+#define CFG_TGT_MAX_MULTICAST_FILTER_ENTRIES 5
+>>>>>>> sultanxda/cm-13.0-sultan
 /*
  * Specify how much memory the target should allocate for a debug log of
  * tx PPDU meta-information (how large the PPDU was, when it was sent,
@@ -217,6 +221,13 @@
  */
 #define CFG_TGT_DEFAULT_GTX_VHT_MASK		0x80200
 /*
+<<<<<<< HEAD
+=======
+ * resv for furture use, bit 30 is used for fix tpc, bit0-3 for Power save balance
+ */
+#define CFG_TGT_DEFAULT_GTX_USR_CFG		0xa
+/*
+>>>>>>> sultanxda/cm-13.0-sultan
  * threshold to enable GTX
  */
 #define CFG_TGT_DEFAULT_GTX_PER_THRESHOLD	3

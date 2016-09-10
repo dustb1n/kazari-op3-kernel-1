@@ -8231,7 +8231,10 @@ static int __wlan_hdd_cfg80211_wifi_configuration_set(struct wiphy *wiphy,
 	u32 modulated_dtim;
 	u16 stats_avg_factor;
 	u32 guard_time;
+<<<<<<< HEAD
 	u32 ftm_capab;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	eHalStatus status;
 
 	if (VOS_FTM_MODE == hdd_get_conparam()) {
@@ -8252,6 +8255,7 @@ static int __wlan_hdd_cfg80211_wifi_configuration_set(struct wiphy *wiphy,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (tb[QCA_WLAN_VENDOR_ATTR_CONFIG_FINE_TIME_MEASUREMENT]) {
 		ftm_capab = nla_get_u32(tb[
 			QCA_WLAN_VENDOR_ATTR_CONFIG_FINE_TIME_MEASUREMENT]);
@@ -8265,6 +8269,8 @@ static int __wlan_hdd_cfg80211_wifi_configuration_set(struct wiphy *wiphy,
 		       pHddCtx->cfg_ini->fine_time_meas_cap);
 	}
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	if (tb[QCA_WLAN_VENDOR_ATTR_CONFIG_MODULATED_DTIM]) {
 		modulated_dtim = nla_get_u32(
 			tb[QCA_WLAN_VENDOR_ATTR_CONFIG_MODULATED_DTIM]);
@@ -9534,7 +9540,12 @@ const struct wiphy_vendor_command hdd_wiphy_vendor_commands[] =
         .info.vendor_id = QCA_NL80211_VENDOR_ID,
         .info.subcmd = QCA_NL80211_VENDOR_SUBCMD_DFS_CAPABILITY,
         .flags = WIPHY_VENDOR_CMD_NEED_WDEV |
+<<<<<<< HEAD
                  WIPHY_VENDOR_CMD_NEED_NETDEV,
+=======
+                 WIPHY_VENDOR_CMD_NEED_NETDEV |
+                 WIPHY_VENDOR_CMD_NEED_RUNNING,
+>>>>>>> sultanxda/cm-13.0-sultan
         .doit = is_driver_dfs_capable
     },
 
@@ -10198,11 +10209,15 @@ int wlan_hdd_cfg80211_init(struct device *dev,
     }
 
    wiphy->bands[IEEE80211_BAND_2GHZ] = &wlan_hdd_band_2_4_GHZ;
+<<<<<<< HEAD
    if (true == hdd_is_5g_supported(pHddCtx) &&
        ((eHDD_DOT11_MODE_11b != pCfg->dot11Mode) &&
         (eHDD_DOT11_MODE_11g != pCfg->dot11Mode) &&
         (eHDD_DOT11_MODE_11b_ONLY != pCfg->dot11Mode) &&
         (eHDD_DOT11_MODE_11g_ONLY != pCfg->dot11Mode)))
+=======
+   if (true == hdd_is_5g_supported(pHddCtx))
+>>>>>>> sultanxda/cm-13.0-sultan
    {
        wiphy->bands[IEEE80211_BAND_5GHZ] = &wlan_hdd_band_5_GHZ;
    }
@@ -10332,11 +10347,14 @@ void wlan_hdd_cfg80211_register_frames(hdd_adapter_t* pAdapter)
     v_U16_t type = (SIR_MAC_MGMT_FRAME << 2) | ( SIR_MAC_MGMT_ACTION << 4);
 
     ENTER();
+<<<<<<< HEAD
     /* Register frame indication call back */
     sme_register_mgmt_frame_ind_callback(hHal, hdd_indicate_mgmt_frame);
 
     /* Register for p2p ack indication */
     sme_register_p2p_ack_ind_callback(hHal, hdd_send_action_cnf_cb);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
    /* Right now we are registering these frame when driver is getting
       initialized. Once we will move to 2.6.37 kernel, in which we have
@@ -10921,8 +10939,11 @@ int wlan_hdd_cfg80211_update_apies(hdd_adapter_t* pHostapdAdapter)
         return -ENOMEM;
     }
 
+<<<<<<< HEAD
     wlan_hdd_add_extra_ie(pHostapdAdapter, genie, &total_ielen,
                           WLAN_EID_VHT_TX_POWER_ENVELOPE);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     if (0 != wlan_hdd_add_ie(pHostapdAdapter, genie,
                               &total_ielen, WPS_OUI_TYPE, WPS_OUI_TYPE_SIZE))
     {
@@ -12449,6 +12470,13 @@ static int __wlan_hdd_cfg80211_stop_ap (struct wiphy *wiphy,
                      TRACE_CODE_HDD_CFG80211_STOP_AP,
                      pAdapter->sessionId, pAdapter->device_mode));
 
+<<<<<<< HEAD
+=======
+    pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
+    ret = wlan_hdd_validate_context(pHddCtx);
+    if (0 != ret)
+        return ret;
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (VOS_FTM_MODE == hdd_get_conparam()) {
         hddLog(LOGE, FL("Command not allowed in FTM mode"));
@@ -12464,6 +12492,7 @@ static int __wlan_hdd_cfg80211_stop_ap (struct wiphy *wiphy,
            hdd_device_mode_to_string(pAdapter->device_mode),
            pAdapter->device_mode);
 
+<<<<<<< HEAD
     pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
     ret = wlan_hdd_validate_context(pHddCtx);
     if (0 != ret) {
@@ -12478,6 +12507,8 @@ static int __wlan_hdd_cfg80211_stop_ap (struct wiphy *wiphy,
         return ret;
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     status = hdd_get_front_adapter (pHddCtx, &pAdapterNode);
     while (NULL != pAdapterNode && VOS_STATUS_SUCCESS == status) {
         staAdapter = pAdapterNode->pAdapter;
@@ -13598,7 +13629,10 @@ static int __wlan_hdd_change_station(struct wiphy *wiphy,
     tCsrStaParams StaParams = {0};
     tANI_U8 isBufSta = 0;
     tANI_U8 isOffChannelSupported = 0;
+<<<<<<< HEAD
     bool is_qos_wmm_sta = false;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
     int ret;
 
@@ -13772,6 +13806,7 @@ static int __wlan_hdd_change_station(struct wiphy *wiphy,
                 }
             }
 
+<<<<<<< HEAD
             if (pHddCtx->cfg_ini->fEnableTDLSWmmMode &&
                 (params->sta_flags_set & BIT(NL80211_STA_FLAG_WME)))
                 is_qos_wmm_sta = true;
@@ -13784,6 +13819,11 @@ static int __wlan_hdd_change_station(struct wiphy *wiphy,
                                                   &StaParams, isBufSta,
                                                   isOffChannelSupported,
                                                   is_qos_wmm_sta);
+=======
+            status = wlan_hdd_tdls_set_peer_caps(pAdapter, mac,
+                                                  &StaParams, isBufSta,
+                                                  isOffChannelSupported);
+>>>>>>> sultanxda/cm-13.0-sultan
             if (VOS_STATUS_SUCCESS != status) {
                 hddLog(VOS_TRACE_LEVEL_ERROR,
                        FL("wlan_hdd_tdls_set_peer_caps failed!"));
@@ -14713,7 +14753,11 @@ wlan_hdd_cfg80211_inform_bss_frame( hdd_adapter_t *pAdapter,
     qie_age->oui_2      = QCOM_OUI2;
     qie_age->oui_3      = QCOM_OUI3;
     qie_age->type       = QCOM_VENDOR_IE_AGE_TYPE;
+<<<<<<< HEAD
     qie_age->age        = vos_timer_get_system_ticks() - bss_desc->nReceivedTime;
+=======
+    qie_age->age        = vos_timer_get_system_time() - bss_desc->nReceivedTime;
+>>>>>>> sultanxda/cm-13.0-sultan
     qie_age->tsf_delta  = bss_desc->tsf_delta;
 #endif
 
@@ -15388,7 +15432,10 @@ int __wlan_hdd_cfg80211_scan( struct wiphy *wiphy,
     hdd_adapter_t *con_sap_adapter;
     uint16_t con_dfs_ch;
     bool is_p2p_scan = false;
+<<<<<<< HEAD
     uint8_t num_chan = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     ENTER();
 
@@ -15595,17 +15642,23 @@ int __wlan_hdd_cfg80211_scan( struct wiphy *wiphy,
        }
        for (i = 0, len = 0; i < request->n_channels ; i++ )
        {
+<<<<<<< HEAD
           if (!vos_is_dsrc_channel(vos_chan_to_freq(
                    request->channels[i]->hw_value))) {
               channelList[num_chan] = request->channels[i]->hw_value;
               len += snprintf(chList+len, 5, "%d ", channelList[i]);
               num_chan++;
           }
+=======
+          channelList[i] = request->channels[i]->hw_value;
+          len += snprintf(chList+len, 5, "%d ", channelList[i]);
+>>>>>>> sultanxda/cm-13.0-sultan
        }
 
        hddLog(VOS_TRACE_LEVEL_INFO, "Channel-List: %s", chList);
 
     }
+<<<<<<< HEAD
 
     if (!num_chan) {
        hddLog(LOGE, FL("Received zero non-dsrc channels"));
@@ -15614,6 +15667,9 @@ int __wlan_hdd_cfg80211_scan( struct wiphy *wiphy,
     }
 
     scanRequest.ChannelInfo.numOfChannels = num_chan;
+=======
+    scanRequest.ChannelInfo.numOfChannels = request->n_channels;
+>>>>>>> sultanxda/cm-13.0-sultan
     scanRequest.ChannelInfo.ChannelList = channelList;
 
     /* set requestType to full scan */
@@ -15811,6 +15867,7 @@ void hdd_select_cbmode(hdd_adapter_t *pAdapter, v_U8_t operationChannel,
            iniDot11Mode);
     *vht_channel_width =
                (WLAN_HDD_GET_CTX(pAdapter))->cfg_ini->vhtChannelWidth;
+<<<<<<< HEAD
     /*
      * In IBSS mode while operating in 2.4 GHz,
      * the device will be configured to CBW 20
@@ -15819,6 +15876,8 @@ void hdd_select_cbmode(hdd_adapter_t *pAdapter, v_U8_t operationChannel,
             (SIR_11B_CHANNEL_END >= operationChannel))
         *vht_channel_width = eHT_CHANNEL_WIDTH_20MHZ;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     switch ( iniDot11Mode )
     {
        case eHDD_DOT11_MODE_AUTO:
@@ -17067,6 +17126,14 @@ static int __wlan_hdd_cfg80211_connect( struct wiphy *wiphy,
     if (0 != status)
         return status;
 
+<<<<<<< HEAD
+=======
+    if (vos_max_concurrent_connections_reached()) {
+        hddLog(VOS_TRACE_LEVEL_ERROR, FL("Reached max concurrent connections"));
+        return -ECONNREFUSED;
+    }
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #if defined(FEATURE_WLAN_LFR) && defined(WLAN_FEATURE_ROAM_SCAN_OFFLOAD)
     wlan_hdd_disable_roaming(pAdapter);
 #endif
@@ -17089,12 +17156,15 @@ static int __wlan_hdd_cfg80211_connect( struct wiphy *wiphy,
         return -EALREADY;
     }
 
+<<<<<<< HEAD
     /* Check for max concurrent connections after doing disconnect if any */
     if (vos_max_concurrent_connections_reached()) {
         hddLog(VOS_TRACE_LEVEL_ERROR, FL("Reached max concurrent connections"));
         return -ECONNREFUSED;
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     /*initialise security parameters*/
     status = wlan_hdd_cfg80211_set_privacy(pAdapter, req);
 
@@ -17215,9 +17285,14 @@ disconnected:
      * is handled by __cfg80211_disconnect call to __cfg80211_disconnected
      */
     hddLog(LOG1, FL("Send disconnected event to userspace"));
+<<<<<<< HEAD
 
     wlan_hdd_cfg80211_indicate_disconnect(pAdapter->dev, true,
                                           WLAN_REASON_UNSPECIFIED);
+=======
+    cfg80211_disconnected(pAdapter->dev, WLAN_REASON_UNSPECIFIED,
+                NULL, 0, GFP_KERNEL);
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 
     EXIT();
@@ -17713,7 +17788,10 @@ static int __wlan_hdd_cfg80211_leave_ibss(struct wiphy *wiphy,
     hdd_context_t *pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
     int status;
     eHalStatus hal_status;
+<<<<<<< HEAD
     tSirUpdateIE updateIE;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     ENTER();
 
@@ -17745,6 +17823,7 @@ static int __wlan_hdd_cfg80211_leave_ibss(struct wiphy *wiphy,
         return -EINVAL;
     }
 
+<<<<<<< HEAD
     /* Clearing add IE of beacon */
     vos_mem_copy(updateIE.bssid, pAdapter->macAddressCurrent.bytes,
             sizeof(tSirMacAddr));
@@ -17761,6 +17840,8 @@ static int __wlan_hdd_cfg80211_leave_ibss(struct wiphy *wiphy,
     /* Reset WNI_CFG_PROBE_RSP Flags */
     wlan_hdd_reset_prob_rspies(pAdapter);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     /* Issue Disconnect request */
     INIT_COMPLETION(pAdapter->disconnect_comp_var);
     hal_status = sme_RoamDisconnect(WLAN_HDD_GET_HAL_CTX(pAdapter),
@@ -17771,6 +17852,7 @@ static int __wlan_hdd_cfg80211_leave_ibss(struct wiphy *wiphy,
                FL("sme_RoamDisconnect failed hal_status(%d)"), hal_status);
         return -EAGAIN;
     }
+<<<<<<< HEAD
     status = wait_for_completion_timeout(
                      &pAdapter->disconnect_comp_var,
                      msecs_to_jiffies(WLAN_WAIT_TIME_DISCONNECT));
@@ -17780,6 +17862,8 @@ static int __wlan_hdd_cfg80211_leave_ibss(struct wiphy *wiphy,
         return -ETIMEDOUT;;
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     EXIT();
     return 0;
 }
@@ -18346,11 +18430,25 @@ static int __wlan_hdd_cfg80211_get_station(struct wiphy *wiphy,
                 }
                 else if (DATA_RATE_11AC_MAX_MCS_9 == vhtMaxMcs)
                 {
+<<<<<<< HEAD
                     //VHT20 is supporting 0~8
                     if (rate_flags & eHAL_TX_RATE_VHT20)
                         maxMCSIdx = 8;
                     else
                         maxMCSIdx = 9;
+=======
+                    /*
+                     * 'IEEE_P802.11ac_2013.pdf' page 325, 326
+                     * - MCS9 is valid for VHT20 when Nss = 3 or Nss = 6
+                     * - MCS9 is not valid for VHT20 when Nss = 1,2,4,5,7,8
+                     */
+                    if ((rate_flags & eHAL_TX_RATE_VHT20) &&
+                        (nss != 3 && nss != 6)) {
+                        maxMCSIdx = 8;
+                    } else {
+                        maxMCSIdx = 9;
+                    }
+>>>>>>> sultanxda/cm-13.0-sultan
                 }
 
                 if (rssidx != 0)
@@ -18457,6 +18555,23 @@ static int __wlan_hdd_cfg80211_get_station(struct wiphy *wiphy,
            {
               maxSpeedMCS = 1;
               maxMCSIdx = pAdapter->hdd_stats.ClassA_stat.mcs_index;
+<<<<<<< HEAD
+=======
+              /*
+               * 'IEEE_P802.11ac_2013.pdf' page 325, 326
+               * - MCS9 is valid for VHT20 when Nss = 3 or Nss = 6
+               * - MCS9 is not valid for VHT20 when Nss = 1,2,4,5,7,8
+               */
+              if ((rate_flags & eHAL_TX_RATE_VHT20) &&
+                  (maxMCSIdx > 8) &&
+                  (nss != 3 && nss != 6)) {
+#ifdef LINKSPEED_DEBUG_ENABLED
+                  pr_info("MCS%d is not valid for VHT20 when nss=%d, hence report MCS8.",
+                          maxMCSIdx, nss);
+#endif
+                  maxMCSIdx = 8;
+              }
+>>>>>>> sultanxda/cm-13.0-sultan
            }
         }
 
@@ -19534,6 +19649,7 @@ static int __wlan_hdd_cfg80211_sched_scan_start(struct wiphy *wiphy,
                         break;
                     }
 
+<<<<<<< HEAD
                     if (!vos_is_dsrc_channel(vos_chan_to_freq(
                         request->channels[i]->hw_value))) {
                        valid_ch[num_ch++] = request->channels[i]->hw_value;
@@ -19554,6 +19670,25 @@ static int __wlan_hdd_cfg80211_sched_scan_start(struct wiphy *wiphy,
          }
 
          hddLog(VOS_TRACE_LEVEL_INFO,"Channel-List: %s ", chList);
+=======
+                   valid_ch[num_ch++] = request->channels[i]->hw_value;
+                   len += snprintf(chList+len, 5, "%d ",
+                                  request->channels[i]->hw_value);
+                   break ;
+                }
+             }
+         }
+         hddLog(VOS_TRACE_LEVEL_INFO,"Channel-List: %s ", chList);
+
+         /*If all channels are DFS and dropped, then ignore the PNO request*/
+         if (num_ignore_dfs_ch == request->n_channels)
+         {
+             VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
+                 "%s : All requested channels are DFS channels", __func__);
+             ret = -EINVAL;
+             goto error;
+         }
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     /* Filling per profile  params */
@@ -20008,7 +20143,10 @@ static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
     /* For explicit trigger of DIS_REQ come out of BMPS for
        successfully receiving DIS_RSP from peer. */
     if ((SIR_MAC_TDLS_SETUP_RSP == action_code) ||
+<<<<<<< HEAD
         (SIR_MAC_TDLS_SETUP_CNF== action_code) ||
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         (SIR_MAC_TDLS_DIS_RSP == action_code) ||
         (SIR_MAC_TDLS_DIS_REQ == action_code))
     {
@@ -20084,10 +20222,15 @@ static int __wlan_hdd_cfg80211_tdls_mgmt(struct wiphy *wiphy,
 
     if ((0 == rc) || (TRUE != pAdapter->mgmtTxCompletionStatus)) {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+<<<<<<< HEAD
                   "%s: %s rc %ld mgmtTxCompletionStatus %u",
                   __func__,
                   !rc ? "Mgmt Tx Completion timed out" :"Mgmt Tx Completion failed",
                   rc, pAdapter->mgmtTxCompletionStatus);
+=======
+                  "%s: Mgmt Tx Completion timed out TxCompletion %u",
+                  __func__, pAdapter->mgmtTxCompletionStatus);
+>>>>>>> sultanxda/cm-13.0-sultan
 
         if (pHddCtx->isLogpInProgress)
         {
@@ -20431,11 +20574,14 @@ static int __wlan_hdd_cfg80211_tdls_oper(struct wiphy *wiphy,
                     return -EINVAL;
                 }
 
+<<<<<<< HEAD
                 wlan_hdd_tdls_set_cap(pAdapter, peer, eTDLS_CAP_SUPPORTED);
 
                 vos_mem_set(&tdlsLinkEstablishParams,
                             sizeof(tCsrTdlsLinkEstablishParams), 0);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
                 if (eTDLS_LINK_CONNECTED != pTdlsPeer->link_status)
                 {
                     if (IS_ADVANCE_TDLS_ENABLE) {
@@ -20466,6 +20612,7 @@ static int __wlan_hdd_cfg80211_tdls_oper(struct wiphy *wiphy,
                     wlan_hdd_tdls_set_peer_link_status(pTdlsPeer,
                                                        eTDLS_LINK_CONNECTED,
                                                        eTDLS_LINK_SUCCESS);
+<<<<<<< HEAD
 
                     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
                               "%s : tdlsLinkEstablishParams of peer " MAC_ADDRESS_STR "uapsdQueues: %d"
@@ -20485,6 +20632,12 @@ static int __wlan_hdd_cfg80211_tdls_oper(struct wiphy *wiphy,
                                                      pTdlsPeer->staId,
                                                      pTdlsPeer->signature,
                                                      tdlsLinkEstablishParams.qos);
+=======
+                    /* start TDLS client registration with TL */
+                    status = hdd_roamRegisterTDLSSTA(pAdapter, peer,
+                                                     pTdlsPeer->staId,
+                                                     pTdlsPeer->signature);
+>>>>>>> sultanxda/cm-13.0-sultan
                     if (VOS_STATUS_SUCCESS == status)
                     {
                         tANI_U8 i;

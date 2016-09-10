@@ -1011,10 +1011,17 @@ VosMCThread
         clear_bit(MC_SUSPEND_EVENT_MASK, &pSchedContext->mcEventFlag);
         spin_lock(&pSchedContext->McThreadLock);
 
+<<<<<<< HEAD
         INIT_COMPLETION(pSchedContext->ResumeMcEvent);
         /* Mc Thread Suspended */
         complete(&pHddCtx->mc_sus_event_var);
 
+=======
+        /* Mc Thread Suspended */
+        complete(&pHddCtx->mc_sus_event_var);
+
+        INIT_COMPLETION(pSchedContext->ResumeMcEvent);
+>>>>>>> sultanxda/cm-13.0-sultan
         spin_unlock(&pSchedContext->McThreadLock);
 
         /* Wait foe Resume Indication */
@@ -1778,8 +1785,13 @@ static int VosTlshimRxThread(void *arg)
                clear_bit(RX_SUSPEND_EVENT_MASK,
                          &pSchedContext->tlshimRxEvtFlg);
                spin_lock(&pSchedContext->TlshimRxThreadLock);
+<<<<<<< HEAD
                INIT_COMPLETION(pSchedContext->ResumeTlshimRxEvent);
                complete(&pSchedContext->SuspndTlshimRxEvent);
+=======
+               complete(&pSchedContext->SuspndTlshimRxEvent);
+               INIT_COMPLETION(pSchedContext->ResumeTlshimRxEvent);
+>>>>>>> sultanxda/cm-13.0-sultan
                spin_unlock(&pSchedContext->TlshimRxThreadLock);
                wait_for_completion_interruptible(
                               &pSchedContext->ResumeTlshimRxEvent);

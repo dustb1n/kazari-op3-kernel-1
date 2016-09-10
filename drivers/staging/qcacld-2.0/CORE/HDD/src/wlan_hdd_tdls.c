@@ -44,10 +44,19 @@
 #include <net/ieee80211_radiotap.h>
 #include "wlan_hdd_tdls.h"
 #include "wlan_hdd_cfg80211.h"
+<<<<<<< HEAD
 #include "wlan_hdd_assoc.h"
 #include "sme_Api.h"
 #include "vos_sched.h"
 
+=======
+#include "vos_sched.h"
+
+#ifdef CONFIG_TDLS_IMPLICIT
+static void wlan_hdd_tdls_pre_setup(struct work_struct *work);
+#endif
+
+>>>>>>> sultanxda/cm-13.0-sultan
 /**
  * wlan_hdd_tdls_determine_channel_opclass() - determine channel and opclass
  * @hddctx: pointer to hdd context
@@ -104,7 +113,11 @@ void wlan_hdd_tdls_disable_offchan_and_teardown_links(hdd_context_t *hddctx)
 {
 	u16 connected_tdls_peers = 0;
 	u8 staidx;
+<<<<<<< HEAD
 	hddTdlsPeer_t *curr_peer;
+=======
+	hddTdlsPeer_t *curr_peer = NULL;
+>>>>>>> sultanxda/cm-13.0-sultan
 	hdd_adapter_t *adapter = NULL;
 
 	if (eTDLS_SUPPORT_NOT_ENABLED == hddctx->tdls_mode) {
@@ -121,10 +134,15 @@ void wlan_hdd_tdls_disable_offchan_and_teardown_links(hdd_context_t *hddctx)
 
 	connected_tdls_peers = wlan_hdd_tdlsConnectedPeers(adapter);
 
+<<<<<<< HEAD
 	if (!connected_tdls_peers) {
 		hddLog(LOG1, FL("No TDLS connected peers to delete"));
 		return ;
 	}
+=======
+	if (!connected_tdls_peers)
+		return ;
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	/* TDLS is not supported in case of concurrency.
 	 * Disable TDLS Offchannel in FW to avoid more
@@ -143,10 +161,13 @@ void wlan_hdd_tdls_disable_offchan_and_teardown_links(hdd_context_t *hddctx)
 			TDLS_SEC_OFFCHAN_OFFSET_40PLUS);
 	hdd_set_tdls_offchannelmode(adapter, DISABLE_CHANSWITCH);
 
+<<<<<<< HEAD
 	/* Send Msg to PE for deleting all the TDLS peers */
 	sme_delete_all_tdls_peers(hddctx->hHal, adapter->sessionId);
 
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	for (staidx = 0; staidx < hddctx->max_num_tdls_sta;
 							staidx++) {
 		if (!hddctx->tdlsConnInfo[staidx].staId)
@@ -154,10 +175,15 @@ void wlan_hdd_tdls_disable_offchan_and_teardown_links(hdd_context_t *hddctx)
 
 		curr_peer = wlan_hdd_tdls_find_all_peer(hddctx,
 				hddctx->tdlsConnInfo[staidx].peerMac.bytes);
+<<<<<<< HEAD
+=======
+
+>>>>>>> sultanxda/cm-13.0-sultan
 		if (!curr_peer)
 			continue;
 
 		hddLog(LOG1, FL("indicate TDLS teardown (staId %d)"),
+<<<<<<< HEAD
 			curr_peer->staId);
 
 		/* Indicate teardown to supplicant */
@@ -182,6 +208,15 @@ void wlan_hdd_tdls_disable_offchan_and_teardown_links(hdd_context_t *hddctx)
 			sizeof(v_MACADDR_t));
 	}
 	wlan_hdd_tdls_check_bmps(adapter);
+=======
+				curr_peer->staId);
+
+		wlan_hdd_tdls_indicate_teardown(
+					curr_peer->pHddTdlsCtx->pAdapter,
+					curr_peer,
+					eSIR_MAC_TDLS_TEARDOWN_UNSPEC_REASON);
+	}
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /**
@@ -196,6 +231,44 @@ void hdd_tdls_notify_mode_change(hdd_adapter_t *adapter, hdd_context_t *hddctx)
 	wlan_hdd_tdls_disable_offchan_and_teardown_links(hddctx);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_TDLS_IMPLICIT
+void wlan_hdd_tdls_pre_setup_init_work(tdlsCtx_t * pHddTdlsCtx,
+                                       hddTdlsPeer_t *curr_candidate)
+{
+    if (!pHddTdlsCtx || !curr_candidate)
+    {
+        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                  "%s: either pHddTdlsCtx or curr_candidate is null",
+                  __func__);
+        return;
+    }
+
+    if (TDLS_CTX_MAGIC != pHddTdlsCtx->magic)
+    {
+        /* When TDLS discovery attempt for a peer reaches to max configured
+         * threshold then tdls support for that peer would be disabled and
+         * in that case, ignore discovery trigger from FW for that peer.
+         */
+        if (eTDLS_CAP_NOT_SUPPORTED == curr_candidate->tdls_support)
+        {
+            VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_WARN,
+                      "%s: tdls_support is marked disabled for peer: "
+                      MAC_ADDRESS_STR ", ignore pre_setup_init_work",
+                      __func__, MAC_ADDR_ARRAY(curr_candidate->peerMac));
+            return;
+        }
+
+        pHddTdlsCtx->curr_candidate = curr_candidate;
+        pHddTdlsCtx->magic = TDLS_CTX_MAGIC;
+
+        schedule_work(&pHddTdlsCtx->implicit_setup);
+    }
+}
+#endif
+
+>>>>>>> sultanxda/cm-13.0-sultan
 /* Caller has to take the lock before calling this function */
 static tANI_S32 wlan_hdd_tdls_peer_reset_discovery_processed(tdlsCtx_t *pHddTdlsCtx)
 {
@@ -330,8 +403,12 @@ static v_VOID_t wlan_hdd_tdls_discovery_timeout_peer_cb(v_PVOID_t userData)
     return;
 }
 
+<<<<<<< HEAD
 static void wlan_hdd_tdls_free_list(tdlsCtx_t *pHddTdlsCtx,
                                     bool del_forced_peer)
+=======
+static void wlan_hdd_tdls_free_list(tdlsCtx_t *pHddTdlsCtx)
+>>>>>>> sultanxda/cm-13.0-sultan
 {
     int i;
     struct list_head *head;
@@ -349,9 +426,12 @@ static void wlan_hdd_tdls_free_list(tdlsCtx_t *pHddTdlsCtx,
         head = &pHddTdlsCtx->peer_list[i];
         list_for_each_safe (pos, q, head) {
             tmp = list_entry(pos, hddTdlsPeer_t, node);
+<<<<<<< HEAD
             /* Don't delete TDLS forced peers during STA disconnection */
             if (!del_forced_peer && tmp->isForcedPeer)
                 continue;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             list_del(pos);
             vos_mem_free(tmp);
             tmp = NULL;
@@ -556,6 +636,19 @@ int wlan_hdd_tdls_init(hdd_adapter_t *pAdapter)
         pHddCtx->tdls_mode = eTDLS_SUPPORT_ENABLED;
     }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_TDLS_IMPLICIT
+#ifdef CONFIG_CNSS
+    cnss_init_work(&pHddTdlsCtx->implicit_setup, wlan_hdd_tdls_pre_setup);
+#else
+#ifdef WLAN_OPEN_SOURCE
+    INIT_WORK(&pHddTdlsCtx->implicit_setup, wlan_hdd_tdls_pre_setup);
+#endif
+#endif
+#endif
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef CONFIG_CNSS
     cnss_init_delayed_work(&pHddCtx->tdls_scan_ctxt.tdls_scan_work,
                    wlan_hdd_tdls_schedule_scan);
@@ -721,13 +814,21 @@ void wlan_hdd_tdls_exit(hdd_adapter_t *pAdapter)
        goto done;
     }
 
+<<<<<<< HEAD
+=======
+    vos_flush_work(&pHddTdlsCtx->implicit_setup);
+>>>>>>> sultanxda/cm-13.0-sultan
     vos_flush_delayed_work(&pHddCtx->tdls_scan_ctxt.tdls_scan_work);
 
 
     /* must stop timer here before freeing peer list, because peerIdleTimer is
     part of peer list structure. */
     wlan_hdd_tdls_timers_destroy(pHddTdlsCtx);
+<<<<<<< HEAD
     wlan_hdd_tdls_free_list(pHddTdlsCtx, true);
+=======
+    wlan_hdd_tdls_free_list(pHddTdlsCtx);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     mutex_unlock(&pHddCtx->tdls_lock);
 
@@ -1143,8 +1244,12 @@ int wlan_hdd_tdls_set_peer_caps(hdd_adapter_t *pAdapter,
                                 const u8 *mac,
                                 tCsrStaParams *StaParams,
                                 tANI_BOOLEAN isBufSta,
+<<<<<<< HEAD
                                 tANI_BOOLEAN isOffChannelSupported,
                                 bool is_qos_wmm_sta)
+=======
+                                tANI_BOOLEAN isOffChannelSupported)
+>>>>>>> sultanxda/cm-13.0-sultan
 {
     hddTdlsPeer_t *curr_peer;
 
@@ -1174,9 +1279,12 @@ int wlan_hdd_tdls_set_peer_caps(hdd_adapter_t *pAdapter,
 
     curr_peer->supported_oper_classes_len =
                StaParams->supported_oper_classes_len;
+<<<<<<< HEAD
 
     curr_peer->qos = is_qos_wmm_sta;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     return 0;
 }
 
@@ -1214,9 +1322,12 @@ int wlan_hdd_tdls_get_link_establish_params(hdd_adapter_t *pAdapter,
 
     tdlsLinkEstablishParams->supportedOperClassesLen =
                  curr_peer->supported_oper_classes_len;
+<<<<<<< HEAD
 
     tdlsLinkEstablishParams->qos = curr_peer->qos;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     return 0;
 }
 
@@ -2116,7 +2227,11 @@ void wlan_hdd_tdls_disconnection_callback(hdd_adapter_t *pAdapter)
     wlan_hdd_tdls_check_power_save_prohibited(pHddTdlsCtx->pAdapter);
 
     wlan_hdd_tdls_monitor_timers_stop(pHddTdlsCtx);
+<<<<<<< HEAD
     wlan_hdd_tdls_free_list(pHddTdlsCtx, false);
+=======
+    wlan_hdd_tdls_free_list(pHddTdlsCtx);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     pHddTdlsCtx->curr_candidate = NULL;
 
@@ -2338,19 +2453,40 @@ hddTdlsPeer_t *wlan_hdd_tdls_is_progress(hdd_context_t *pHddCtx,
     return NULL;
 }
 
+<<<<<<< HEAD
 void wlan_hdd_tdls_implicit_send_discovery_request(tdlsCtx_t * pHddTdlsCtx)
 {
     hdd_context_t *pHddCtx;
     hddTdlsPeer_t *curr_peer;
     hddTdlsPeer_t *temp_peer;
+=======
+static void __wlan_hdd_tdls_pre_setup(struct work_struct *work)
+{
+    tdlsCtx_t *pHddTdlsCtx =
+       container_of(work, tdlsCtx_t, implicit_setup);
+    hdd_context_t *pHddCtx;
+    hddTdlsPeer_t *curr_peer;
+    hddTdlsPeer_t *temp_peer;
+    int status;
+>>>>>>> sultanxda/cm-13.0-sultan
     tSirMacAddr peer_mac;
 
     ENTER();
 
     if (NULL == pHddTdlsCtx)
+<<<<<<< HEAD
     {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                  FL("pHddTdlsCtx is NULL"));
+=======
+       return;
+
+    if (unlikely(TDLS_CTX_MAGIC != pHddTdlsCtx->magic))
+    {
+       VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                 "%s: tdls magic number mis-match %u",
+                 __func__, pHddTdlsCtx->magic);
+>>>>>>> sultanxda/cm-13.0-sultan
        return;
     }
 
@@ -2443,6 +2579,7 @@ void wlan_hdd_tdls_implicit_send_discovery_request(tdlsCtx_t * pHddTdlsCtx)
                                        eTDLS_LINK_DISCOVERING,
                                        eTDLS_LINK_SUCCESS);
 
+<<<<<<< HEAD
     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
               "%s: Implicit TDLS, Send Discovery request event", __func__);
 
@@ -2454,6 +2591,39 @@ void wlan_hdd_tdls_implicit_send_discovery_request(tdlsCtx_t * pHddTdlsCtx)
 
     mutex_lock(&pHddCtx->tdls_lock);
 
+=======
+    status = wlan_hdd_cfg80211_send_tdls_discover_req(pHddTdlsCtx->pAdapter->wdev.wiphy,
+                                            pHddTdlsCtx->pAdapter->dev,
+                                            peer_mac);
+
+    mutex_lock(&pHddCtx->tdls_lock);
+
+    if (NULL == pHddTdlsCtx->curr_candidate)
+    {
+        VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                   "%s: current candidate Not valid any more", __func__);
+        goto done;
+    }
+
+    curr_peer = pHddTdlsCtx->curr_candidate;
+
+    if (0 != status)
+    {
+        VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                   "%s: " MAC_ADDRESS_STR " discovery could not sent",
+                   __func__, MAC_ADDR_ARRAY(curr_peer->peerMac));
+        if (eTDLS_CAP_UNKNOWN != curr_peer->tdls_support)
+        {
+            mutex_unlock(&pHddCtx->tdls_lock);
+            wlan_hdd_tdls_set_peer_link_status(curr_peer,
+                                               eTDLS_LINK_IDLE,
+                                               eTDLS_LINK_UNSPECIFIED);
+            mutex_lock(&pHddCtx->tdls_lock);
+        }
+        goto done;
+    }
+
+>>>>>>> sultanxda/cm-13.0-sultan
     pHddTdlsCtx->discovery_sent_cnt++;
 
     curr_peer->discovery_attempt++;
@@ -2477,6 +2647,16 @@ done:
     return;
 }
 
+<<<<<<< HEAD
+=======
+static void wlan_hdd_tdls_pre_setup(struct work_struct *work)
+{
+    vos_ssr_protect(__func__);
+    __wlan_hdd_tdls_pre_setup(work);
+    vos_ssr_unprotect(__func__);
+}
+
+>>>>>>> sultanxda/cm-13.0-sultan
 int wlan_hdd_tdls_copy_scan_context(hdd_context_t *pHddCtx,
                             struct wiphy *wiphy,
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(3,6,0)) && !defined(WITH_BACKPORTS)

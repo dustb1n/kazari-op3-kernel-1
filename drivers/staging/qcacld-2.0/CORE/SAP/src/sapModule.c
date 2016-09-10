@@ -3970,6 +3970,7 @@ wlansap_get_phymode(v_PVOID_t pctx)
 	}
 	return psapctx->csrRoamProfile.phyMode;
 }
+<<<<<<< HEAD
 
 /**
  * wlansap_set_tx_leakage_threshold() - set sap tx leakage threshold.
@@ -3998,3 +3999,5 @@ VOS_STATUS wlansap_set_tx_leakage_threshold(tHalHandle hal,
 			mac->sap.SapDfsInfo.tx_leakage_threshold);
 	return VOS_STATUS_SUCCESS;
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan

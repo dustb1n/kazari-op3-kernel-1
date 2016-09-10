@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -499,7 +503,13 @@ typedef enum
     eCSR_ROAM_FT_RESPONSE,
 #endif
     eCSR_ROAM_FT_START,
+<<<<<<< HEAD
     eCSR_ROAM_REMAIN_CHAN_READY,
+=======
+    eCSR_ROAM_INDICATE_MGMT_FRAME,
+    eCSR_ROAM_REMAIN_CHAN_READY,
+    eCSR_ROAM_SEND_ACTION_CNF,
+>>>>>>> sultanxda/cm-13.0-sultan
     //this mean error happens before association_start or roaming_start is called.
     eCSR_ROAM_SESSION_OPENED,
     eCSR_ROAM_FT_REASSOC_FAILED,
@@ -523,8 +533,11 @@ typedef enum
     eCSR_ROAM_UNPROT_MGMT_FRAME_IND,
 #endif
 
+<<<<<<< HEAD
     eCSR_ROAM_IBSS_PEER_INFO_COMPLETE,
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #if defined(FEATURE_WLAN_ESE) && defined(FEATURE_WLAN_ESE_UPLOAD)
     eCSR_ROAM_TSM_IE_IND,
     eCSR_ROAM_CCKM_PREAUTH_NOTIFY,
@@ -631,9 +644,12 @@ typedef enum
     eCSR_ROAM_RESULT_TDLS_SHOULD_PEER_DISCONNECTED,
 #endif
 
+<<<<<<< HEAD
     eCSR_ROAM_RESULT_IBSS_PEER_INFO_SUCCESS,
     eCSR_ROAM_RESULT_IBSS_PEER_INFO_FAILED,
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     eCSR_ROAM_RESULT_DFS_RADAR_FOUND_IND,
     eCSR_ROAM_RESULT_CHANNEL_CHANGE_SUCCESS,
     eCSR_ROAM_RESULT_CHANNEL_CHANGE_FAILURE,
@@ -1566,7 +1582,10 @@ typedef struct tagCsrLinkEstablishParams
     tSirMacAddr peerMac;
     tANI_U8 uapsdQueues;
     tANI_U8 maxSp;
+<<<<<<< HEAD
     uint8_t qos;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     tANI_U8 isBufSta;
     tANI_U8 isOffChannelSupported;
     tANI_U8 isResponder;

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -46,9 +50,12 @@
    In Rome case, IBSS uses the 2nd peer as bss peer */
 #define IBSS_BROADCAST_STAID 1
 
+<<<<<<< HEAD
 /* Timeout in ms for peer info request completion */
 #define IBSS_PEER_INFO_REQ_TIMOEUT 1000
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 typedef enum
 {
    /** Not associated in Infra or participating in an IBSS / Ad-hoc network.*/
@@ -153,11 +160,17 @@ int hdd_SetGENIEToCsr( hdd_adapter_t *pAdapter, eCsrAuthType *RSNAuthType );
 int hdd_set_csr_auth_type( hdd_adapter_t *pAdapter, eCsrAuthType RSNAuthType );
 VOS_STATUS hdd_roamRegisterTDLSSTA(hdd_adapter_t *pAdapter,
                                    const tANI_U8 *peerMac, tANI_U16 staId,
+<<<<<<< HEAD
                                    tANI_U8 ucastSig, uint8_t qos);
 void hdd_PerformRoamSetKeyComplete(hdd_adapter_t *pAdapter);
 
 VOS_STATUS hdd_roamDeregisterTDLSSTA(hdd_adapter_t *adapter, uint8_t staId);
 
+=======
+                                   tANI_U8 ucastSig);
+void hdd_PerformRoamSetKeyComplete(hdd_adapter_t *pAdapter);
+
+>>>>>>> sultanxda/cm-13.0-sultan
 void hdd_SendPeerStatusIndToOemApp(v_MACADDR_t *peerMac,
                                    tANI_U8 peerStatus,
                                    tANI_U8 peerTimingMeasCap,

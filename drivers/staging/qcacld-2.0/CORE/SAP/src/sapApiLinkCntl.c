@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -685,6 +689,18 @@ WLANSAP_RoamCallback
                         FL("CSR roamStatus = %s (%d)"),
                         "eCSR_ROAM_WPS_PBC_PROBE_REQ_IND", roamStatus);
             break;
+<<<<<<< HEAD
+=======
+
+        case eCSR_ROAM_INDICATE_MGMT_FRAME:
+            VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
+                        FL("CSR roamStatus = %s (%d)"),
+                        "eCSR_ROAM_INDICATE_MGMT_FRAME", roamStatus);
+            sapSignalHDDevent(sapContext, pCsrRoamInfo,
+                              eSAP_INDICATE_MGMT_FRAME,
+                              (v_PVOID_t) eSAP_STATUS_SUCCESS);
+            break;
+>>>>>>> sultanxda/cm-13.0-sultan
         case eCSR_ROAM_REMAIN_CHAN_READY:
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
                         FL("CSR roamStatus = %s (%d)"),
@@ -693,6 +709,18 @@ WLANSAP_RoamCallback
                               eSAP_REMAIN_CHAN_READY,
                               (v_PVOID_t) eSAP_STATUS_SUCCESS);
             break;
+<<<<<<< HEAD
+=======
+        case eCSR_ROAM_SEND_ACTION_CNF:
+            VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
+                        FL("CSR roamStatus = %s (%d)"),
+                        "eCSR_ROAM_SEND_ACTION_CNF", roamStatus);
+            sapSignalHDDevent(sapContext, pCsrRoamInfo,
+                            eSAP_SEND_ACTION_CNF,
+                            (v_PVOID_t)((eSapStatus)((roamResult == eCSR_ROAM_RESULT_NONE)
+                            ? eSAP_STATUS_SUCCESS : eSAP_STATUS_FAILURE)));
+            break;
+>>>>>>> sultanxda/cm-13.0-sultan
 
        case eCSR_ROAM_DISCONNECT_ALL_P2P_CLIENTS:
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
@@ -1065,7 +1093,10 @@ WLANSAP_RoamCallback
                      */
                     vos_timer_stop(&pMac->sap.SapDfsInfo.sap_dfs_cac_timer);
                     vos_timer_destroy(&pMac->sap.SapDfsInfo.sap_dfs_cac_timer);
+<<<<<<< HEAD
                     pMac->sap.SapDfsInfo.is_dfs_cac_timer_running = false;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
                     /*
                      * User space is already indicated the CAC start and if
@@ -1083,6 +1114,11 @@ WLANSAP_RoamCallback
                              */
                     }
 
+<<<<<<< HEAD
+=======
+                    pMac->sap.SapDfsInfo.is_dfs_cac_timer_running = 0;
+
+>>>>>>> sultanxda/cm-13.0-sultan
                     sapEvent.event = eSAP_DFS_CHANNEL_CAC_RADAR_FOUND;
                     sapEvent.params = 0;
                     sapEvent.u1 = 0;
@@ -1372,6 +1408,7 @@ WLANSAP_RoamCallback
              * channel due to the presence of radar but our channel change
              * failed, stop the BSS operation completely and inform hostapd
              */
+<<<<<<< HEAD
             sapEvent.event = eWNI_SME_CHANNEL_CHANGE_RSP;
             sapEvent.params = 0;
             sapEvent.u1 = eCSR_ROAM_INFRA_IND;
@@ -1382,6 +1419,11 @@ WLANSAP_RoamCallback
                 halStatus = eHAL_STATUS_FAILURE;
             }
             break;
+=======
+            sapContext->sapsMachine = eSAP_DISCONNECTED;
+
+            /* Inform cfg80211 and hostapd that BSS is not alive anymore */
+>>>>>>> sultanxda/cm-13.0-sultan
         }
         case eCSR_ROAM_EXT_CHG_CHNL_UPDATE_IND:
         {

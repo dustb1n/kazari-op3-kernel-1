@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -969,7 +973,11 @@ static void hdd_issue_stored_joinreq(hdd_adapter_t *sta_adapter,
                               hdd_context_t *hdd_ctx)
 {
     tHalHandle hal_handle;
+<<<<<<< HEAD
     uint32_t roam_id = 0;
+=======
+    uint32_t roam_id;
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (NULL == sta_adapter) {
         hddLog(VOS_TRACE_LEVEL_ERROR,
@@ -1902,9 +1910,28 @@ VOS_STATUS hdd_hostapd_SAPEventCB( tpSap_Event pSapEvent, v_PVOID_t usrDataForCa
             vos_mem_free(pSapEvent->sapevt.sapAssocStaListEvent.pAssocStas);// Release caller allocated memory here
             pSapEvent->sapevt.sapAssocStaListEvent.pAssocStas = NULL;
             return VOS_STATUS_SUCCESS;
+<<<<<<< HEAD
         case eSAP_REMAIN_CHAN_READY:
            hdd_remainChanReadyHandler( pHostapdAdapter );
            return VOS_STATUS_SUCCESS;
+=======
+        case eSAP_INDICATE_MGMT_FRAME:
+           hdd_indicateMgmtFrame( pHostapdAdapter,
+                                 pSapEvent->sapevt.sapManagementFrameInfo.nFrameLength,
+                                 pSapEvent->sapevt.sapManagementFrameInfo.pbFrames,
+                                 pSapEvent->sapevt.sapManagementFrameInfo.frameType,
+                                 pSapEvent->sapevt.sapManagementFrameInfo.rxChan, 0);
+           return VOS_STATUS_SUCCESS;
+        case eSAP_REMAIN_CHAN_READY:
+           hdd_remainChanReadyHandler( pHostapdAdapter );
+           return VOS_STATUS_SUCCESS;
+        case eSAP_SEND_ACTION_CNF:
+           hdd_sendActionCnf( pHostapdAdapter,
+                              ( eSAP_STATUS_SUCCESS ==
+                                pSapEvent->sapevt.sapActionCnf.actionSendSuccess ) ?
+                                TRUE : FALSE );
+           return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
         case eSAP_UNKNOWN_STA_JOIN:
             snprintf(unknownSTAEvent, IW_CUSTOM_MAX, "JOIN_UNKNOWN_STA-%02x:%02x:%02x:%02x:%02x:%02x",
                 pSapEvent->sapevt.sapUnknownSTAJoin.macaddr.bytes[0],
@@ -2693,12 +2720,15 @@ static __iw_softap_setparam(struct net_device *dev,
        return -EINVAL;
     }
 
+<<<<<<< HEAD
     if (VOS_STATUS_SUCCESS != sme_is_session_valid(hHal,
                                pHostapdAdapter->sessionId)) {
        hddLog(LOGE, FL("session id is not valid %d"),
                    pHostapdAdapter->sessionId);
        return -EINVAL;
     }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     pVosContext = pHddCtx->pvosContext;
     if (!pVosContext) {
        hddLog(LOGE, FL("Vos ctx is null"));
@@ -3459,12 +3489,15 @@ static __iw_softap_getparam(struct net_device *dev,
     if (0 != ret)
         return ret;
 
+<<<<<<< HEAD
     if (VOS_STATUS_SUCCESS != sme_is_session_valid(hHal,
                                pHostapdAdapter->sessionId)) {
        hddLog(LOGE, FL("session id is not valid %d"),
                    pHostapdAdapter->sessionId);
        return -EINVAL;
     }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     switch (sub_cmd)
     {
     case QCSAP_PARAM_MAX_ASSOC:
@@ -4142,7 +4175,11 @@ static __iw_softap_ap_stats(struct net_device *dev,
         hddLog(LOG1, "unable to allocate memory");
         return -ENOMEM;
     }
+<<<<<<< HEAD
     len = snprintf(pstatbuf, wrqu->data.length,
+=======
+    len = scnprintf(pstatbuf, wrqu->data.length,
+>>>>>>> sultanxda/cm-13.0-sultan
                     "RUF=%d RMF=%d RBF=%d "
                     "RUB=%d RMB=%d RBB=%d "
                     "TUF=%d TMF=%d TBF=%d "
@@ -4154,6 +4191,7 @@ static __iw_softap_ap_stats(struct net_device *dev,
                     (int)statBuffer.txBCFcnt, (int)statBuffer.txUCBcnt,
                     (int)statBuffer.txMCBcnt, (int)statBuffer.txBCBcnt);
 
+<<<<<<< HEAD
     if (len >= wrqu->data.length) {
         hddLog(LOG1, "%s: Insufficient buffer:%d, %d",
             __func__, wrqu->data.length, len);
@@ -4161,11 +4199,20 @@ static __iw_softap_ap_stats(struct net_device *dev,
         return -E2BIG;
     }
     if (copy_to_user((void *)wrqu->data.pointer, (void *)pstatbuf, len)) {
+=======
+    if (len > wrqu->data.length ||
+        copy_to_user((void *)wrqu->data.pointer, (void *)pstatbuf, len))
+    {
+>>>>>>> sultanxda/cm-13.0-sultan
         hddLog(LOG1, "%s: failed to copy data to user buffer", __func__);
         kfree(pstatbuf);
         return -EFAULT;
     }
+<<<<<<< HEAD
     wrqu->data.length = len;
+=======
+    wrqu->data.length -= len;
+>>>>>>> sultanxda/cm-13.0-sultan
     kfree(pstatbuf);
     EXIT();
     return 0;
@@ -4211,8 +4258,14 @@ static __iw_get_char_setnone(struct net_device *dev,
     {
         case QCSAP_GET_STATS:
         {
+<<<<<<< HEAD
             return hdd_wlan_get_stats(pAdapter, &(wrqu->data.length),
                                extra, WE_MAX_STR_LEN);
+=======
+            hdd_wlan_get_stats(pAdapter, &(wrqu->data.length),
+                               extra, WE_MAX_STR_LEN);
+            break;
+>>>>>>> sultanxda/cm-13.0-sultan
         }
     }
     return 0;
@@ -4269,7 +4322,11 @@ static int iw_softap_set_force_acs_ch_range(struct net_device *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __iw_get_channel_list(struct net_device *dev,
+=======
+static int __iw_softap_get_channel_list(struct net_device *dev,
+>>>>>>> sultanxda/cm-13.0-sultan
                           struct iw_request_info *info,
                           union iwreq_data *wrqu, char *extra)
 {
@@ -4283,7 +4340,10 @@ static int __iw_get_channel_list(struct net_device *dev,
     eCsrBand curBand = eCSR_BAND_ALL;
     hdd_context_t *hdd_ctx;
     int ret;
+<<<<<<< HEAD
     int is_dfs_mode_enabled = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     ENTER();
 
@@ -4310,6 +4370,7 @@ static int __iw_get_channel_list(struct net_device *dev,
         bandStartChannel = RF_CHAN_36;
         bandEndChannel = RF_CHAN_184;
     }
+<<<<<<< HEAD
     if (curBand != eCSR_BAND_24) {
         if (hdd_ctx->cfg_ini->dot11p_mode) {
             bandEndChannel = RF_CHAN_184;
@@ -4328,35 +4389,64 @@ static int __iw_get_channel_list(struct net_device *dev,
     hddLog(LOG1, FL("curBand = %d, bandStartChannel = %hu, "
                 "bandEndChannel = %hu is_dfs_mode_enabled  = %d "), curBand,
                 bandStartChannel, bandEndChannel, is_dfs_mode_enabled);
+=======
+
+    hddLog(LOG1, FL("curBand = %d, bandStartChannel = %hu, "
+                "bandEndChannel = %hu "), curBand,
+                bandStartChannel, bandEndChannel );
+>>>>>>> sultanxda/cm-13.0-sultan
 
     for( i = bandStartChannel; i <= bandEndChannel; i++ )
     {
         if ((NV_CHANNEL_ENABLE == regChannels[i].enabled) ||
+<<<<<<< HEAD
             (is_dfs_mode_enabled &&
               NV_CHANNEL_DFS == regChannels[i].enabled))
 
+=======
+            (NV_CHANNEL_DFS == regChannels[i].enabled))
+>>>>>>> sultanxda/cm-13.0-sultan
         {
             channel_list->channels[num_channels] = rfChannels[i].channelNum;
             num_channels++;
         }
     }
 
+<<<<<<< HEAD
     hddLog(LOG1,FL(" number of channels %d"), num_channels);
 
+=======
+
+    hddLog(LOG1,FL(" number of channels %d"), num_channels);
+
+    if (num_channels > IW_MAX_FREQUENCIES)
+    {
+        num_channels = IW_MAX_FREQUENCIES;
+    }
+
+>>>>>>> sultanxda/cm-13.0-sultan
     channel_list->num_channels = num_channels;
     EXIT();
 
     return 0;
 }
 
+<<<<<<< HEAD
 int iw_get_channel_list(struct net_device *dev,
+=======
+int iw_softap_get_channel_list(struct net_device *dev,
+>>>>>>> sultanxda/cm-13.0-sultan
                                struct iw_request_info *info,
                                union iwreq_data *wrqu, char *extra)
 {
 	int ret;
 
 	vos_ssr_protect(__func__);
+<<<<<<< HEAD
 	ret = __iw_get_channel_list(dev, info, wrqu, extra);
+=======
+	ret = __iw_softap_get_channel_list(dev, info, wrqu, extra);
+>>>>>>> sultanxda/cm-13.0-sultan
 	vos_ssr_unprotect(__func__);
 
 	return ret;
@@ -5653,7 +5743,11 @@ static int iw_softap_version(struct net_device *dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int
+=======
+static VOS_STATUS
+>>>>>>> sultanxda/cm-13.0-sultan
 hdd_softap_get_sta_info(hdd_adapter_t *pAdapter, v_U8_t *pBuf, int buf_len)
 {
     v_U8_t i;
@@ -5676,11 +5770,15 @@ hdd_softap_get_sta_info(hdd_adapter_t *pAdapter, v_U8_t *pBuf, int buf_len)
     if (0 != ret)
         return ret;
 
+<<<<<<< HEAD
     len = snprintf(pBuf, buf_len, sta_info_header);
     if (len >= buf_len) {
         hddLog(LOGE, FL("Insufficient buffer:%d, %d"), buf_len, len);
         return -E2BIG;
     }
+=======
+    len = scnprintf(pBuf, buf_len, sta_info_header);
+>>>>>>> sultanxda/cm-13.0-sultan
     pBuf += len;
     buf_len -= len;
 
@@ -5698,10 +5796,13 @@ hdd_softap_get_sta_info(hdd_adapter_t *pAdapter, v_U8_t *pBuf, int buf_len)
                                        pAdapter->aStaInfo[i].macAddrSTA.bytes[3],
                                        pAdapter->aStaInfo[i].macAddrSTA.bytes[4],
                                        pAdapter->aStaInfo[i].macAddrSTA.bytes[5]);
+<<<<<<< HEAD
             if (len >= buf_len) {
                 hddLog(LOGE, FL("Insufficient buffer:%d, %d"), buf_len, len);
                 return -E2BIG;
             }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             pBuf += len;
             buf_len -= len;
         }
@@ -5711,7 +5812,11 @@ hdd_softap_get_sta_info(hdd_adapter_t *pAdapter, v_U8_t *pBuf, int buf_len)
         }
     }
     EXIT();
+<<<<<<< HEAD
     return 0;
+=======
+    return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 static int __iw_softap_get_sta_info(struct net_device *dev,
@@ -5720,6 +5825,10 @@ static int __iw_softap_get_sta_info(struct net_device *dev,
                                     char *extra)
 {
     hdd_adapter_t *pHostapdAdapter = (netdev_priv(dev));
+<<<<<<< HEAD
+=======
+    VOS_STATUS status;
+>>>>>>> sultanxda/cm-13.0-sultan
     hdd_context_t *hdd_ctx;
     int ret;
 
@@ -5730,10 +5839,17 @@ static int __iw_softap_get_sta_info(struct net_device *dev,
     if (0 != ret)
         return ret;
 
+<<<<<<< HEAD
     ret = hdd_softap_get_sta_info(pHostapdAdapter, extra, WE_SAP_MAX_STA_INFO);
     if (ret) {
        hddLog(VOS_TRACE_LEVEL_ERROR, "%s Failed!!!",__func__);
        return ret;
+=======
+    status = hdd_softap_get_sta_info(pHostapdAdapter, extra, WE_SAP_MAX_STA_INFO);
+    if ( !VOS_IS_STATUS_SUCCESS( status ) ) {
+       hddLog(VOS_TRACE_LEVEL_ERROR, "%s Failed!!!",__func__);
+       return -EINVAL;
+>>>>>>> sultanxda/cm-13.0-sultan
     }
     wrqu->data.length = strlen(extra);
     EXIT();
@@ -5955,7 +6071,11 @@ __iw_get_softap_linkspeed(struct net_device *dev, struct iw_request_info *info,
           kfree(pmacAddress);
           return -EFAULT;
       }
+<<<<<<< HEAD
       pmacAddress[MAC_ADDRESS_STR_LEN -1] = '\0';
+=======
+      pmacAddress[MAC_ADDRESS_STR_LEN] = '\0';
+>>>>>>> sultanxda/cm-13.0-sultan
 
       status = hdd_string_to_hex (pmacAddress, MAC_ADDRESS_STR_LEN, macAddress );
       kfree(pmacAddress);
@@ -6799,7 +6919,11 @@ static const iw_handler hostapd_private[] = {
    [QCSAP_IOCTL_SET_CHANNEL_RANGE - SIOCIWFIRSTPRIV] =
                                              iw_softap_set_force_acs_ch_range,
    [QCSAP_IOCTL_MODIFY_ACL - SIOCIWFIRSTPRIV]   = iw_softap_modify_acl,
+<<<<<<< HEAD
    [QCSAP_IOCTL_GET_CHANNEL_LIST - SIOCIWFIRSTPRIV]   = iw_get_channel_list,
+=======
+   [QCSAP_IOCTL_GET_CHANNEL_LIST - SIOCIWFIRSTPRIV]   = iw_softap_get_channel_list,
+>>>>>>> sultanxda/cm-13.0-sultan
    [QCSAP_IOCTL_GET_STA_INFO - SIOCIWFIRSTPRIV] = iw_softap_get_sta_info,
    [QCSAP_IOCTL_PRIV_GET_SOFTAP_LINK_SPEED - SIOCIWFIRSTPRIV]     = iw_get_softap_linkspeed,
    [QCSAP_IOCTL_PRIV_GET_RSSI - SIOCIWFIRSTPRIV] = iw_get_peer_rssi,

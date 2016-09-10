@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -79,7 +83,10 @@ limValidateIEInformationInProbeRspFrame (tpAniSirGlobal pMac,
    if ( status == eSIR_SUCCESS )
    {
        WDA_GET_RX_MPDU_LEN(pRxPacketInfo) += nMissingRsnBytes;
+<<<<<<< HEAD
        WDA_GET_RX_PAYLOAD_LEN(pRxPacketInfo) += nMissingRsnBytes;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    }
 
    return status;
@@ -236,7 +243,10 @@ limProcessProbeRspFrame(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo,tpPESession 
             {
                 vos_mem_free(psessionEntry->beacon);
                 psessionEntry->beacon = NULL;
+<<<<<<< HEAD
                 psessionEntry->bcnLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             }
             psessionEntry->bcnLen = WDA_GET_RX_PAYLOAD_LEN(pRxPacketInfo);
 

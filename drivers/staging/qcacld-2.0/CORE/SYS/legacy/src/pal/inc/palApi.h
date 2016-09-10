@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2013 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2013, 2016 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -450,7 +454,11 @@ extern void palGetUnicastStats(tHddHandle hHdd, tANI_U32 *tx, tANI_U32 *rx);
 
     \return tick count.
 ----------------------------------------------------------------------------------*/
+<<<<<<< HEAD
 tANI_U32 palGetTickCount(tHddHandle hHdd);
+=======
+tANI_TIMESTAMP palGetTickCount(tHddHandle hHdd);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /** ---------------------------------------------------------------------------
 

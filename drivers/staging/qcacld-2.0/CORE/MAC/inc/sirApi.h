@@ -707,7 +707,11 @@ typedef struct sSirBssDescription
     //used only in scan case.
     tANI_U8              channelIdSelf;
     tANI_U8              sSirBssDescriptionRsvd[3];
+<<<<<<< HEAD
     tANI_TIMESTAMP nReceivedTime;     //base on a tick count. It is a time stamp, not a relative time.
+=======
+    v_TIME_t nReceivedTime;     //base on a tick count. It is a time stamp, not a relative time.
+>>>>>>> sultanxda/cm-13.0-sultan
 #if defined WLAN_FEATURE_VOWIFI
     tANI_U32       parentTSF;
     tANI_U32       startTSF[2];
@@ -967,11 +971,18 @@ typedef struct sSirSmeScanChanReq
 
 typedef struct sSirOemDataReq
 {
+<<<<<<< HEAD
     tANI_U16              messageType; /* eWNI_SME_OEM_DATA_REQ */
     tANI_U16              messageLen;
     tSirMacAddr           selfMacAddr;
     uint8_t               data_len;
     uint8_t               *data;
+=======
+    tANI_U16              messageType; //eWNI_SME_OEM_DATA_REQ
+    tANI_U16              messageLen;
+    tSirMacAddr           selfMacAddr;
+    tANI_U8               oemDataReq[OEM_DATA_REQ_SIZE];
+>>>>>>> sultanxda/cm-13.0-sultan
 } tSirOemDataReq, *tpSirOemDataReq;
 
 typedef struct sSirOemDataRsp
@@ -2282,6 +2293,7 @@ typedef struct sAniDHCPStopInd
 
 } tAniDHCPInd, *tpAniDHCPInd;
 
+<<<<<<< HEAD
 typedef struct sAniTXFailMonitorInd
 {
     tANI_U16                msgType; // message type is same as the request type
@@ -2290,6 +2302,8 @@ typedef struct sAniTXFailMonitorInd
     void                    *txFailIndCallback;
 } tAniTXFailMonitorInd, *tpAniTXFailMonitorInd;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 typedef struct sAniSummaryStatsInfo
 {
     tANI_U32 retry_cnt[4];         //Total number of packets(per AC) that were successfully transmitted with retries
@@ -3496,7 +3510,12 @@ typedef struct sSirSmeCoexInd
 
 typedef struct sSirSmeMgmtFrameInd
 {
+<<<<<<< HEAD
     uint16_t        frame_len;
+=======
+    tANI_U16        mesgType;
+    tANI_U16        mesgLen;
+>>>>>>> sultanxda/cm-13.0-sultan
     tANI_U32        rxChan;
     tANI_U8        sessionId;
     tANI_U8         frameType;
@@ -3504,6 +3523,7 @@ typedef struct sSirSmeMgmtFrameInd
     tANI_U8  frameBuf[1]; //variable
 }tSirSmeMgmtFrameInd, *tpSirSmeMgmtFrameInd;
 
+<<<<<<< HEAD
 
 typedef void (*sir_mgmt_frame_ind_callback)(tSirSmeMgmtFrameInd *frame_ind);
 /**
@@ -3534,6 +3554,8 @@ struct sir_sme_p2p_ack_ind_cb_req {
 	sir_p2p_ack_ind_callback callback;
 };
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef WLAN_FEATURE_11W
 typedef struct sSirSmeUnprotMgmtFrameInd
 {
@@ -3719,6 +3741,66 @@ typedef struct sSirSetRSSIFilterReq
   tANI_U8     rssiThreshold;
 } tSirSetRSSIFilterReq, *tpSirSetRSSIFilterReq;
 
+<<<<<<< HEAD
+=======
+/*
+ * ALLOWED_ACTION_FRAMES_BITMAP
+ *
+ * Bitmask is based on the below. The frames with 0's
+ * set to their corresponding bit can be dropped in FW.
+ *
+ * -----------------------------+-----+-------+
+ *         Type                 | Bit | Allow |
+ * -----------------------------+-----+-------+
+ * SIR_MAC_ACTION_SPECTRUM_MGMT    0      1
+ * SIR_MAC_ACTION_QOS_MGMT         1      1
+ * SIR_MAC_ACTION_DLP              2      0
+ * SIR_MAC_ACTION_BLKACK           3      0
+ * SIR_MAC_ACTION_PUBLIC_USAGE     4      1
+ * SIR_MAC_ACTION_RRM              5      1
+ * SIR_MAC_ACTION_FAST_BSS_TRNST   6      0
+ * SIR_MAC_ACTION_HT               7      0
+ * SIR_MAC_ACTION_SA_QUERY         8      1
+ * SIR_MAC_ACTION_PROT_DUAL_PUB    9      0
+ * SIR_MAC_ACTION_WNM             10      1
+ * SIR_MAC_ACTION_UNPROT_WNM      11      0
+ * SIR_MAC_ACTION_TDLS            12      0
+ * SIR_MAC_ACITON_MESH            13      0
+ * SIR_MAC_ACTION_MHF             14      0
+ * SIR_MAC_SELF_PROTECTED         15      0
+ * SIR_MAC_ACTION_WME             17      1
+ * SIR_MAC_ACTION_FST             18      0
+ * SIR_MAC_ACTION_VHT             21      1
+ * ----------------------------+------+-------+
+ */
+#define ALLOWED_ACTION_FRAMES_BITMAP0 \
+		((1 << SIR_MAC_ACTION_SPECTRUM_MGMT) | \
+		 (1 << SIR_MAC_ACTION_QOS_MGMT) | \
+		 (1 << SIR_MAC_ACTION_PUBLIC_USAGE) | \
+		 (1 << SIR_MAC_ACTION_RRM) | \
+		 (1 << SIR_MAC_ACTION_SA_QUERY) | \
+		 (1 << SIR_MAC_ACTION_WNM) | \
+		 (1 << SIR_MAC_ACTION_WME) | \
+		 (1 << SIR_MAC_ACTION_VHT))
+
+#define ALLOWED_ACTION_FRAMES_BITMAP1	0x0
+#define ALLOWED_ACTION_FRAMES_BITMAP2	0x0
+#define ALLOWED_ACTION_FRAMES_BITMAP3	0x0
+#define ALLOWED_ACTION_FRAMES_BITMAP4	0x0
+#define ALLOWED_ACTION_FRAMES_BITMAP5	0x0
+#define ALLOWED_ACTION_FRAMES_BITMAP6	0x0
+#define ALLOWED_ACTION_FRAMES_BITMAP7	0x0
+/**
+ * struct sir_allowed_action_frames - Parameters to set Allowed action frames
+ * @operation: 0 reset to fw default, 1 set the  bits,
+ *             2 add the setting bits, 3 delete the setting bits
+ * @bitmask: Bits to convey the allowed action frames
+ */
+struct sir_allowed_action_frames {
+	uint32_t operation;
+	uint32_t action_category_map[SIR_MAC_ACTION_MAX / 32];
+};
+>>>>>>> sultanxda/cm-13.0-sultan
 
 // Update Scan Params
 typedef struct {
@@ -3816,8 +3898,11 @@ struct roam_ext_params {
 
 typedef struct sSirRoamOffloadScanReq
 {
+<<<<<<< HEAD
   uint16_t    message_type;
   uint16_t    length;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
   eAniBoolean RoamScanOffloadEnabled;
   eAniBoolean MAWCEnabled;
   tANI_S8     LookupThreshold;
@@ -3889,6 +3974,17 @@ typedef struct sSirRoamOffloadScanRsp
   tANI_U32 reason;
 } tSirRoamOffloadScanRsp, *tpSirRoamOffloadScanRsp;
 
+<<<<<<< HEAD
+=======
+struct sir_sme_roam_restart_req
+{
+	tANI_U16 message_type;
+	tANI_U16 length;
+	tANI_U8  sme_session_id;
+	tANI_U8  command;
+	tANI_U8  reason;
+};
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif //WLAN_FEATURE_ROAM_SCAN_OFFLOAD
 
 #define SIR_NOCHANGE_POWER_VALUE  0xFFFFFFFF
@@ -4391,6 +4487,7 @@ typedef struct sSirScanOffloadReq {
       -----------------------------*/
 } tSirScanOffloadReq, *tpSirScanOffloadReq;
 
+<<<<<<< HEAD
 typedef enum sSirScanEventType {
     SCAN_EVENT_STARTED=0x1,          /* Scan command accepted by FW */
     SCAN_EVENT_COMPLETED=0x2,        /* Scan has been completed by FW */
@@ -4405,6 +4502,34 @@ typedef enum sSirScanEventType {
 
 typedef struct sSirScanOffloadEvent{
     tSirScanEventType event;
+=======
+/**
+ * lim_scan_event_type - scan event types used in LIM
+ * @LIM_SCAN_EVENT_STARTED - scan command accepted by FW
+ * @LIM_SCAN_EVENT_COMPLETED - scan has been completed by FW
+ * @LIM_SCAN_EVENT_BSS_CHANNEL - FW is going to move to HOME channel
+ * @LIM_SCAN_EVENT_FOREIGN_CHANNEL - FW is going to move to FORIEGN channel
+ * @LIM_SCAN_EVENT_DEQUEUED - scan request got dequeued
+ * @LIM_SCAN_EVENT_PREEMPTED - preempted by other high priority scan
+ * @LIM_SCAN_EVENT_START_FAILED - scan start failed
+ * @LIM_SCAN_EVENT_RESTARTED - scan restarted
+ * @LIM_SCAN_EVENT_MAX - max value for event type
+*/
+enum lim_scan_event_type {
+    LIM_SCAN_EVENT_STARTED=0x1,
+    LIM_SCAN_EVENT_COMPLETED=0x2,
+    LIM_SCAN_EVENT_BSS_CHANNEL=0x4,
+    LIM_SCAN_EVENT_FOREIGN_CHANNEL = 0x8,
+    LIM_SCAN_EVENT_DEQUEUED=0x10,
+    LIM_SCAN_EVENT_PREEMPTED=0x20,
+    LIM_SCAN_EVENT_START_FAILED=0x40,
+    LIM_SCAN_EVENT_RESTARTED=0x80,
+    LIM_SCAN_EVENT_MAX=0x8000
+};
+
+typedef struct sSirScanOffloadEvent{
+    enum lim_scan_event_type event;
+>>>>>>> sultanxda/cm-13.0-sultan
     tSirResultCodes reasonCode;
     tANI_U32 chanFreq;
     tANI_U32 requestor;
@@ -4603,6 +4728,7 @@ typedef struct sSirDelPeriodicTxPtrn
    tANI_U8  ucPtrnId;           // Pattern ID
 } tSirDelPeriodicTxPtrn, *tpSirDelPeriodicTxPtrn;
 
+<<<<<<< HEAD
 /*---------------------------------------------------------------------------
 * tSirIbssGetPeerInfoReqParams
 *--------------------------------------------------------------------------*/
@@ -4645,6 +4771,8 @@ typedef struct
    tANI_U16   mesgLen;
    tSirPeerInfoRspParams ibssPeerInfoRspParams;
 } tSirIbssGetPeerInfoRspParams, *tpSirIbssGetPeerInfoRspParams;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 typedef struct
 {
@@ -4790,7 +4918,10 @@ typedef struct sSirModifyIE
    tANI_U8          ieIDLen;   /*ie length as per spec*/
    tANI_U16         ieBufferlength;
    tANI_U8         *pIEBuffer;
+<<<<<<< HEAD
    int32_t          oui_length;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 }tSirModifyIE,    *tpSirModifyIE;
 
@@ -6573,6 +6704,7 @@ struct udp_resp_offload {
 };
 
 /**
+<<<<<<< HEAD
  * struct beacon_filter_param - parameters for beacon filtering
  * @vdev_id: vdev id
  * @ie_map: bitwise map of IEs that needs to be filtered
@@ -6584,6 +6716,8 @@ struct beacon_filter_param {
 };
 
 /**
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
  * struct smps_force_mode_event - smps force mode event param
  * @message_type: Type of message
  * @length: length
@@ -6597,6 +6731,7 @@ struct sir_smps_force_mode_event {
 	uint8_t    vdev_id;
 	uint8_t    status;
 };
+<<<<<<< HEAD
 
 
 /**
@@ -6611,4 +6746,6 @@ struct sir_del_all_tdls_peers {
 	tSirMacAddr bssid;
 };
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif /* __SIR_API_H */

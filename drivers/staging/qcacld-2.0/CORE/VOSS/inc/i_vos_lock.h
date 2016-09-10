@@ -79,7 +79,10 @@ typedef struct wlan_wake_lock {
 #else
 	int lock;
 #endif
+<<<<<<< HEAD
 	bool is_initialized;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 } vos_wake_lock_t;
 
 typedef void *runtime_pm_context_t;

@@ -46,10 +46,12 @@ module_param(record_size, ulong, 0400);
 MODULE_PARM_DESC(record_size,
 		"size of each dump done on oops/panic");
 
-static ulong ramoops_console_size = 256*1024UL;
-phys_addr_t ram_console_address_start;
-ssize_t ram_console_address_size;
-struct boot_shared_imem_cookie_type *boot_shared_imem_cookie_ptr;
+#ifdef CONFIG_MACH_MSM8996_15801
+static ulong ramoops_console_size = 256 * 1024UL;
+static struct boot_shared_imem_cookie_type *bsic_ptr;
+#else
+static ulong ramoops_console_size = MIN_MEM_SIZE;
+#endif
 
 module_param_named(console_size, ramoops_console_size, ulong, 0400);
 MODULE_PARM_DESC(console_size, "size of kernel console log");
@@ -546,16 +548,15 @@ static int ramoops_probe(struct platform_device *pdev)
 	if (err)
 		goto fail_init_cprz;
 
-	ram_console_address_start = cxt->cprz->paddr;
-	ram_console_address_size  = cxt->console_size;
-	boot_shared_imem_cookie_ptr = ioremap(SHARED_IMEM_BOOT_BASE, sizeof(struct boot_shared_imem_cookie_type));
-	if(!boot_shared_imem_cookie_ptr)
-		pr_err("unable to map imem DLOAD mode offset for OEM usages\n");
-	else
-	{
-		__raw_writel(ram_console_address_start, &(boot_shared_imem_cookie_ptr->kernel_log_addr));
-                __raw_writel(ram_console_address_size, &(boot_shared_imem_cookie_ptr->kernel_log_size));
+#ifdef CONFIG_MACH_MSM8996_15801
+	bsic_ptr = ioremap(SHARED_IMEM_BOOT_BASE, sizeof(*bsic_ptr));
+	if (bsic_ptr) {
+		__raw_writel(cxt->cprz->paddr, &bsic_ptr->kernel_log_addr);
+		__raw_writel(cxt->console_size, &bsic_ptr->kernel_log_size);
+	} else {
+		pr_err("Unable to map imem DLOAD mode offset for pstore ram\n");
 	}
+#endif
 
 	err = ramoops_init_prz(dev, cxt, &cxt->fprz, &paddr, cxt->ftrace_size,
 			       LINUX_VERSION_CODE);

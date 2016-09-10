@@ -1377,8 +1377,12 @@ wmi_config_debug_module_cmd(wmi_unified_t  wmi_handle, A_UINT32 param, A_UINT32 
         }
     }
 
+<<<<<<< HEAD
     AR_DEBUG_PRINTF(ATH_DEBUG_INFO, ("wmi_dbg_cfg_send: param 0x%x val 0x%x \n",
                                      param, val));
+=======
+    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("wmi_dbg_cfg_send: param 0x%x val 0x%x \n ", param, val));
+>>>>>>> sultanxda/cm-13.0-sultan
 
     status = wmi_unified_cmd_send(wmi_handle, buf,
                 len, WMI_DBGLOG_CFG_CMDID);
@@ -1410,12 +1414,15 @@ int dbglog_report_enable(wmi_unified_t  wmi_handle, bool isenable)
 {
     int bitmap[2] = {0};
 
+<<<<<<< HEAD
     if (isenable > TRUE) {
         AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("dbglog_report_enable:Invalid value %d\n",
         isenable));
         return -EINVAL;
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     if(isenable){
 	/* set the vap enable bitmap */
         dbglog_set_vap_enable_bitmap(wmi_handle, 0xFFFF);

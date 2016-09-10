@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2014, 2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2014 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -531,7 +535,10 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
 #endif
    }
 
+<<<<<<< HEAD
    smsLog(pMac, LOG1, FL("RRM Measurement Done %d"), measurementDone);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    if (NULL == pResult)
    {
       /*
@@ -591,8 +598,11 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
    while (pScanResult)
    {
       pNextResult = sme_ScanResultGetNext(pMac, pResult);
+<<<<<<< HEAD
       smsLog(pMac, LOG1, "Scan res timer:%lu, rrm scan timer:%lu",
              pScanResult->timer, RRM_scan_timer);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
       if(pScanResult->timer >= RRM_scan_timer)
       {
           pScanResultsArr[counter++] = pScanResult;
@@ -600,6 +610,7 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
       pScanResult = pNextResult; //sme_ScanResultGetNext(hHal, pResult);
       if (counter >= SIR_BCN_REPORT_MAX_BSS_DESC)
          break;
+<<<<<<< HEAD
    }
 
    smsLog(pMac, LOG1, " Number of BSS Desc with RRM Scan %d ", counter);
@@ -624,6 +635,29 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
             status = sme_RrmSendBeaconReportXmitInd(pMac,
                                     pScanResultsArr,
                                     measurementDone, counter);
+=======
+      }
+
+   if (counter)
+   {
+          smsLog(pMac, LOG1, " Number of BSS Desc with RRM Scan %d ", counter);
+#if defined(FEATURE_WLAN_ESE_UPLOAD)
+         if (eRRM_MSG_SOURCE_ESE_UPLOAD == pSmeRrmContext->msgSource)
+         {
+             status = sme_EseSendBeaconReqScanResults(pMac,
+                                                sessionId,
+                                                chanList[0],
+                                                pScanResultsArr,
+                                                measurementDone,
+                                                counter);
+         }
+         else
+#endif /*FEATURE_WLAN_ESE_UPLOAD*/
+             status = sme_RrmSendBeaconReportXmitInd( pMac,
+                                                pScanResultsArr,
+                                                measurementDone,
+                                                counter);
+>>>>>>> sultanxda/cm-13.0-sultan
    }
    sme_ScanResultPurge(pMac, pResult);
 
@@ -1184,7 +1218,11 @@ void rrmStoreNeighborRptByRoamScore(tpAniSirGlobal pMac, tpRrmNeighborReportDesc
   \sa
 
   --------------------------------------------------------------------------*/
+<<<<<<< HEAD
 eHalStatus sme_RrmProcessNeighborReport(tpAniSirGlobal pMac, void *pMsgBuf)
+=======
+eHalStatus __attribute__((optimize("O0"))) sme_RrmProcessNeighborReport(tpAniSirGlobal pMac, void *pMsgBuf)
+>>>>>>> sultanxda/cm-13.0-sultan
 {
    eHalStatus status = eHAL_STATUS_SUCCESS;
    tpSirNeighborReportInd pNeighborRpt = (tpSirNeighborReportInd) pMsgBuf;

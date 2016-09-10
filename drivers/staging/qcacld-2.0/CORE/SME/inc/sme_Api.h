@@ -1754,6 +1754,7 @@ eHalStatus sme_GenericChangeCountryCode( tHalHandle hHal,
 
 /* ---------------------------------------------------------------------------
 
+<<<<<<< HEAD
     \fn sme_TXFailMonitorStartStopInd
 
     \brief Indicate FW about TX Fail Monitor Indication`
@@ -1776,6 +1777,8 @@ eHalStatus sme_TXFailMonitorStartStopInd(tHalHandle hHal,
 
 /* ---------------------------------------------------------------------------
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     \fn sme_DHCPStartInd
 
     \brief Indicate FW about DHCP start event.
@@ -3600,6 +3603,7 @@ eHalStatus sme_DelPeriodicTxPtrn(tHalHandle hHal, tSirDelPeriodicTxPtrn
 void sme_enable_disable_split_scan (tHalHandle hHal, tANI_U8 nNumStaChan,
                                     tANI_U8 nNumP2PChan);
 
+<<<<<<< HEAD
 /**
  * sme_enable_rmc() - enable RMC
  * @hHal: handle
@@ -3627,6 +3631,8 @@ eHalStatus sme_disable_rmc(tHalHandle hHal, tANI_U32 sessionId);
     -------------------------------------------------------------------------*/
 eHalStatus sme_SendRmcActionPeriod(tHalHandle hHal, tANI_U32 sessionId);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /* ---------------------------------------------------------------------------
     \fn sme_SendRateUpdateInd
     \brief  API to Update rate
@@ -3636,6 +3642,7 @@ eHalStatus sme_SendRmcActionPeriod(tHalHandle hHal, tANI_U32 sessionId);
   ---------------------------------------------------------------------------*/
 eHalStatus sme_SendRateUpdateInd(tHalHandle hHal, tSirRateUpdateInd *rateUpdateParams);
 
+<<<<<<< HEAD
 /* ---------------------------------------------------------------------------
     \fn sme_GetIBSSPeerInfo
     \brief  Used to disable RMC
@@ -3658,6 +3665,8 @@ eHalStatus sme_RequestIBSSPeerInfo(tHalHandle hHal, void *pUserData,
     -------------------------------------------------------------------------*/
 eHalStatus sme_SendCesiumEnableInd(tHalHandle hHal, tANI_U32 sessionId);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /*
  * sme API to trigger fast BSS roam to a given BSSID independent of RSSI
  * triggers
@@ -4087,9 +4096,12 @@ eHalStatus sme_ExtScanRegisterCallback (tHalHandle hHal,
 
 #endif /* FEATURE_WLAN_EXTSCAN */
 
+<<<<<<< HEAD
 VOS_STATUS sme_set_beacon_filter(uint32_t vdev_id, uint32_t *ie_map);
 VOS_STATUS sme_unset_beacon_filter(uint32_t vdev_id);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef WLAN_FEATURE_ROAM_SCAN_OFFLOAD
 /* ---------------------------------------------------------------------------
     \fn sme_abortRoamScan
@@ -4409,8 +4421,11 @@ sme_set_tsf_gpio(tHalHandle hHal, uint32_t pinvalue)
 #endif
 
 bool smeNeighborMiddleOfRoaming(tHalHandle hHal, tANI_U8 sessionId);
+<<<<<<< HEAD
 eHalStatus sme_register_mgmt_frame_ind_callback(tHalHandle hal,
       sir_mgmt_frame_ind_callback callback);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 eHalStatus sme_update_nss(tHalHandle h_hal, uint8_t nss);
 void sme_enable_phy_error_logs(tHalHandle hal, bool enable_log);
@@ -4479,6 +4494,7 @@ eHalStatus sme_update_mimo_power_save(tHalHandle hHal,
 
 bool sme_is_sta_smps_allowed(tHalHandle hHal, uint8_t session_id);
 
+<<<<<<< HEAD
 void sme_update_fine_time_measurement_capab(tHalHandle hal, uint32_t val);
 
 eHalStatus sme_delete_all_tdls_peers(tHalHandle hal, uint8_t session_id);
@@ -4486,4 +4502,6 @@ eHalStatus sme_delete_all_tdls_peers(tHalHandle hal, uint8_t session_id);
 VOS_STATUS sme_is_session_valid(tHalHandle hal_handle, uint8_t session_id);
 eHalStatus sme_register_p2p_ack_ind_callback(tHalHandle hal,
 					sir_p2p_ack_ind_callback callback);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif //#if !defined( __SME_API_H )

@@ -656,10 +656,17 @@ limCleanupRxPath(tpAniSirGlobal pMac, tpDphHashNode pStaDs,tpPESession psessionE
              */
             if (LIM_IS_AP_ROLE(psessionEntry) ||
                 LIM_IS_BT_AMP_AP_ROLE(psessionEntry)) {
+<<<<<<< HEAD
                 limDelSta(pMac, pStaDs, false, psessionEntry);
                 limReleasePeerIdx(pMac, pStaDs->assocId, psessionEntry);
             }
             limDeleteDphHashEntry(pMac, pStaDs->staAddr, pStaDs->assocId,psessionEntry);
+=======
+                limReleasePeerIdx(pMac, pStaDs->assocId, psessionEntry);
+            }
+            limDeleteDphHashEntry(pMac, pStaDs->staAddr, pStaDs->assocId,psessionEntry);
+
+>>>>>>> sultanxda/cm-13.0-sultan
             return retCode;
         }
     }
@@ -1660,8 +1667,12 @@ tSirRetStatus limPopulateVhtMcsSet(tpAniSirGlobal pMac,
                         pMac->roam.configParam.enable2x2, nss,
                         pRates->vhtRxMCSMap, pRates->vhtTxMCSMap);
 
+<<<<<<< HEAD
             /* Check if VHT caps present to determine session NSS */
             if ((psessionEntry) && (pPeerVHTCaps->present)) {
+=======
+            if (psessionEntry) {
+>>>>>>> sultanxda/cm-13.0-sultan
                     psessionEntry->supported_nss_1x1 =
                         ((pRates->vhtTxMCSMap & VHT_MCS_1x1) ==
                          VHT_MCS_1x1) ? true : false;
@@ -2014,8 +2025,13 @@ limPopulatePeerRateSet(tpAniSirGlobal pMac,
 
         psessionEntry->supported_nss_1x1 =
             ((pRates->supportedMCSSet[1] != 0) ? false : true);
+<<<<<<< HEAD
         limLog(pMac, LOG1, FL("HT supported nss 1x1 : %d "),
                       psessionEntry->supported_nss_1x1);
+=======
+        PELOG1(limLog(pMac, LOG1, FL("HT supported nss 1x1 : %d "),
+                      psessionEntry->supported_nss_1x1);)
+>>>>>>> sultanxda/cm-13.0-sultan
 
     }
 #ifdef WLAN_FEATURE_11AC
@@ -4256,10 +4272,18 @@ tSirRetStatus limStaSendAddBssPreAssoc( tpAniSirGlobal pMac, tANI_U8 updateEntry
                             limGetIElenFromBssDescription( bssDescription ),
                             pBeaconStruct );
 
+<<<<<<< HEAD
     if(pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE)
         limDecideStaProtectionOnAssoc(pMac, pBeaconStruct, psessionEntry);
         vos_mem_copy(pAddBssParams->bssId, bssDescription->bssId,
                      sizeof(tSirMacAddr));
+=======
+    if (pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE) {
+        limDecideStaProtectionOnAssoc(pMac, pBeaconStruct, psessionEntry);
+        vos_mem_copy(pAddBssParams->bssId, bssDescription->bssId,
+                     sizeof(tSirMacAddr));
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     // Fill in tAddBssParams selfMacAddr
     vos_mem_copy(pAddBssParams->selfMacAddr,

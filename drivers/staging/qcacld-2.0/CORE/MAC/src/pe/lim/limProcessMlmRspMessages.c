@@ -2038,7 +2038,10 @@ void limProcessStaMlmAddStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESess
             mlmAssocCnf.resultCode =
                 (tSirResultCodes) eSIR_SME_JOIN_DEAUTH_FROM_AP_DURING_ADD_STA;
             psessionEntry->staId = pAddStaParams->staIdx;
+<<<<<<< HEAD
             mlmAssocCnf.protStatusCode = eSIR_MAC_UNSPEC_FAILURE_STATUS;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             goto end;
 	}
     }
@@ -2127,7 +2130,10 @@ void limProcessStaMlmAddStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESess
           mlmAssocCnf.resultCode = (tSirResultCodes)eSIR_SME_FT_REASSOC_FAILURE;
         else
           mlmAssocCnf.resultCode = (tSirResultCodes)eSIR_SME_REFUSED;
+<<<<<<< HEAD
         mlmAssocCnf.protStatusCode = eSIR_MAC_UNSPEC_FAILURE_STATUS;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 end:
     if( 0 != limMsgQ->bodyptr )
@@ -3281,7 +3287,10 @@ limProcessStaMlmAddBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPESession ps
     } else {
         limLog(pMac, LOGP, FL("SessionId:%d ADD_BSS failed!"),
                psessionEntry->peSessionId);
+<<<<<<< HEAD
         mlmAssocCnf.protStatusCode = eSIR_MAC_UNSPEC_FAILURE_STATUS;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         /* Return Assoc confirm to SME with failure */
         // Return Assoc confirm to SME with failure
         if(eLIM_MLM_WT_ADD_BSS_RSP_FT_REASSOC_STATE == psessionEntry->limMlmState)
@@ -4723,6 +4732,7 @@ limHandleDelBssInReAssocContext(tpAniSirGlobal pMac, tpDphHashNode pStaDs,tpPESe
                   (tANI_U8 *) psessionEntry->pLimReAssocReq->bssDescription.ieFields,
                   limGetIElenFromBssDescription( &psessionEntry->pLimReAssocReq->bssDescription ),
                     pBeaconStruct );
+<<<<<<< HEAD
             if(pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE)
                 limDecideStaProtectionOnAssoc(pMac, pBeaconStruct, psessionEntry);
                 if(pBeaconStruct->erpPresent) {
@@ -4730,6 +4740,16 @@ limHandleDelBssInReAssocContext(tpAniSirGlobal pMac, tpDphHashNode pStaDs,tpPESe
                     psessionEntry->beaconParams.fShortPreamble = 0;
                 else
                     psessionEntry->beaconParams.fShortPreamble = 1;
+=======
+            if (pMac->lim.gLimProtectionControl != WNI_CFG_FORCE_POLICY_PROTECTION_DISABLE) {
+                limDecideStaProtectionOnAssoc(pMac, pBeaconStruct, psessionEntry);
+                if (pBeaconStruct->erpPresent) {
+                    if (pBeaconStruct->erpIEInfo.barkerPreambleMode)
+                        psessionEntry->beaconParams.fShortPreamble = 0;
+                    else
+                        psessionEntry->beaconParams.fShortPreamble = 1;
+                }
+>>>>>>> sultanxda/cm-13.0-sultan
             }
             //updateBss flag is false, as in this case, PE is first deleting the existing BSS and then adding a new one.
             if (eSIR_SUCCESS != limStaSendAddBss( pMac, assocRsp, pBeaconStruct,
@@ -5051,10 +5071,17 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
 
     switch (pScanEvent->event)
     {
+<<<<<<< HEAD
         case SCAN_EVENT_STARTED:
             break;
         case SCAN_EVENT_START_FAILED:
         case SCAN_EVENT_COMPLETED:
+=======
+        case LIM_SCAN_EVENT_STARTED:
+            break;
+        case LIM_SCAN_EVENT_START_FAILED:
+        case LIM_SCAN_EVENT_COMPLETED:
+>>>>>>> sultanxda/cm-13.0-sultan
             pMac->lim.fOffloadScanPending = 0;
             pMac->lim.fOffloadScanP2PSearch = 0;
             pMac->lim.fOffloadScanP2PListen = 0;
@@ -5070,7 +5097,13 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
                  * pending then indicate confirmation with status failure
                  */
                 if (pMac->lim.mgmtFrameSessionId != 0xff) {
+<<<<<<< HEAD
                     limP2PActionCnf(pMac, false);
+=======
+                    limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF,
+                                        eSIR_SME_SEND_ACTION_FAIL,
+                                        pMac->lim.mgmtFrameSessionId, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
                     pMac->lim.mgmtFrameSessionId = 0xff;
                 }
 
@@ -5080,7 +5113,11 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
                 limSendScanOffloadComplete(pMac, pScanEvent);
             }
             break;
+<<<<<<< HEAD
         case SCAN_EVENT_FOREIGN_CHANNEL:
+=======
+        case LIM_SCAN_EVENT_FOREIGN_CHANNEL:
+>>>>>>> sultanxda/cm-13.0-sultan
             if (P2P_SCAN_TYPE_LISTEN == pScanEvent->p2pScanType)
             {
                 /*Send Ready on channel indication to SME */
@@ -5101,9 +5138,15 @@ void limProcessRxScanEvent(tpAniSirGlobal pMac, void *buf)
                 limAddScanChannelInfo(pMac, vos_freq_to_chan(pScanEvent->chanFreq));
             }
             break;
+<<<<<<< HEAD
         case SCAN_EVENT_BSS_CHANNEL:
         case SCAN_EVENT_DEQUEUED:
         case SCAN_EVENT_PREEMPTED:
+=======
+        case LIM_SCAN_EVENT_BSS_CHANNEL:
+        case LIM_SCAN_EVENT_DEQUEUED:
+        case LIM_SCAN_EVENT_PREEMPTED:
+>>>>>>> sultanxda/cm-13.0-sultan
         default:
             VOS_TRACE(VOS_MODULE_ID_PE, VOS_TRACE_LEVEL_DEBUG,
                     "Received unhandled scan event %u", pScanEvent->event);

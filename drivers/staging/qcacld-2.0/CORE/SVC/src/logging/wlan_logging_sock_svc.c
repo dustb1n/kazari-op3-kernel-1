@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2014-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2014-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -42,7 +46,11 @@
 #include <kthread.h>
 #include <adf_os_time.h>
 #include "pktlog_ac.h"
+<<<<<<< HEAD
 #include <linux/rtc.h>
+=======
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #define LOGGING_TRACE(level, args...) \
 		VOS_TRACE(VOS_MODULE_ID_HDD, level, ## args)
 
@@ -271,12 +279,19 @@ int wlan_log_to_user(VOS_TRACE_LEVEL log_level, char *to_be_sent, int length)
 	unsigned int *pfilled_length;
 	bool wake_up_thread = false;
 	unsigned long flags;
+<<<<<<< HEAD
 	struct timeval tv;
 	struct rtc_time tm;
 	unsigned long local_time;
 
 	if ((!vos_is_multicast_logging()) ||
               (!gwlan_logging.is_active)) {
+=======
+	uint64_t ts;
+	uint32_t rem;
+
+	if (!vos_is_multicast_logging()) {
+>>>>>>> sultanxda/cm-13.0-sultan
 		/*
 		 * This is to make sure that we print the logs to kmsg console
 		 * when no logger app is running. This is also needed to
@@ -288,6 +303,7 @@ int wlan_log_to_user(VOS_TRACE_LEVEL log_level, char *to_be_sent, int length)
 		pr_info("%s\n", to_be_sent);
 	} else {
 
+<<<<<<< HEAD
 		/* Format the Log time [hr:min:sec.microsec] */
 		do_gettimeofday(&tv);
 		/* Convert rtc to local time */
@@ -297,6 +313,14 @@ int wlan_log_to_user(VOS_TRACE_LEVEL log_level, char *to_be_sent, int length)
 				"[%s][%02d:%02d:%02d.%06lu] ",
 				current->comm, tm.tm_hour, tm.tm_min, tm.tm_sec,
 				tv.tv_usec);
+=======
+		/* Format the Log time [Seconds.microseconds] */
+		ts = adf_get_boottime();
+		rem = do_div(ts, VOS_TIMER_TO_SEC_UNIT);
+		tlen = snprintf(tbuf, sizeof(tbuf), "[%s][%lu.%06lu] ",
+				current->comm,
+				(unsigned long) ts, (unsigned long)rem);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 		/* 1+1 indicate '\n'+'\0' */
 		total_log_len = length + tlen + 1 + 1;

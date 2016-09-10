@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -80,6 +84,10 @@ extern tSirRetStatus limSetLinkState(
                          tpSetLinkStateCallback callback, void *callbackArg);
 
 static tSirRetStatus limCreateSessionForRemainOnChn(tpAniSirGlobal pMac, tPESession **ppP2pSession);
+<<<<<<< HEAD
+=======
+eHalStatus limP2PActionCnf(tpAniSirGlobal pMac, tANI_U32 txCompleteSuccess);
+>>>>>>> sultanxda/cm-13.0-sultan
 /*------------------------------------------------------------------
  *
  * Below function is callback function, it is called when
@@ -602,7 +610,11 @@ void limRemainOnChnRsp(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data)
      * indicaiton confirmation with status failure */
     if (pMac->lim.mgmtFrameSessionId != 0xff)
     {
+<<<<<<< HEAD
        limP2PActionCnf(pMac, false);
+=======
+       limP2PActionCnf(pMac, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     return;
@@ -620,6 +632,10 @@ void limSendSmeMgmtFrameInd(
                     tANI_U32 rxChannel, tpPESession psessionEntry,
                     tANI_S8 rxRssi)
 {
+<<<<<<< HEAD
+=======
+    tSirMsgQ              mmhMsg;
+>>>>>>> sultanxda/cm-13.0-sultan
     tpSirSmeMgmtFrameInd pSirSmeMgmtFrame = NULL;
     tANI_U16              length;
 
@@ -634,7 +650,12 @@ void limSendSmeMgmtFrameInd(
     }
     vos_mem_set((void*)pSirSmeMgmtFrame, length, 0);
 
+<<<<<<< HEAD
     pSirSmeMgmtFrame->frame_len = frameLen;
+=======
+    pSirSmeMgmtFrame->mesgType = eWNI_SME_MGMT_FRM_IND;
+    pSirSmeMgmtFrame->mesgLen = length;
+>>>>>>> sultanxda/cm-13.0-sultan
     pSirSmeMgmtFrame->sessionId = sessionId;
     pSirSmeMgmtFrame->frameType = frameType;
     pSirSmeMgmtFrame->rxRssi = rxRssi;
@@ -707,6 +728,7 @@ send_frame:
     vos_mem_zero(pSirSmeMgmtFrame->frameBuf,frameLen);
     vos_mem_copy(pSirSmeMgmtFrame->frameBuf,frame,frameLen);
 
+<<<<<<< HEAD
     if (pMac->mgmt_frame_ind_cb)
        pMac->mgmt_frame_ind_cb(pSirSmeMgmtFrame);
     else
@@ -749,6 +771,30 @@ eHalStatus limP2PActionCnf(tpAniSirGlobal pMac, tANI_U32 txCompleteSuccess)
     }
 
     return status;
+=======
+    mmhMsg.type = eWNI_SME_MGMT_FRM_IND;
+    mmhMsg.bodyptr = pSirSmeMgmtFrame;
+    mmhMsg.bodyval = 0;
+
+    limSysProcessMmhMsgApi(pMac, &mmhMsg, ePROT);
+    return;
+} /*** end limSendSmeListenRsp() ***/
+
+
+eHalStatus limP2PActionCnf(tpAniSirGlobal pMac, tANI_U32 txCompleteSuccess)
+{
+    if (pMac->lim.mgmtFrameSessionId != 0xff)
+    {
+        /* The session entry might be invalid(0xff) action confirmation received after
+         * remain on channel timer expired */
+        limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF,
+                (txCompleteSuccess ? eSIR_SME_SUCCESS : eSIR_SME_SEND_ACTION_FAIL),
+                pMac->lim.mgmtFrameSessionId, 0);
+        pMac->lim.mgmtFrameSessionId = 0xff;
+    }
+
+    return eHAL_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 
@@ -786,7 +832,12 @@ void limSendP2PActionFrame(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
         {
             limLog(pMac, LOGE,
                     FL("Remain on channel is not running"));
+<<<<<<< HEAD
             limP2PActionCnf(pMac, false);
+=======
+            limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF,
+                    eHAL_STATUS_FAILURE, pMbMsg->sessionId, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
             return;
         }
         smeSessionId = pMbMsg->sessionId;
@@ -823,7 +874,12 @@ void limSendP2PActionFrame(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
         }
         if( !isSessionActive )
         {
+<<<<<<< HEAD
             limP2PActionCnf(pMac, false);
+=======
+            limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF,
+                          eHAL_STATUS_FAILURE, pMbMsg->sessionId, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
             return;
         }
     }
@@ -981,7 +1037,12 @@ send_action_frame:
             {
                 limLog(pMac, LOGE,
                             FL("Failed to Send Action frame"));
+<<<<<<< HEAD
                 limP2PActionCnf(pMac, false);
+=======
+                limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF,
+                        eHAL_STATUS_FAILURE, pMbMsg->sessionId, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
                 return;
             }
         }
@@ -1062,8 +1123,13 @@ send_frame1:
 
         if (!pMbMsg->noack)
         {
+<<<<<<< HEAD
             limP2PActionCnf(pMac, (HAL_STATUS_SUCCESS(halstatus)) ?
                                                        true : false);
+=======
+           limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF,
+               halstatus, pMbMsg->sessionId, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
         }
         pMac->lim.mgmtFrameSessionId = 0xff;
     }
@@ -1078,7 +1144,12 @@ send_frame1:
         if ( ! HAL_STATUS_SUCCESS ( halstatus ) )
         {
              limLog( pMac, LOGE, FL("could not send action frame!" ));
+<<<<<<< HEAD
              limP2PActionCnf(pMac, false);
+=======
+             limSendSmeRsp(pMac, eWNI_SME_ACTION_FRAME_SEND_CNF, halstatus,
+                pMbMsg->sessionId, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
              pMac->lim.mgmtFrameSessionId = 0xff;
         }
         else

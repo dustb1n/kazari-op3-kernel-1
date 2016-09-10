@@ -727,6 +727,7 @@ eHalStatus limProcessTdlsAddStaRsp(tpAniSirGlobal pMac, void *msg, tpPESession);
 tSirRetStatus limSendTdlsTeardownFrame(tpAniSirGlobal pMac,
            tSirMacAddr peerMac, tANI_U16 reason, tANI_U8 responder, tpPESession psessionEntry,
            tANI_U8 *addIe, tANI_U16 addIeLen);
+<<<<<<< HEAD
 tSirRetStatus lim_process_sme_del_all_tdls_peers(tpAniSirGlobal p_mac,
 			uint32_t *msg_buf);
 #else
@@ -736,6 +737,8 @@ lim_process_sme_del_all_tdls_peers(tpAniSirGlobal p_mac,
 {
 	return eSIR_SUCCESS;
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 
 // Algorithms & Link Monitoring related functions

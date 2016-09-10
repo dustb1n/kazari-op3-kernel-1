@@ -148,6 +148,10 @@
 #define SIR_MAC_ACTION_WME            17
 #define SIR_MAC_ACTION_FST            18
 #define SIR_MAC_ACTION_VHT            21
+<<<<<<< HEAD
+=======
+#define SIR_MAC_ACTION_MAX            256
+>>>>>>> sultanxda/cm-13.0-sultan
 
 // QoS management action codes
 

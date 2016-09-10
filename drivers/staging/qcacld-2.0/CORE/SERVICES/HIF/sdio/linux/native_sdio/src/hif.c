@@ -293,7 +293,11 @@ __HIFReadWrite(HIF_DEVICE *device,
 {
     A_UINT8 opcode;
     A_STATUS    status = A_OK;
+<<<<<<< HEAD
     int ret = 0;
+=======
+    int     ret;
+>>>>>>> sultanxda/cm-13.0-sultan
     A_UINT8 *tbuffer;
     A_BOOL   bounced = FALSE;
 

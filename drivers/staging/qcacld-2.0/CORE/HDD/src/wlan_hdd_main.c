@@ -207,6 +207,7 @@ DEFINE_SPINLOCK(hdd_context_lock);
 #define SIZE_OF_SETROAMMODE             11    /* size of SETROAMMODE */
 #define SIZE_OF_GETROAMMODE             11    /* size of GETROAMMODE */
 
+<<<<<<< HEAD
 /*
  * Ibss prop IE from command will be of size:
  * size  = sizeof(oui) + sizeof(oui_data) + 1(Element ID) + 1(EID Length)
@@ -215,6 +216,8 @@ DEFINE_SPINLOCK(hdd_context_lock);
 #define WLAN_HDD_IBSS_MIN_OUI_DATA_LENGTH (3)
 
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #if defined(FEATURE_WLAN_ESE) && defined(FEATURE_WLAN_ESE_UPLOAD)
 #define TID_MIN_VALUE 0
 #define TID_MAX_VALUE 15
@@ -237,8 +240,11 @@ DEFINE_SPINLOCK(hdd_context_lock);
  */
 #define NUM_OF_STA_DATA_TO_PRINT 16
 
+<<<<<<< HEAD
 #define WLAN_NLINK_CESIUM 30
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /*
  * Android DRIVER command structures
  */
@@ -292,6 +298,7 @@ static const struct wiphy_wowlan_support wowlan_support_reg_init = {
 static int hdd_driver_init(void);
 static void hdd_driver_exit(void);
 
+<<<<<<< HEAD
 /* Internal function declarations */
 
 static void hdd_tx_fail_ind_callback(v_U8_t *MacAddr, v_U8_t seqNo);
@@ -303,6 +310,8 @@ static int hdd_ParseIBSSTXFailEventParams(tANI_U8 *pValue,
                                           tANI_U8 *tx_fail_count,
                                           tANI_U16 *pid);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 void wlan_hdd_restart_timer_cb(v_PVOID_t usrDataForCallback);
 
 struct completion wlan_start_comp;
@@ -1199,6 +1208,7 @@ hdd_checkandupdate_dfssetting(hdd_adapter_t *pAdapter, char *country_code)
 
 }
 
+<<<<<<< HEAD
 /* Function header is left blank intentionally */
 static int hdd_parse_setrmcenable_command(tANI_U8 *pValue, tANI_U8 *pRmcEnable)
 {
@@ -1546,6 +1556,8 @@ hdd_parse_get_ibss_peer_info(tANI_U8 *pValue, v_MACADDR_t *pPeerMacAddr)
     return VOS_STATUS_SUCCESS;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef IPA_UC_STA_OFFLOAD
 static void hdd_set_thermal_level_cb(hdd_context_t *pHddCtx, u_int8_t level)
 {
@@ -2702,10 +2714,116 @@ hdd_parse_set_roam_scan_channels(hdd_adapter_t *pAdapter,
       ret = hdd_parse_set_roam_scan_channels_v2(pAdapter, command);
    }
 
+<<<<<<< HEAD
    return ret;
 }
 
 #endif /* WLAN_FEATURE_VOWIFI_11R || FEATURE_WLAN_ESE || FEATURE_WLAN_LFR */
+=======
+   return ret;
+}
+
+#endif /* WLAN_FEATURE_VOWIFI_11R || FEATURE_WLAN_ESE || FEATURE_WLAN_LFR */
+
+/**---------------------------------------------------------------------------
+
+  \brief hdd_parse_setrmcrate_command() - HDD Parse reliable multicast
+    set rate command
+
+  This function parses the SETRMCTXRATE command passed in the format
+  SETRMCTXRATE<space>X(multicast rate in Mbps)
+  For example input commands:
+  1) SETRMCTXRATE 6 -> This is translated into set RMC multicast rate
+     to 6 Mbps
+  1) SETRMCTXRATE 0 -> This is translated into disabling fixed multicast rate
+     and enabling multicast RA in firmware
+
+  \param  - pValue Pointer to SETRMCTXRATE command
+  \param  - pRate Pointer to local RMC multicast rate variable
+  \param  - pTxFlags Pointer to local RMC multicast rate variable
+
+  \return - 0 for success non-zero for failure
+
+  --------------------------------------------------------------------------*/
+static int hdd_parse_setrmcrate_command(tANI_U8 *pValue,
+           tANI_U32 *pRate, tTxrateinfoflags *pTxFlags)
+{
+    tANI_U8 *inPtr = pValue;
+    int tempInt;
+    int v = 0;
+    char buf[32];
+    *pRate = 0;
+    *pTxFlags = 0;
+
+    inPtr = strnchr(pValue, strlen(pValue), SPACE_ASCII_VALUE);
+    /*no argument after the command*/
+    if (NULL == inPtr)
+    {
+        return -EINVAL;
+    }
+
+    /*no space after the command*/
+    else if (SPACE_ASCII_VALUE != *inPtr)
+    {
+        return -EINVAL;
+    }
+
+    /*removing empty spaces*/
+    while ((SPACE_ASCII_VALUE  == *inPtr) && ('\0' !=  *inPtr)) inPtr++;
+
+    /*no argument followed by spaces*/
+    if ('\0' == *inPtr)
+    {
+        return 0;
+    }
+
+    /*
+     * getting the first argument which sets multicast rate.
+     */
+    sscanf(inPtr, "%32s ", buf);
+    v = kstrtos32(buf, 10, &tempInt);
+    if ( v < 0)
+    {
+       return -EINVAL;
+    }
+
+    /*
+     * Validate the multicast rate.
+     */
+    switch (tempInt)
+    {
+        default:
+            VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_WARN,
+            "Unsupported rate: %d", tempInt);
+            return -EINVAL;
+        case 0:
+        case 6:
+        case 9:
+        case 12:
+        case 18:
+        case 24:
+        case 36:
+        case 48:
+        case 54:
+            *pTxFlags = eHAL_TX_RATE_LEGACY;
+            *pRate = tempInt * 10;
+            break;
+        case 65:
+            *pTxFlags = eHAL_TX_RATE_HT20;
+            *pRate = tempInt * 10;
+            break;
+        case 72:
+            *pTxFlags = eHAL_TX_RATE_HT20 | eHAL_TX_RATE_SGI;
+            *pRate = 722; /* fractional rate 72.2 Mbps */
+            break;
+    }
+
+    VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
+       "Rate: %d", *pRate);
+
+    return 0;
+}
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #if defined(FEATURE_WLAN_ESE) && defined(FEATURE_WLAN_ESE_UPLOAD)
 /**---------------------------------------------------------------------------
@@ -3512,6 +3630,7 @@ static int hdd_set_dwell_time(hdd_adapter_t *pAdapter, tANI_U8 *command)
 
     return ret;
 }
+<<<<<<< HEAD
 /**
  * hdd_indicate_mgmt_frame() - Wrapper to indicate management frame to
  * user space
@@ -3565,6 +3684,8 @@ void hdd_indicate_mgmt_frame(tSirSmeMgmtFrameInd *frame_ind)
 						frame_ind->rxRssi);
 	return;
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 static void hdd_GetLink_statusCB(v_U8_t status, void *pContext)
 {
@@ -3853,6 +3974,7 @@ int hdd_set_miracast_mode(hdd_adapter_t *pAdapter, tANI_U8 *command)
     return 0;
 }
 
+<<<<<<< HEAD
 /* Function header is left blank intentionally */
 static int hdd_parse_set_ibss_oui_data_command(uint8_t *command, uint8_t *ie,
                                              int32_t *oui_length, int32_t limit)
@@ -3897,6 +4019,8 @@ static int hdd_parse_set_ibss_oui_data_command(uint8_t *command, uint8_t *ie,
 }
 
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /**
  * hdd_set_mas() - Function to set MAS value to UMAC
  * @adapter:		Pointer to HDD adapter
@@ -4127,7 +4251,12 @@ static VOS_STATUS hdd_parse_ese_beacon_req(tANI_U8 *pValue,
                                      tCsrEseBeaconReq *pEseBcnReq)
 {
     tANI_U8 *inPtr = pValue;
+<<<<<<< HEAD
     int tempInt = 0;
+=======
+    uint8_t input = 0;
+    uint32_t tempInt = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
     int j = 0, i = 0, v = 0;
     char buf[32];
 
@@ -4150,11 +4279,19 @@ static VOS_STATUS hdd_parse_ese_beacon_req(tANI_U8 *pValue,
     v = sscanf(inPtr, "%31s ", buf);
     if (1 != v) return -EINVAL;
 
+<<<<<<< HEAD
     v = kstrtos32(buf, 10, &tempInt);
     if (v < 0) return -EINVAL;
 
     tempInt = VOS_MIN(tempInt, SIR_ESE_MAX_MEAS_IE_REQS);
     pEseBcnReq->numBcnReqIe = tempInt;
+=======
+    v = kstrtou8(buf, 10, &input);
+    if (v < 0) return -EINVAL;
+
+    input = VOS_MIN(input, SIR_ESE_MAX_MEAS_IE_REQS);
+    pEseBcnReq->numBcnReqIe = input;
+>>>>>>> sultanxda/cm-13.0-sultan
 
     hddLog(LOG1, "Number of Bcn Req Ie fields: %d", pEseBcnReq->numBcnReqIe);
 
@@ -4175,24 +4312,41 @@ static VOS_STATUS hdd_parse_ese_beacon_req(tANI_U8 *pValue,
             v = sscanf(inPtr, "%31s ", buf);
             if (1 != v) return -EINVAL;
 
+<<<<<<< HEAD
             v = kstrtos32(buf, 10, &tempInt);
+=======
+            v = kstrtou32(buf, 10, &tempInt);
+>>>>>>> sultanxda/cm-13.0-sultan
             if (v < 0) return -EINVAL;
 
             switch (i) {
             case 0:  /* Measurement token */
+<<<<<<< HEAD
                 if (tempInt <= 0) {
                    VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                              "Invalid Measurement Token(%d)", tempInt);
+=======
+                if (!tempInt) {
+                   VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                             "Invalid Measurement Token: %d", tempInt);
+>>>>>>> sultanxda/cm-13.0-sultan
                    return -EINVAL;
                 }
                 pEseBcnReq->bcnReq[j].measurementToken = tempInt;
                 break;
 
             case 1:  /* Channel number */
+<<<<<<< HEAD
                 if ((tempInt <= 0) ||
                     (tempInt > WNI_CFG_CURRENT_CHANNEL_STAMAX)) {
                    VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                              "Invalid Channel Number(%d)", tempInt);
+=======
+                if ((!tempInt) ||
+                    (tempInt > WNI_CFG_CURRENT_CHANNEL_STAMAX)) {
+                   VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                             "Invalid Channel Number: %d", tempInt);
+>>>>>>> sultanxda/cm-13.0-sultan
                    return -EINVAL;
                 }
                 pEseBcnReq->bcnReq[j].channel = tempInt;
@@ -4202,19 +4356,31 @@ static VOS_STATUS hdd_parse_ese_beacon_req(tANI_U8 *pValue,
                 if ((tempInt < eSIR_PASSIVE_SCAN) ||
                     (tempInt > eSIR_BEACON_TABLE)) {
                    VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+<<<<<<< HEAD
                              "Invalid Scan Mode(%d) Expected{0|1|2}", tempInt);
+=======
+                             "Invalid Scan Mode: %d Expected{0|1|2}", tempInt);
+>>>>>>> sultanxda/cm-13.0-sultan
                    return -EINVAL;
                 }
                 pEseBcnReq->bcnReq[j].scanMode= tempInt;
                 break;
 
             case 3:  /* Measurement duration */
+<<<<<<< HEAD
                 if (((tempInt <= 0) &&
                     (pEseBcnReq->bcnReq[j].scanMode != eSIR_BEACON_TABLE)) ||
                     ((tempInt < 0) &&
                     (pEseBcnReq->bcnReq[j].scanMode == eSIR_BEACON_TABLE))) {
                    VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                              "Invalid Measurement Duration(%d)", tempInt);
+=======
+                if (((!tempInt) &&
+                    (pEseBcnReq->bcnReq[j].scanMode != eSIR_BEACON_TABLE)) ||
+                    ((pEseBcnReq->bcnReq[j].scanMode == eSIR_BEACON_TABLE))) {
+                   VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                             "Invalid Measurement Duration: %d", tempInt);
+>>>>>>> sultanxda/cm-13.0-sultan
                    return -EINVAL;
                 }
                 pEseBcnReq->bcnReq[j].measurementDuration = tempInt;
@@ -4490,7 +4656,11 @@ static int hdd_set_rx_filter(hdd_adapter_t *adapter, bool action,
 			uint8_t pattern)
 {
 	int ret;
+<<<<<<< HEAD
 	uint8_t i, j;
+=======
+	uint8_t i;
+>>>>>>> sultanxda/cm-13.0-sultan
 	tHalHandle handle;
 	tSirRcvFltMcAddrList *filter;
 	hdd_context_t* hdd_ctx = WLAN_HDD_GET_CTX(adapter);
@@ -4529,6 +4699,7 @@ static int hdd_set_rx_filter(hdd_adapter_t *adapter, bool action,
 		}
 		vos_mem_zero(filter, sizeof(*filter));
 		filter->action = action;
+<<<<<<< HEAD
 		for (i = 0, j = 0; i < adapter->mc_addr_list.mc_cnt; i++) {
 			if (!memcmp(adapter->mc_addr_list.addr[i],
 				&pattern, 1)) {
@@ -4543,6 +4714,21 @@ static int hdd_set_rx_filter(hdd_adapter_t *adapter, bool action,
 			}
 		}
 		filter->ulMulticastAddrCnt = j;
+=======
+		for (i = 0; i < adapter->mc_addr_list.mc_cnt; i++) {
+			if (!memcmp(adapter->mc_addr_list.addr[i],
+				&pattern, 1)) {
+				memcpy(filter->multicastAddr[i],
+					adapter->mc_addr_list.addr[i],
+					sizeof(adapter->mc_addr_list.addr[i]));
+				filter->ulMulticastAddrCnt++;
+				hddLog(LOG1, "%s RX filter : addr ="
+				    MAC_ADDRESS_STR,
+				    action ? "setting" : "clearing",
+				    MAC_ADDR_ARRAY(filter->multicastAddr[i]));
+			}
+		}
+>>>>>>> sultanxda/cm-13.0-sultan
 		/* Set rx filter */
 		sme_8023MulticastList(handle, adapter->sessionId, filter);
 		vos_mem_free(filter);
@@ -6381,7 +6567,20 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
            if (VOS_TRUE == vos_mem_compare(targetApBssid,
                                            pHddStaCtx->conn_info.bssId, sizeof(tSirMacAddr)))
            {
+<<<<<<< HEAD
                VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO, "%s:Reassoc BSSID is same as currently associated AP bssid",__func__);
+=======
+               /* Reassoc to same AP, only supported for Open Security*/
+               if ((pHddStaCtx->conn_info.ucEncryptionType ||
+                   pHddStaCtx->conn_info.mcEncryptionType)) {
+                   hddLog(LOGE,
+                    FL("Reassoc to same AP, only supported for Open Security"));
+                   ret = -ENOTSUPP;
+                   goto exit;
+               }
+               hddLog(LOG1,
+                  FL("Reassoc BSSID is same as currently associated AP bssid"));
+>>>>>>> sultanxda/cm-13.0-sultan
                sme_GetModifyProfileFields(hHal, pAdapter->sessionId,
                                        &modProfileFields);
                sme_RoamReassoc(hHal, pAdapter->sessionId,
@@ -6678,6 +6877,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
        {
           hdd_context_t *pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
           VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+<<<<<<< HEAD
                            FL("making default scan to ACTIVE"));
           pHddCtx->ioctl_scan_mode = eSIR_ACTIVE_SCAN;
        }
@@ -7135,6 +7335,46 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
          VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO_MED,
                    "%s", priv_data.buf);
          ret = 0;
+=======
+                           FL("making default scan to ACTIVE"));
+          pHddCtx->ioctl_scan_mode = eSIR_ACTIVE_SCAN;
+       }
+       else if (strncmp(command, "SCAN-PASSIVE", 12) == 0)
+       {
+          hdd_context_t *pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
+          VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                           FL("making default scan to PASSIVE"));
+          pHddCtx->ioctl_scan_mode = eSIR_PASSIVE_SCAN;
+       }
+       else if (strncmp(command, "GETDWELLTIME", 12) == 0)
+       {
+           hdd_config_t *pCfg = (WLAN_HDD_GET_CTX(pAdapter))->cfg_ini;
+           char extra[32];
+           tANI_U8 len = 0;
+
+           memset(extra, 0, sizeof(extra));
+           ret = hdd_get_dwell_time(pCfg, command, extra, sizeof(extra), &len);
+           len = VOS_MIN(priv_data.total_len, len + 1);
+           if (ret != 0 || copy_to_user(priv_data.buf, &extra, len))
+           {
+               VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
+                  "%s: failed to copy data to user buffer", __func__);
+               ret = -EFAULT;
+               goto exit;
+           }
+           ret = len;
+       }
+       else if (strncmp(command, "SETDWELLTIME", 12) == 0)
+       {
+           ret = hdd_set_dwell_time(pAdapter, command);
+       }
+       else if ( strncasecmp(command, "MIRACAST", 8) == 0 )
+       {
+           VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
+                   "%s: Received MIRACAST command", __func__);
+
+           ret = hdd_set_miracast_mode(pAdapter, command);
+>>>>>>> sultanxda/cm-13.0-sultan
        }
        else if (strncmp(command, "SETRMCTXRATE", 12) == 0)
        {
@@ -7185,6 +7425,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
           status = sme_SendRateUpdateInd((tHalHandle)(pHddCtx->hHal),
                       &rateUpdateParams);
        }
+<<<<<<< HEAD
        else if (strncasecmp(command, "SETIBSSTXFAILEVENT", 18) == 0)
        {
            char *value;
@@ -7243,6 +7484,8 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
                }
            }
        }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #if defined(FEATURE_WLAN_ESE) && defined(FEATURE_WLAN_ESE_UPLOAD)
        else if (strncmp(command, "SETCCXROAMSCANCHANNELS", 22) == 0)
        {
@@ -8006,8 +8249,13 @@ static void hdd_update_tgt_services(hdd_context_t *hdd_ctx,
                     cfg->per_band_chainmask_supp);
 #ifdef FEATURE_WLAN_TDLS
     cfg_ini->fEnableTDLSSupport &= cfg->en_tdls;
+<<<<<<< HEAD
     cfg_ini->fEnableTDLSOffChannel &= (uint32_t)cfg->en_tdls_offchan;
     cfg_ini->fEnableTDLSBufferSta &= (uint32_t)cfg->en_tdls_uapsd_buf_sta;
+=======
+    cfg_ini->fEnableTDLSOffChannel &= cfg->en_tdls_offchan;
+    cfg_ini->fEnableTDLSBufferSta &= cfg->en_tdls_uapsd_buf_sta;
+>>>>>>> sultanxda/cm-13.0-sultan
     if (cfg_ini->fTDLSUapsdMask && cfg->en_tdls_uapsd_sleep_sta)
     {
         cfg_ini->fEnableTDLSSleepSta = TRUE;
@@ -8683,10 +8931,13 @@ void hdd_update_tgt_cfg(void *context, void *param)
             HDD_ANTENNA_MODE_2X2 : HDD_ANTENNA_MODE_1X1;
     hddLog(LOG1, FL("Current antenna mode: %d"),
            hdd_ctx->current_antenna_mode);
+<<<<<<< HEAD
     hdd_ctx->cfg_ini->fine_time_meas_cap &= cfg->fine_time_measurement_cap;
     hdd_ctx->fine_time_meas_cap_target = cfg->fine_time_measurement_cap;
     hddLog(LOG1, FL("fine_time_measurement_cap: 0x%x"),
              hdd_ctx->cfg_ini->fine_time_meas_cap);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /* This function is invoked in atomic context when a radar
@@ -8800,16 +9051,27 @@ static int __hdd_open(struct net_device *dev)
    hdd_context_t *pHddCtx =  WLAN_HDD_GET_CTX(pAdapter);
    hdd_adapter_list_node_t *pAdapterNode = NULL, *pNext = NULL;
    VOS_STATUS status;
+<<<<<<< HEAD
+=======
+   int ret;
+>>>>>>> sultanxda/cm-13.0-sultan
    v_BOOL_t in_standby = TRUE;
 
    MTRACE(vos_trace(VOS_MODULE_ID_HDD, TRACE_CODE_HDD_OPEN_REQUEST,
                     pAdapter->sessionId, pAdapter->device_mode));
 
+<<<<<<< HEAD
    /* Don't validate for load/unload and logp as if we return
       failure we may endup in scan/connection related issues */
    if (NULL == pHddCtx || NULL == pHddCtx->cfg_ini) {
       hddLog(LOG1, FL("HDD context is Null"));
       return -ENODEV;
+=======
+   ret = wlan_hdd_validate_context(pHddCtx);
+   if (0 != ret) {
+       hddLog(LOGE, FL("HDD context is not valid"));
+       return ret;
+>>>>>>> sultanxda/cm-13.0-sultan
    }
 
    status = hdd_get_front_adapter (pHddCtx, &pAdapterNode);
@@ -8838,7 +9100,11 @@ static int __hdd_open(struct net_device *dev)
        netif_tx_start_all_queues(dev);
    }
 
+<<<<<<< HEAD
    return 0;
+=======
+   return ret;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /**
@@ -9168,7 +9434,10 @@ static void __hdd_uninit(struct net_device *dev)
 	/* After uninit our adapter structure will no longer be valid */
 	pAdapter->dev = NULL;
 	pAdapter->magic = 0;
+<<<<<<< HEAD
 	pAdapter->pHddCtx = NULL;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	EXIT();
 }
@@ -9213,6 +9482,7 @@ void hdd_full_pwr_cbk(void *callbackContext, eHalStatus status)
    }
 }
 
+<<<<<<< HEAD
 static void hdd_tx_fail_ind_callback(v_U8_t *MacAddr, v_U8_t seqNo)
 {
    int payload_len;
@@ -9399,6 +9669,8 @@ static void hdd_close_cesium_nl_sock(void)
    }
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /**---------------------------------------------------------------------------
 
   \brief hdd_get_cfg_file_size() -
@@ -9856,7 +10128,10 @@ static hdd_adapter_t* hdd_alloc_station_adapter( hdd_context_t *pHddCtx, tSirMac
       init_completion(&pAdapter->tdls_link_establish_req_comp);
 #endif
 
+<<<<<<< HEAD
       init_completion(&pAdapter->ibss_peer_info_comp);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
       init_completion(&pHddCtx->mc_sus_event_var);
       init_completion(&pHddCtx->tx_sus_event_var);
       init_completion(&pHddCtx->rx_sus_event_var);
@@ -9890,11 +10165,20 @@ static hdd_adapter_t* hdd_alloc_station_adapter( hdd_context_t *pHddCtx, tSirMac
       hdd_set_needed_headroom(pWlanDev, pWlanDev->hard_header_len);
       pWlanDev->hard_header_len += HDD_HW_NEEDED_HEADROOM;
 
+<<<<<<< HEAD
       if (pHddCtx->cfg_ini->enableIPChecksumOffload)
          pWlanDev->features |= NETIF_F_HW_CSUM;
       else if (pHddCtx->cfg_ini->enableTCPChkSumOffld)
          pWlanDev->features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
          pWlanDev->features |= NETIF_F_RXCSUM;
+=======
+      if (pHddCtx->cfg_ini->enableIPChecksumOffload) {
+         pWlanDev->features |= NETIF_F_HW_CSUM;
+      } else if (pHddCtx->cfg_ini->enableTCPChkSumOffld) {
+         pWlanDev->features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
+         pWlanDev->features |= NETIF_F_RXCSUM;
+      }
+>>>>>>> sultanxda/cm-13.0-sultan
       hdd_set_station_ops( pAdapter->dev );
 
       pWlanDev->destructor = free_netdev;
@@ -9993,6 +10277,7 @@ static eHalStatus hdd_smeCloseSessionCallback(void *pContext)
    return eHAL_STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 /**
  * hdd_close_tx_queues() - close tx queues
  * @hdd_ctx: hdd global context
@@ -10020,6 +10305,8 @@ static void hdd_close_tx_queues(hdd_context_t *hdd_ctx)
 	EXIT();
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 VOS_STATUS hdd_init_station_mode( hdd_adapter_t *pAdapter )
 {
    struct net_device *pWlanDev = pAdapter->dev;
@@ -11442,7 +11729,10 @@ VOS_STATUS hdd_reset_all_adapters( hdd_context_t *pHddCtx )
  * hdd_connect_result() - API to send connection status to supplicant
  * @dev: network device
  * @bssid: bssid to which we want to associate
+<<<<<<< HEAD
  * @roam_info: information about connected bss
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
  * @req_ie: Request Information Element
  * @req_ie_len: len of the req IE
  * @resp_ie: Response IE
@@ -11455,6 +11745,7 @@ VOS_STATUS hdd_reset_all_adapters( hdd_context_t *pHddCtx )
  *
  * Return: Void
  */
+<<<<<<< HEAD
 #if defined CFG80211_CONNECT_BSS
 void hdd_connect_result(struct net_device *dev,
 			const u8 *bssid,
@@ -11504,6 +11795,11 @@ void hdd_connect_result(struct net_device *dev,
 void hdd_connect_result(struct net_device *dev,
 			const u8 *bssid,
 			tCsrRoamInfo *roam_info,
+=======
+
+void hdd_connect_result(struct net_device *dev,
+			const u8 *bssid,
+>>>>>>> sultanxda/cm-13.0-sultan
 			const u8 *req_ie,
 			size_t req_ie_len,
 			const u8 * resp_ie,
@@ -11518,7 +11814,11 @@ void hdd_connect_result(struct net_device *dev,
 
 	vos_runtime_pm_allow_suspend(padapter->runtime_context.connect);
 }
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> sultanxda/cm-13.0-sultan
 
 VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
 {
@@ -11569,8 +11869,13 @@ VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
                pAdapter->sessionCtx.station.hdd_ReassocScenario = VOS_FALSE;
 
                /* indicate disconnected event to nl80211 */
+<<<<<<< HEAD
                wlan_hdd_cfg80211_indicate_disconnect(pAdapter->dev, false,
                                                      WLAN_REASON_UNSPECIFIED);
+=======
+               cfg80211_disconnected(pAdapter->dev, WLAN_REASON_UNSPECIFIED,
+                                     NULL, 0, GFP_KERNEL);
+>>>>>>> sultanxda/cm-13.0-sultan
             }
             else if (eConnectionState_Connecting == connState)
             {
@@ -11578,7 +11883,11 @@ VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
                * Indicate connect failure to supplicant if we were in the
                * process of connecting
                */
+<<<<<<< HEAD
                hdd_connect_result(pAdapter->dev, NULL, NULL,
+=======
+               hdd_connect_result(pAdapter->dev, NULL,
+>>>>>>> sultanxda/cm-13.0-sultan
                                        NULL, 0, NULL, 0,
                                        WLAN_STATUS_ASSOC_DENIED_UNSPEC,
                                        GFP_KERNEL);
@@ -12144,6 +12453,7 @@ hdd_adapter_t *hdd_get_adapter_by_vdev( hdd_context_t *pHddCtx,
     return NULL;
 }
 
+<<<<<<< HEAD
 /**
  * hdd_get_adapter_by_sme_session_id() - Return adapter with
  * the sessionid
@@ -12181,6 +12491,8 @@ hdd_adapter_t *hdd_get_adapter_by_sme_session_id(hdd_context_t *hdd_ctx,
 	return NULL;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 hdd_adapter_t * hdd_get_adapter( hdd_context_t *pHddCtx, device_mode_t mode )
 {
    hdd_adapter_list_node_t *pAdapterNode = NULL, *pNext = NULL;
@@ -12878,10 +13190,13 @@ void hdd_wlan_exit(hdd_context_t *pHddCtx)
    if (VOS_FTM_MODE != hdd_get_conparam())
        wlan_hdd_logging_sock_deactivate_svc(pHddCtx);
 
+<<<<<<< HEAD
 #ifdef WLAN_FEATURE_LPSS
    wlan_hdd_send_status_pkg(NULL, NULL, 0, 0);
 #endif
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef WLAN_KD_READY_NOTIFIER
    cnss_diag_notify_wlan_close();
    nl_srv_exit(pHddCtx->ptt_pid);
@@ -12889,7 +13204,10 @@ void hdd_wlan_exit(hdd_context_t *pHddCtx)
    nl_srv_exit();
 #endif /* WLAN_KD_READY_NOTIFIER */
 
+<<<<<<< HEAD
    hdd_close_cesium_nl_sock();
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
    hdd_runtime_suspend_deinit(pHddCtx);
    hdd_close_all_adapters( pHddCtx );
@@ -12981,9 +13299,17 @@ void __hdd_wlan_exit(void)
    vos_set_load_unload_in_progress(VOS_MODULE_ID_VOSS, TRUE);
    vos_set_unload_in_progress(TRUE);
 
+<<<<<<< HEAD
    hdd_close_tx_queues(pHddCtx);
    //Do all the cleanup before deregistering the driver
    memdump_deinit();
+=======
+#ifdef WLAN_FEATURE_LPSS
+   wlan_hdd_send_status_pkg(NULL, NULL, 0, 0);
+#endif
+
+   //Do all the cleanup before deregistering the driver
+>>>>>>> sultanxda/cm-13.0-sultan
    hdd_wlan_exit(pHddCtx);
    EXIT();
 }
@@ -14317,7 +14643,10 @@ int hdd_wlan_startup(struct device *dev, v_VOID_t *hif_sc)
       vos_set_load_unload_in_progress(VOS_MODULE_ID_VOSS, FALSE);
       pHddCtx->isLoadInProgress = FALSE;
 
+<<<<<<< HEAD
       memdump_init();
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
       hddLog(LOGE, FL("FTM driver loaded"));
       complete(&wlan_start_comp);
       return VOS_STATUS_SUCCESS;
@@ -14456,10 +14785,13 @@ int hdd_wlan_startup(struct device *dev, v_VOID_t *hif_sc)
 
    /* Fwr capabilities received, Set the Dot11 mode */
    sme_SetDefDot11Mode(pHddCtx->hHal);
+<<<<<<< HEAD
 
    wlansap_set_tx_leakage_threshold(pHddCtx->hHal,
         pHddCtx->cfg_ini->sap_tx_leakage_threshold);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    /* Register with platform driver as client for Suspend/Resume */
    status = hddRegisterPmOps(pHddCtx);
    if ( !VOS_IS_STATUS_SUCCESS( status ) )
@@ -14539,12 +14871,15 @@ int hdd_wlan_startup(struct device *dev, v_VOID_t *hif_sc)
    }
 #endif
 
+<<<<<<< HEAD
    if (hdd_open_cesium_nl_sock() < 0)
    {
       hddLog(VOS_TRACE_LEVEL_FATAL,"%s: hdd_open_cesium_nl_sock failed", __func__);
       goto err_nl_srv;
    }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    //Initialize the CNSS-DIAG service
    if (cnss_diag_activate_service() < 0)
    {
@@ -14763,8 +15098,11 @@ err_nl_srv:
    nl_srv_exit();
 #endif /* WLAN_KD_READY_NOTIFIER */
 
+<<<<<<< HEAD
    hdd_close_cesium_nl_sock();
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 err_reg_netdev:
    if (rtnl_lock_enable == TRUE) {
       rtnl_lock_enable = FALSE;
@@ -14999,6 +15337,10 @@ static int hdd_driver_init( void)
        ret_status = -ENODEV;
        break;
    } else {
+<<<<<<< HEAD
+=======
+       memdump_init();
+>>>>>>> sultanxda/cm-13.0-sultan
        pr_info("%s: driver loaded in %lld\n", WLAN_MODULE_NAME,
                                               adf_get_boottime() - start);
        return 0;
@@ -15125,6 +15467,10 @@ static void hdd_driver_exit(void)
    }
 
    vos_wait_for_work_thread_completion(__func__);
+<<<<<<< HEAD
+=======
+   memdump_deinit();
+>>>>>>> sultanxda/cm-13.0-sultan
 
    hif_unregister_driver();
 

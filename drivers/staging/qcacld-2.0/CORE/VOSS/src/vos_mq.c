@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2014, 2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2014 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -162,6 +166,7 @@ __inline void vos_mq_put(pVosMqType pMq, pVosMsgWrapper pMsgWrapper)
 
 } /* vos_mq_put() */
 
+<<<<<<< HEAD
 /**
  * vos_mq_put_front() - adds a message to the head of message queue
  * @mq: message queue
@@ -185,6 +190,8 @@ void vos_mq_put_front(pVosMqType mq, pVosMsgWrapper msg_wrapper)
 	list_add(&msg_wrapper->msgNode, &mq->mqList);
 	spin_unlock_irqrestore(&mq->mqLock, flags);
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /*---------------------------------------------------------------------------
 

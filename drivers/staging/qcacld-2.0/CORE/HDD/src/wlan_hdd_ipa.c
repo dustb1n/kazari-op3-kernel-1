@@ -3723,6 +3723,12 @@ int hdd_ipa_wlan_evt(hdd_adapter_t *adapter, uint8_t sta_id,
 	if (type >= IPA_WLAN_EVENT_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (WARN_ON(is_zero_ether_addr(mac_addr)))
+		return -EINVAL;
+
+>>>>>>> sultanxda/cm-13.0-sultan
 	if (!hdd_ipa || !hdd_ipa_is_enabled(hdd_ipa->hdd_ctx)) {
 		HDD_IPA_LOG(VOS_TRACE_LEVEL_ERROR, "IPA OFFLOAD NOT ENABLED");
 		return -EINVAL;
@@ -3737,9 +3743,12 @@ int hdd_ipa_wlan_evt(hdd_adapter_t *adapter, uint8_t sta_id,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (WARN_ON(is_zero_ether_addr(mac_addr)))
 		return -EINVAL;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	/* During IPA UC resource loading/unloading
 	 * new event issued.
 	 * Store event seperatly and handle later */

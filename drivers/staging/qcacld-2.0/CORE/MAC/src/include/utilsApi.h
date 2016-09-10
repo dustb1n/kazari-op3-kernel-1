@@ -706,7 +706,11 @@ halRoundS32(tANI_S32 p)
     else
         k = p;
 
+<<<<<<< HEAD
         return(k);
+=======
+    return(k);
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /* New functions for endianness conversion */

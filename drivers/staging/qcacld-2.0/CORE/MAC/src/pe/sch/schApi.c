@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2014, 2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2014 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -57,7 +61,10 @@
 #include "schSysParams.h"
 #include "limTrace.h"
 #include "limTypes.h"
+<<<<<<< HEAD
 #include "limUtils.h"
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #include "wlan_qct_wda.h"
 
@@ -415,16 +422,23 @@ tANI_U32 limSendProbeRspTemplateToHal(tpAniSirGlobal pMac,tpPESession psessionEn
     tANI_U32             nPayload,nBytes,nStatus;
     tpSirMacMgmtHdr      pMacHdr;
     tANI_U32             addnIEPresent = VOS_FALSE;
+<<<<<<< HEAD
+=======
+    tANI_U32             addnIELen=0;
+>>>>>>> sultanxda/cm-13.0-sultan
     tSirRetStatus        nSirStatus;
     tANI_U8              *addIE = NULL;
     tANI_U8              *addIeWoP2pIe = NULL;
     tANI_U32             addnIELenWoP2pIe = 0;
     tANI_U32             retStatus;
+<<<<<<< HEAD
     tDot11fIEExtCap extracted_extcap;
     bool extcap_present = false;
     tDot11fProbeResponse *prb_rsp_frm;
     tSirRetStatus status;
     uint16_t addn_ielen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     nStatus = dot11fGetPackedProbeResponseSize( pMac, &psessionEntry->probeRespFrame, &nPayload );
     if ( DOT11F_FAILED( nStatus ) )
@@ -484,14 +498,22 @@ tANI_U32 limSendProbeRspTemplateToHal(tpAniSirGlobal pMac,tpPESession psessionEn
              vos_mem_free(addIeWoP2pIe);
              return retCode;
         }
+<<<<<<< HEAD
         addn_ielen = addnIELenWoP2pIe;
 
         if (addn_ielen <= WNI_CFG_PROBE_RSP_ADDNIE_DATA1_LEN && addn_ielen &&
                                  (nBytes + addn_ielen) <= SIR_MAX_PACKET_SIZE)
+=======
+        addnIELen = addnIELenWoP2pIe;
+
+        if (addnIELen <= WNI_CFG_PROBE_RSP_ADDNIE_DATA1_LEN && addnIELen &&
+                                 (nBytes + addnIELen) <= SIR_MAX_PACKET_SIZE)
+>>>>>>> sultanxda/cm-13.0-sultan
         {
             vos_mem_copy(addIE, addIeWoP2pIe, addnIELenWoP2pIe);
         }
         vos_mem_free(addIeWoP2pIe);
+<<<<<<< HEAD
 
         vos_mem_set((uint8_t *)&extracted_extcap, sizeof(tDot11fIEExtCap), 0);
         status = lim_strip_extcap_update_struct(pMac, addIE, &addn_ielen,
@@ -502,17 +524,27 @@ tANI_U32 limSendProbeRspTemplateToHal(tpAniSirGlobal pMac,tpPESession psessionEn
             extcap_present = true;
         }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     if (addnIEPresent)
     {
+<<<<<<< HEAD
         if ((nBytes + addn_ielen) <= SIR_MAX_PACKET_SIZE )
             nBytes += addn_ielen;
+=======
+        if ((nBytes + addnIELen) <= SIR_MAX_PACKET_SIZE )
+            nBytes += addnIELen;
+>>>>>>> sultanxda/cm-13.0-sultan
         else
             addnIEPresent = false; //Dont include the IE.
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     // Paranoia:
     vos_mem_set(pFrame2Hal, nBytes, 0);
 
@@ -534,11 +566,14 @@ tANI_U32 limSendProbeRspTemplateToHal(tpAniSirGlobal pMac,tpPESession psessionEn
 
     sirCopyMacAddr(pMacHdr->bssId,psessionEntry->bssId);
 
+<<<<<<< HEAD
     /* merge extcap IE */
     prb_rsp_frm = &psessionEntry->probeRespFrame;
     if (extcap_present)
         lim_merge_extcap_struct(&prb_rsp_frm->ExtCap, &extracted_extcap);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     // That done, pack the Probe Response:
     nStatus = dot11fPackProbeResponse( pMac, &psessionEntry->probeRespFrame, pFrame2Hal + sizeof(tSirMacMgmtHdr),
                                        nPayload, &nPayload );
@@ -558,7 +593,14 @@ tANI_U32 limSendProbeRspTemplateToHal(tpAniSirGlobal pMac,tpPESession psessionEn
     }
 
     if (addnIEPresent)
+<<<<<<< HEAD
         vos_mem_copy(&pFrame2Hal[nBytes - addn_ielen], &addIE[0], addn_ielen);
+=======
+    {
+        vos_mem_copy ( &pFrame2Hal[nBytes - addnIELen],
+                             &addIE[0], addnIELen);
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     /* free the allocated Memory */
     vos_mem_free(addIE);
@@ -679,4 +721,8 @@ fail:
     if (*buf)
         vos_mem_free(*buf);
     return status;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> sultanxda/cm-13.0-sultan

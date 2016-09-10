@@ -92,8 +92,11 @@
 #include "wlan_logging_sock_svc.h"
 #include "wma.h"
 
+<<<<<<< HEAD
 #include "vos_utils.h"
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /*---------------------------------------------------------------------------
  * Preprocessor Definitions and Constants
  * ------------------------------------------------------------------------*/
@@ -498,6 +501,7 @@ VOS_STATUS vos_open( v_CONTEXT_t *pVosContext, v_SIZE_t hddContextSize )
 #ifdef IPA_UC_OFFLOAD
     /* IPA micro controller data path offload resource config item */
     macOpenParms.ucOffloadEnabled = pHddCtx->cfg_ini->IpaUcOffloadEnabled;
+<<<<<<< HEAD
 
     if (!is_power_of_2(pHddCtx->cfg_ini->IpaUcTxBufCount)) {
         /* IpaUcTxBufCount should be power of 2 */
@@ -534,6 +538,10 @@ VOS_STATUS vos_open( v_CONTEXT_t *pVosContext, v_SIZE_t hddContextSize )
                     "%s: IpaUcRxIndRingCount rounded down to %d", __func__,
                     pHddCtx->cfg_ini->IpaUcRxIndRingCount);
     }
+=======
+    macOpenParms.ucTxBufCount = pHddCtx->cfg_ini->IpaUcTxBufCount;
+    macOpenParms.ucTxBufSize = pHddCtx->cfg_ini->IpaUcTxBufSize;
+>>>>>>> sultanxda/cm-13.0-sultan
     macOpenParms.ucRxIndRingCount = pHddCtx->cfg_ini->IpaUcRxIndRingCount;
     macOpenParms.ucTxPartitionBase = pHddCtx->cfg_ini->IpaUcTxPartitionBase;
 #endif /* IPA_UC_OFFLOAD */
@@ -1738,6 +1746,7 @@ VOS_STATUS vos_free_context( v_VOID_t *pVosContext, VOS_MODULE_ID moduleID,
 
 } /* vos_free_context() */
 
+<<<<<<< HEAD
 /**
  * vos_mq_post_message_by_priority() - posts message using priority
  * to message queue
@@ -1754,6 +1763,47 @@ VOS_STATUS vos_free_context( v_VOID_t *pVosContext, VOS_MODULE_ID moduleID,
 VOS_STATUS vos_mq_post_message_by_priority(VOS_MQ_ID msgQueueId,
 					   vos_msg_t *pMsg,
 					   int is_high_priority)
+=======
+
+/**---------------------------------------------------------------------------
+
+  \brief vos_mq_post_message() - post a message to a message queue
+
+  This API allows messages to be posted to a specific message queue.  Messages
+  can be posted to the following message queues:
+
+  <ul>
+    <li> SME
+    <li> PE
+    <li> HAL
+    <li> TL
+  </ul>
+
+  \param msgQueueId - identifies the message queue upon which the message
+         will be posted.
+
+  \param message - a pointer to a message buffer.  Memory for this message
+         buffer is allocated by the caller and free'd by the vOSS after the
+         message is posted to the message queue.  If the consumer of the
+         message needs anything in this message, it needs to copy the contents
+         before returning from the message queue handler.
+
+  \return VOS_STATUS_SUCCESS - the message has been successfully posted
+          to the message queue.
+
+          VOS_STATUS_E_INVAL - The value specified by msgQueueId does not
+          refer to a valid Message Queue Id.
+
+          VOS_STATUS_E_FAULT  - message is an invalid pointer.
+
+          VOS_STATUS_E_FAILURE - the message queue handler has reported
+          an unknown failure.
+
+  \sa
+
+  --------------------------------------------------------------------------*/
+VOS_STATUS vos_mq_post_message( VOS_MQ_ID msgQueueId, vos_msg_t *pMsg )
+>>>>>>> sultanxda/cm-13.0-sultan
 {
   pVosMqType      pTargetMq   = NULL;
   pVosMsgWrapper  pMsgWrapper = NULL;
@@ -1848,17 +1898,25 @@ VOS_STATUS vos_mq_post_message_by_priority(VOS_MQ_ID msgQueueId,
   vos_mem_copy( (v_VOID_t*)pMsgWrapper->pVosMsg,
                 (v_VOID_t*)pMsg, sizeof(vos_msg_t));
 
+<<<<<<< HEAD
   if (is_high_priority)
       vos_mq_put_front(pTargetMq, pMsgWrapper);
   else
       vos_mq_put(pTargetMq, pMsgWrapper);
+=======
+  vos_mq_put(pTargetMq, pMsgWrapper);
+>>>>>>> sultanxda/cm-13.0-sultan
 
   set_bit(MC_POST_EVENT_MASK, &gpVosContext->vosSched.mcEventFlag);
   wake_up_interruptible(&gpVosContext->vosSched.mcWaitQueue);
 
   return VOS_STATUS_SUCCESS;
 
+<<<<<<< HEAD
 }
+=======
+} /* vos_mq_post_message()*/
+>>>>>>> sultanxda/cm-13.0-sultan
 
 
 /**---------------------------------------------------------------------------

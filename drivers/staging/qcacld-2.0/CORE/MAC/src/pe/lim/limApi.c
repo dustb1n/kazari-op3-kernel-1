@@ -291,7 +291,10 @@ static void __limInitVars(tpAniSirGlobal pMac)
     /* Init SAP deffered Q Head */
     lim_init_sap_deferred_msg_queue(pMac);
 #endif
+<<<<<<< HEAD
     pMac->lim.gpLimMlmOemDataReq = NULL;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 static void __limInitAssocVars(tpAniSirGlobal pMac)
@@ -989,7 +992,10 @@ tSirRetStatus peOpen(tpAniSirGlobal pMac, tMacOpenParameters *pMacOpenParam)
                                         pMac->lim.maxStation, 0);
 
     pMac->lim.mgmtFrameSessionId = 0xff;
+<<<<<<< HEAD
     pMac->lim.tdls_frm_session_id = 0xff;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     pMac->lim.deferredMsgCnt = 0;
 
     if (!VOS_IS_STATUS_SUCCESS(vos_lock_init(&pMac->lim.lkPeGlobalLock))) {
@@ -1049,10 +1055,13 @@ tSirRetStatus peClose(tpAniSirGlobal pMac)
     pMac->lim.limTimers.gpLimCnfWaitTimer = NULL;
 
     if (pMac->lim.gpLimMlmOemDataReq) {
+<<<<<<< HEAD
         if (pMac->lim.gpLimMlmOemDataReq->data) {
             vos_mem_free(pMac->lim.gpLimMlmOemDataReq->data);
             pMac->lim.gpLimMlmOemDataReq->data = NULL;
         }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         vos_mem_free(pMac->lim.gpLimMlmOemDataReq);
         pMac->lim.gpLimMlmOemDataReq = NULL;
     }
@@ -1239,6 +1248,7 @@ limPostMsgApi(tpAniSirGlobal pMac, tSirMsgQ *pMsg)
 
 } /*** end limPostMsgApi() ***/
 
+<<<<<<< HEAD
 /**
  * lim_post_msg_high_pri() - posts high priority pe message
  * @mac: mac context
@@ -1254,6 +1264,8 @@ lim_post_msg_high_pri(tpAniSirGlobal mac, tSirMsgQ *msg)
 	return vos_mq_post_message_by_priority(VOS_MQ_ID_PE, (vos_msg_t *)msg,
 					       HIGH_PRIORITY);
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /*--------------------------------------------------------------------------
 

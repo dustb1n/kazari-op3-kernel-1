@@ -50,8 +50,11 @@
 #include <ol_txrx_htt_api.h> /* ol_tx_msdu_id_storage */
 #include <htt_internal.h>
 
+<<<<<<< HEAD
 #include <vos_utils.h>
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef IPA_UC_OFFLOAD
 /* IPA Micro controler TX data packet HTT Header Preset */
 /* 31 | 30  29 | 28 | 27 | 26  22  | 21   16 | 15  13   | 12  8       | 7 0
@@ -716,13 +719,19 @@ int htt_tx_ipa_uc_attach(struct htt_pdev_t *pdev,
     unsigned int uc_tx_partition_base)
 {
    unsigned int  tx_buffer_count;
+<<<<<<< HEAD
    unsigned int  tx_buffer_count_pwr2;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    adf_nbuf_t    buffer_vaddr;
    u_int32_t     buffer_paddr;
    u_int32_t    *header_ptr;
    u_int32_t    *ring_vaddr;
    int           return_code = 0;
+<<<<<<< HEAD
    uint16_t     idx;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
    /* Allocate CE Write Index WORD */
    pdev->ipa_uc_tx_rsc.tx_ce_idx.vaddr =
@@ -806,6 +815,7 @@ int htt_tx_ipa_uc_attach(struct htt_pdev_t *pdev,
       ring_vaddr++;
    }
 
+<<<<<<< HEAD
    /*
     * Tx complete ring buffer count should be power of 2.
     * So, allocated Tx buffer count should be one less than ring buffer size.
@@ -833,6 +843,9 @@ int htt_tx_ipa_uc_attach(struct htt_pdev_t *pdev,
    }
 
    pdev->ipa_uc_tx_rsc.alloc_tx_buf_cnt = tx_buffer_count_pwr2;
+=======
+   pdev->ipa_uc_tx_rsc.alloc_tx_buf_cnt = tx_buffer_count;
+>>>>>>> sultanxda/cm-13.0-sultan
 
    return 0;
 

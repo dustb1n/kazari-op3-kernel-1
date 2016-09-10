@@ -973,7 +973,11 @@ cfgGetCapabilityInfo(tpAniSirGlobal pMac, tANI_U16 *pCap,tpPESession sessionEntr
 #if defined WLAN_FEATURE_VOWIFI
     pCapInfo->rrm = pMac->rrm.rrmSmeContext.rrmConfig.rrm_enabled;
 #if defined WLAN_VOWIFI_DEBUG
+<<<<<<< HEAD
     cfgLog( pMac, LOG1, "RRM = %d", pCapInfo->rrm);
+=======
+    cfgLog( pMac, LOGE, "RRM = %d", pCapInfo->rrm);
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 #endif
 

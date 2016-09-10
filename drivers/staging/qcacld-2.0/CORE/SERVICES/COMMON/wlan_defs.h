@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2004-2010, 2013-2015 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2004-2010, 2013-2016 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -56,6 +60,13 @@
 #define CONFIG_160MHZ_SUPPORT 0 /* default: 160 MHz channels not supported */
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef SUPPORT_11AX
+#define SUPPORT_11AX 0 /* 11ax not supported by default */
+#endif
+
+>>>>>>> sultanxda/cm-13.0-sultan
 typedef enum {
     MODE_11A        = 0,   /* 11a Mode */
     MODE_11G        = 1,   /* 11b/g Mode */
@@ -76,9 +87,34 @@ typedef enum {
     MODE_11AC_VHT160   = 15,
 #endif
 
+<<<<<<< HEAD
     MODE_UNKNOWN,
     MODE_UNKNOWN_NO_160MHZ_SUPPORT = 14,
     MODE_UNKNOWN_160MHZ_SUPPORT = 16,
+=======
+#if SUPPORT_11AX
+    MODE_11AX_HE20 = 16,
+    MODE_11AX_HE40 = 17,
+    MODE_11AX_HE80 = 18,
+    MODE_11AX_HE80_80 = 19,
+    MODE_11AX_HE160 = 20,
+    MODE_11AX_HE20_2G = 21,
+    MODE_11AX_HE40_2G = 22,
+    MODE_11AX_HE80_2G = 23,
+#endif
+
+    /*
+     * MODE_UNKNOWN should not be used within the host / target interface.
+     * Thus, it is permissible for ODE_UNKNOWN to be conditionally-defined,
+     * taking different values when compiling for different targets.
+     */
+
+    MODE_UNKNOWN,
+    MODE_UNKNOWN_NO_160MHZ_SUPPORT = 14, /* not needed? */
+    //MODE_UNKNOWN_NO_11AX_SUPPORT = 16, /* not needed? */
+    //MODE_UNKNOWN_11AX_SUPPORT = 24, /* not needed? */
+    MODE_UNKNOWN_160MHZ_SUPPORT = MODE_UNKNOWN, /* not needed? */
+>>>>>>> sultanxda/cm-13.0-sultan
 
     MODE_MAX        = MODE_UNKNOWN,
     MODE_MAX_NO_160_MHZ_SUPPORT = MODE_UNKNOWN_NO_160MHZ_SUPPORT,
@@ -132,6 +168,18 @@ typedef enum {
         ((mode) == MODE_11AC_VHT80))
 #endif
 
+<<<<<<< HEAD
+=======
+#define IS_MODE_HE(mode) (((mode) == MODE_11AX_HE20) || \
+        ((mode) == MODE_11AX_HE40)     || \
+        ((mode) == MODE_11AX_HE80)     || \
+        ((mode) == MODE_11AX_HE80_80)  || \
+        ((mode) == MODE_11AX_HE160)    || \
+        ((mode) == MODE_11AX_HE20_2G)  || \
+        ((mode) == MODE_11AX_HE40_2G)  || \
+        ((mode) == MODE_11AX_HE80_2G))
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #define IS_MODE_VHT_2G(mode) (((mode) == MODE_11AC_VHT20_2G) || \
         ((mode) == MODE_11AC_VHT40_2G) || \
         ((mode) == MODE_11AC_VHT80_2G))
@@ -178,6 +226,12 @@ enum {
     REGDMN_MODE_11AC_VHT40_2G    = 0x000400000, /* 2Ghz, VHT40 */
     REGDMN_MODE_11AC_VHT80_2G    = 0x000800000, /* 2Ghz, VHT80 */
     REGDMN_MODE_11AC_VHT160      = 0x001000000, /* 5Ghz, VHT160 */
+<<<<<<< HEAD
+=======
+    REGDMN_MODE_11AC_VHT40_2GPLUS  = 0x002000000, /* 2Ghz, VHT40+ */
+    REGDMN_MODE_11AC_VHT40_2GMINUS = 0x004000000, /* 2Ghz, VHT40- */
+    REGDMN_MODE_11AC_VHT80_80      = 0x008000000, /* 5GHz, VHT80+80 */
+>>>>>>> sultanxda/cm-13.0-sultan
 };
 
 #define REGDMN_MODE_ALL       (0xFFFFFFFF)       /* REGDMN_MODE_ALL is defined out of the enum
@@ -320,6 +374,10 @@ typedef struct{
     A_RATE      probe_rix;
     A_UINT8     num_valid_rates;
     A_UINT8     rtscts_tpc;
+<<<<<<< HEAD
+=======
+    A_UINT8     dd_profile;
+>>>>>>> sultanxda/cm-13.0-sultan
 } RC_TX_RATE_SCHEDULE;
 
 #else
@@ -393,8 +451,16 @@ typedef struct {
    A_UINT32 size;
 } wlan_host_memory_chunk;
 
+<<<<<<< HEAD
 #define NUM_UNITS_IS_NUM_VDEVS   0x1
 #define NUM_UNITS_IS_NUM_PEERS   0x2
+=======
+#define NUM_UNITS_IS_NUM_VDEVS        0x1
+#define NUM_UNITS_IS_NUM_PEERS        0x2
+#define NUM_UNITS_IS_NUM_ACTIVE_PEERS 0x4
+/* request host to allocate memory contiguously */
+#define REQ_TO_HOST_FOR_CONT_MEMORY   0x8
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /**
  * structure used by FW for requesting host memory
@@ -664,7 +730,11 @@ typedef struct {
 #define WHAL_DBG_PHY_ERR_MAXCNT 18
 #define WHAL_DBG_SIFS_STATUS_MAXCNT 8
 #define WHAL_DBG_SIFS_ERR_MAXCNT 8
+<<<<<<< HEAD
 #define WHAL_DBG_CMD_RESULT_MAXCNT 10
+=======
+#define WHAL_DBG_CMD_RESULT_MAXCNT 11
+>>>>>>> sultanxda/cm-13.0-sultan
 #define WHAL_DBG_CMD_STALL_ERR_MAXCNT 4
 #define WHAL_DBG_FLUSH_REASON_MAXCNT 40
 
@@ -680,6 +750,10 @@ typedef struct wlan_dbg_txbf_snd_stats {
     A_UINT32 cbf_40[4];
     A_UINT32 cbf_80[4];
     A_UINT32 sounding[9];
+<<<<<<< HEAD
+=======
+    A_UINT32 cbf_160[4];
+>>>>>>> sultanxda/cm-13.0-sultan
 }wlan_dbg_txbf_snd_stats_t;
 
 typedef struct wlan_dbg_wifi2_error_stats {

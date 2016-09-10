@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -455,7 +459,13 @@ get_eRoamCmdStatus_str(eRoamCmdStatus val)
         CASE_RETURN_STR(eCSR_ROAM_FT_RESPONSE);
 #endif
         CASE_RETURN_STR(eCSR_ROAM_FT_START);
+<<<<<<< HEAD
         CASE_RETURN_STR(eCSR_ROAM_REMAIN_CHAN_READY);
+=======
+        CASE_RETURN_STR(eCSR_ROAM_INDICATE_MGMT_FRAME);
+        CASE_RETURN_STR(eCSR_ROAM_REMAIN_CHAN_READY);
+        CASE_RETURN_STR(eCSR_ROAM_SEND_ACTION_CNF);
+>>>>>>> sultanxda/cm-13.0-sultan
         CASE_RETURN_STR(eCSR_ROAM_SESSION_OPENED);
         CASE_RETURN_STR(eCSR_ROAM_FT_REASSOC_FAILED);
 #ifdef FEATURE_WLAN_LFR

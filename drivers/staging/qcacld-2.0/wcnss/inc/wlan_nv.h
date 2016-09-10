@@ -398,9 +398,13 @@ enum
    NV_CHANNEL_DISABLE,
    NV_CHANNEL_ENABLE,
    NV_CHANNEL_DFS,
+<<<<<<< HEAD
    NV_CHANNEL_INVALID,
    NV_CHANNEL_SKIP_DSRC,
    NV_CHANNEL_SKIP_2G
+=======
+   NV_CHANNEL_INVALID
+>>>>>>> sultanxda/cm-13.0-sultan
 };
 typedef uint8 eNVChannelEnabledType;
 

@@ -766,6 +766,7 @@ limCleanupMlm(tpAniSirGlobal pMac)
      * each STA associated per BSSId and deactivate/delete
      * the pmfSaQueryTimer for it
      */
+<<<<<<< HEAD
     for (bss_entry = 0; bss_entry < pMac->lim.maxBssId; bss_entry++)
     {
          if (pMac->lim.gpSession[bss_entry].valid)
@@ -785,6 +786,32 @@ limCleanupMlm(tpAniSirGlobal pMac)
                             pStaDs->staIndex) ;
                   tx_timer_deactivate(&pStaDs->pmfSaQueryTimer);
                   tx_timer_delete(&pStaDs->pmfSaQueryTimer);
+=======
+    if (vos_is_logp_in_progress(VOS_MODULE_ID_PE, NULL))
+    {
+        VOS_TRACE(VOS_MODULE_ID_PE, VOS_TRACE_LEVEL_ERROR,
+                  FL("SSR is detected, proceed to clean up pmfSaQueryTimer"));
+        for (bss_entry = 0; bss_entry < pMac->lim.maxBssId; bss_entry++)
+        {
+             if (pMac->lim.gpSession[bss_entry].valid)
+             {
+                 for (sta_entry = 1; sta_entry < pMac->lim.gLimAssocStaLimit;
+                      sta_entry++)
+                 {
+                      psessionEntry = &pMac->lim.gpSession[bss_entry];
+                      pStaDs = dphGetHashEntry(pMac, sta_entry,
+                                              &psessionEntry->dph.dphHashTable);
+                      if (NULL == pStaDs)
+                      {
+                          continue;
+                      }
+                      VOS_TRACE(VOS_MODULE_ID_PE, VOS_TRACE_LEVEL_ERROR,
+                                FL("Deleting pmfSaQueryTimer for staid[%d]"),
+                                pStaDs->staIndex) ;
+                      tx_timer_deactivate(&pStaDs->pmfSaQueryTimer);
+                      tx_timer_delete(&pStaDs->pmfSaQueryTimer);
+                }
+>>>>>>> sultanxda/cm-13.0-sultan
             }
         }
     }
@@ -4072,6 +4099,7 @@ limEnableHT20Protection(tpAniSirGlobal pMac, tANI_U8 enable,
     if(!psessionEntry->htCapability)
         return eSIR_SUCCESS; // this protection  is only for HT stations.
 
+<<<<<<< HEAD
         //overlapping protection configuration check.
         if(overlap) {
         } else {
@@ -4089,6 +4117,24 @@ limEnableHT20Protection(tpAniSirGlobal pMac, tANI_U8 enable,
                 }
             }
         }
+=======
+    //overlapping protection configuration check.
+    if (!overlap) {
+        //normal protection config check
+        if (LIM_IS_AP_ROLE(psessionEntry) &&
+            !psessionEntry->cfgProtection.ht20) {
+            // protection disabled.
+            PELOG3(limLog(pMac, LOG3, FL("protection from HT20 is disabled"));)
+            return eSIR_SUCCESS;
+        } else if (!LIM_IS_AP_ROLE(psessionEntry)) {
+            if (!pMac->lim.cfgProtection.ht20) {
+                // protection disabled.
+                PELOG3(limLog(pMac, LOG3, FL("protection from HT20 is disabled"));)
+                return eSIR_SUCCESS;
+            }
+        }
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (enable) {
         //If we are AP and HT capable, we need to set the HT OP mode
@@ -4276,6 +4322,7 @@ limEnableHTNonGfProtection(tpAniSirGlobal pMac, tANI_U8 enable,
     if(!psessionEntry->htCapability)
         return eSIR_SUCCESS; // this protection  is only for HT stations.
 
+<<<<<<< HEAD
         //overlapping protection configuration check.
         if(overlap) {
         } else {
@@ -4294,6 +4341,25 @@ limEnableHTNonGfProtection(tpAniSirGlobal pMac, tANI_U8 enable,
                 }
             }
         }
+=======
+    //overlapping protection configuration check.
+    if (!overlap) {
+        //normal protection config check
+        if (LIM_IS_AP_ROLE(psessionEntry) &&
+            !psessionEntry->cfgProtection.nonGf) {
+            // protection disabled.
+            PELOG3(limLog(pMac, LOG3, FL("protection from NonGf is disabled"));)
+            return eSIR_SUCCESS;
+        } else if(!LIM_IS_AP_ROLE(psessionEntry)) {
+            //normal protection config check
+            if (!pMac->lim.cfgProtection.nonGf) {
+                // protection disabled.
+                PELOG3(limLog(pMac, LOG3, FL("protection from NonGf is disabled"));)
+                return eSIR_SUCCESS;
+            }
+        }
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (LIM_IS_AP_ROLE(psessionEntry)) {
         if ((enable) && (false == psessionEntry->beaconParams.llnNonGFCoexist))
@@ -4341,6 +4407,7 @@ limEnableHTLsigTxopProtection(tpAniSirGlobal pMac, tANI_U8 enable,
     if(!psessionEntry->htCapability)
         return eSIR_SUCCESS; // this protection  is only for HT stations.
 
+<<<<<<< HEAD
         //overlapping protection configuration check.
         if(overlap) {
         } else {
@@ -4359,6 +4426,25 @@ limEnableHTLsigTxopProtection(tpAniSirGlobal pMac, tANI_U8 enable,
                 }
             }
         }
+=======
+    //overlapping protection configuration check.
+    if (!overlap) {
+        //normal protection config check
+        if (LIM_IS_AP_ROLE(psessionEntry) &&
+           !psessionEntry->cfgProtection.lsigTxop) {
+            // protection disabled.
+            PELOG3(limLog(pMac, LOG3, FL(" protection from LsigTxop not supported is disabled"));)
+            return eSIR_SUCCESS;
+        } else if(!LIM_IS_AP_ROLE(psessionEntry)) {
+            //normal protection config check
+            if(!pMac->lim.cfgProtection.lsigTxop) {
+                // protection disabled.
+                PELOG3(limLog(pMac, LOG3, FL(" protection from LsigTxop not supported is disabled"));)
+                return eSIR_SUCCESS;
+            }
+        }
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (LIM_IS_AP_ROLE(psessionEntry)) {
         if ((enable) && (false == psessionEntry->beaconParams.fLsigTXOPProtectionFullSupport))
@@ -4407,6 +4493,7 @@ limEnableHtRifsProtection(tpAniSirGlobal pMac, tANI_U8 enable,
         return eSIR_SUCCESS; // this protection  is only for HT stations.
 
 
+<<<<<<< HEAD
         //overlapping protection configuration check.
         if(overlap) {
         } else {
@@ -4425,6 +4512,25 @@ limEnableHtRifsProtection(tpAniSirGlobal pMac, tANI_U8 enable,
                }
             }
         }
+=======
+    //overlapping protection configuration check.
+    if (!overlap) {
+        //normal protection config check
+        if (LIM_IS_AP_ROLE(psessionEntry) &&
+           !psessionEntry->cfgProtection.rifs) {
+            // protection disabled.
+            PELOG3(limLog(pMac, LOG3, FL(" protection from Rifs is disabled"));)
+            return eSIR_SUCCESS;
+        } else if (!LIM_IS_AP_ROLE(psessionEntry)) {
+           //normal protection config check
+           if(!pMac->lim.cfgProtection.rifs) {
+              // protection disabled.
+              PELOG3(limLog(pMac, LOG3, FL(" protection from Rifs is disabled"));)
+              return eSIR_SUCCESS;
+           }
+        }
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (LIM_IS_AP_ROLE(psessionEntry)) {
         // Disabling the RIFS Protection means Enable the RIFS mode of operation in the BSS
@@ -8673,6 +8779,7 @@ lim_get_80Mhz_center_channel(uint8_t primary_channel)
 }
 
 /**
+<<<<<<< HEAD
  * lim_is_ext_cap_ie_present - checks if ext ie is present
  * @ext_cap: extended IEs structure
  *
@@ -8694,6 +8801,8 @@ bool lim_is_ext_cap_ie_present (struct s_ext_cap *ext_cap)
 }
 
 /**
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
  * lim_is_robust_mgmt_action_frame() - Check if action catagory is
  * robust action frame
  * @action_catagory: Action frame catagory.
@@ -8735,6 +8844,7 @@ bool lim_is_robust_mgmt_action_frame(uint8_t action_catagory)
 	return false;
 }
 
+<<<<<<< HEAD
 /**
  * lim_update_caps_info_for_bss - Update capability info for this BSS
  *
@@ -8767,3 +8877,5 @@ void lim_update_caps_info_for_bss(tpAniSirGlobal mac_ctx,
 	}
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan

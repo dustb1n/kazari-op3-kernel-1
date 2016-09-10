@@ -240,7 +240,11 @@ limSendProbeReqMgmtFrame(tpAniSirGlobal pMac,
 {
     tDot11fProbeRequest pr;
     tANI_U32            nStatus, nBytes, nPayload;
+<<<<<<< HEAD
     tSirRetStatus       nSirStatus;
+=======
+    tSirRetStatus       nSirStatus, extcap_status;
+>>>>>>> sultanxda/cm-13.0-sultan
     tANI_U8            *pFrame;
     void               *pPacket;
     eHalStatus          halstatus;
@@ -251,8 +255,11 @@ limSendProbeReqMgmtFrame(tpAniSirGlobal pMac,
     tANI_U8             smeSessionId = 0;
     bool                isVHTEnabled = false;
     uint16_t addn_ielen = nAdditionalIELen;
+<<<<<<< HEAD
     bool                extracted_ext_cap_flag = false;
     tDot11fIEExtCap     extracted_ext_cap;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 
 
@@ -397,6 +404,7 @@ limSendProbeReqMgmtFrame(tpAniSirGlobal pMac,
                                "0x%08x)."), nStatus );
     }
 
+<<<<<<< HEAD
     if (addn_ielen) {
 
         vos_mem_set((tANI_U8 *)&extracted_ext_cap,
@@ -415,6 +423,16 @@ limSendProbeReqMgmtFrame(tpAniSirGlobal pMac,
 
             extracted_ext_cap_flag = lim_is_ext_cap_ie_present(p_ext_cap);
         }
+=======
+    /* Strip extended capability IE (if present). FW will add that IE */
+    if (addn_ielen) {
+        extcap_status = lim_strip_extcap_ie(pMac, pAdditionalIE, &addn_ielen,
+                                            NULL);
+        if (eSIR_SUCCESS != extcap_status)
+            limLog(pMac, LOGE,
+                   FL("Error:(%d) stripping extcap IE"), extcap_status);
+
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     nBytes = nPayload + sizeof( tSirMacMgmtHdr ) + addn_ielen;
@@ -446,10 +464,13 @@ limSendProbeReqMgmtFrame(tpAniSirGlobal pMac,
         return nSirStatus;      // allocated!
     }
 
+<<<<<<< HEAD
     /* merge the ExtCap struct*/
     if (extracted_ext_cap_flag)
         lim_merge_extcap_struct(&pr.ExtCap, &extracted_ext_cap);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     // That done, pack the Probe Request:
     nStatus = dot11fPackProbeRequest( pMac, &pr, pFrame +
                                       sizeof( tSirMacMgmtHdr ),
@@ -595,7 +616,11 @@ limSendProbeRspMgmtFrame(tpAniSirGlobal pMac,
     tANI_U8              smeSessionId = 0;
     tANI_BOOLEAN         isVHTEnabled = eANI_BOOLEAN_FALSE;
     tDot11fIEExtCap      extractedExtCap;
+<<<<<<< HEAD
     tANI_BOOLEAN         extractedExtCapFlag = eANI_BOOLEAN_FALSE;
+=======
+    tANI_BOOLEAN         extractedExtCapFlag = eANI_BOOLEAN_TRUE;
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (ANI_DRIVER_TYPE(pMac) == eDRIVER_TYPE_MFG) {
         /* We don't answer requests in this case */
@@ -803,10 +828,16 @@ limSendProbeRspMgmtFrame(tpAniSirGlobal pMac,
                                   &extractedExtCap );
         if(eSIR_SUCCESS != nSirStatus )
         {
+<<<<<<< HEAD
             limLog(pMac, LOG1,
                 FL("Unable to Stripoff ExtCap IE from Probe Rsp"));
         } else {
             extractedExtCapFlag = eANI_BOOLEAN_TRUE;
+=======
+            extractedExtCapFlag = eANI_BOOLEAN_FALSE;
+            limLog(pMac, LOG1,
+                FL("Unable to Stripoff ExtCap IE from Probe Rsp"));
+>>>>>>> sultanxda/cm-13.0-sultan
         }
 
         nBytes = nBytes + totalAddnIeLen;
@@ -2054,11 +2085,19 @@ limSendAssocReqMgmtFrame(tpAniSirGlobal   pMac,
 
     vos_mem_set( ( tANI_U8* )pFrm, sizeof( tDot11fAssocRequest ), 0 );
 
+<<<<<<< HEAD
     if (nAddIELen) {
         vos_mem_set(( tANI_U8* )&extractedExtCap, sizeof( tDot11fIEExtCap ), 0);
         nSirStatus = lim_strip_extcap_update_struct(pMac, pAddIE,
                                       &nAddIELen,
                                       &extractedExtCap );
+=======
+    if (nAddIELen && psessionEntry->is_ext_caps_present) {
+        vos_mem_set(( tANI_U8* )&extractedExtCap, sizeof( tDot11fIEExtCap ), 0);
+        nSirStatus = lim_strip_extcap_update_struct(pMac, pAddIE,
+                      &nAddIELen,
+                      &extractedExtCap );
+>>>>>>> sultanxda/cm-13.0-sultan
         if(eSIR_SUCCESS != nSirStatus )
         {
             extractedExtCapFlag = eANI_BOOLEAN_FALSE;
@@ -2069,12 +2108,33 @@ limSendAssocReqMgmtFrame(tpAniSirGlobal   pMac,
         {
             struct s_ext_cap *p_ext_cap = (struct s_ext_cap *)
                                           extractedExtCap.bytes;
+<<<<<<< HEAD
             if (p_ext_cap->interworkingService)
                 p_ext_cap->qosMap = 1;
             extractedExtCapFlag = lim_is_ext_cap_ie_present(p_ext_cap);
         }
     } else {
         limLog(pMac, LOG1, FL("No additional IE for Assoc Request"));
+=======
+            if (p_ext_cap->interworkingService ||
+                            p_ext_cap->bssTransition)
+                p_ext_cap->qosMap = 1;
+            else {
+                /* No need to merge the EXT Cap from Supplicant
+                 * if interworkingService or bsstransition is not set,
+                 * as currently driver is only interested in
+                 * interworkingService and bsstransition capability from
+                 * supplicant.
+                 * if in future any other EXT Cap info is required from
+                 * supplicant it needs to be handled here.
+                 */
+                 extractedExtCapFlag = eANI_BOOLEAN_FALSE;
+            }
+        }
+    } else {
+        limLog(pMac, LOG1,
+                FL("No addn IE or peer dosen't support addnIE for Assoc Req"));
+>>>>>>> sultanxda/cm-13.0-sultan
         extractedExtCapFlag = eANI_BOOLEAN_FALSE;
     }
 
@@ -2215,8 +2275,13 @@ limSendAssocReqMgmtFrame(tpAniSirGlobal   pMac,
         isVHTEnabled = eANI_BOOLEAN_TRUE;
     }
 #endif
+<<<<<<< HEAD
 
     PopulateDot11fExtCap( pMac, isVHTEnabled, &pFrm->ExtCap, psessionEntry);
+=======
+    if (psessionEntry->is_ext_caps_present)
+        PopulateDot11fExtCap( pMac, isVHTEnabled, &pFrm->ExtCap, psessionEntry);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #if defined WLAN_FEATURE_VOWIFI_11R
     if (psessionEntry->pLimJoinReq->is11Rconnection)
@@ -2685,8 +2750,14 @@ limSendReassocReqWithFTIEsMgmtFrame(tpAniSirGlobal     pMac,
         limLog( pMac, LOG1, FL("Populate VHT IEs in Re-Assoc Request"));
         PopulateDot11fVHTCaps( pMac, psessionEntry, &frm.VHTCaps );
         isVHTEnabled = eANI_BOOLEAN_TRUE;
+<<<<<<< HEAD
         PopulateDot11fExtCap(pMac, isVHTEnabled, &frm.ExtCap, psessionEntry);
     }
+=======
+    }
+    if (psessionEntry->is_ext_caps_present)
+        PopulateDot11fExtCap(pMac, isVHTEnabled, &frm.ExtCap, psessionEntry);
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 
     nStatus = dot11fGetPackedReAssocRequestSize( pMac, &frm, &nPayload );
@@ -3117,7 +3188,12 @@ limSendReassocReqMgmtFrame(tpAniSirGlobal     pMac,
     }
 #endif
 
+<<<<<<< HEAD
     PopulateDot11fExtCap(pMac, isVHTEnabled, &frm.ExtCap, psessionEntry);
+=======
+    if (psessionEntry->is_ext_caps_present)
+        PopulateDot11fExtCap(pMac, isVHTEnabled, &frm.ExtCap, psessionEntry);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     nStatus = dot11fGetPackedReAssocRequestSize( pMac, &frm, &nPayload );
     if ( DOT11F_FAILED( nStatus ) )
@@ -5283,6 +5359,7 @@ tSirRetStatus limSendAddBARsp( tpAniSirGlobal pMac,
    else
       return eSIR_SUCCESS;
 
+<<<<<<< HEAD
       returnAfterError:
 
       // Release buffer, if allocated
@@ -5293,6 +5370,18 @@ tSirRetStatus limSendAddBARsp( tpAniSirGlobal pMac,
             (void *) pPacket );
 
       return statusCode;
+=======
+   returnAfterError:
+
+   // Release buffer, if allocated
+   if( NULL != pAddBARspBuffer )
+      palPktFree( pMac->hHdd,
+         HAL_TXRX_FRM_802_11_MGMT,
+         (void *) pAddBARspBuffer,
+         (void *) pPacket );
+
+   return statusCode;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /**
@@ -5466,6 +5555,7 @@ tSirRetStatus limSendDelBAInd( tpAniSirGlobal pMac,
     else
       return eSIR_SUCCESS;
 
+<<<<<<< HEAD
       returnAfterError:
 
       // Release buffer, if allocated
@@ -5476,6 +5566,18 @@ tSirRetStatus limSendDelBAInd( tpAniSirGlobal pMac,
             (void *) pPacket );
 
       return statusCode;
+=======
+   returnAfterError:
+
+   // Release buffer, if allocated
+   if( NULL != pDelBAIndBuffer )
+      palPktFree( pMac->hHdd,
+         HAL_TXRX_FRM_802_11_MGMT,
+         (void *) pDelBAIndBuffer,
+         (void *) pPacket );
+
+   return statusCode;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 #if defined WLAN_FEATURE_VOWIFI

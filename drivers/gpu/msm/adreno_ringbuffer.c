@@ -636,8 +636,13 @@ adreno_ringbuffer_addcmds(struct adreno_ringbuffer *rb,
 
 	if (gpudev->preemption_post_ibsubmit &&
 				adreno_is_preemption_enabled(adreno_dev))
+<<<<<<< HEAD
 		ringcmds += gpudev->preemption_post_ibsubmit(adreno_dev,
 			ringcmds);
+=======
+		ringcmds += gpudev->preemption_post_ibsubmit(adreno_dev, rb,
+					ringcmds, &drawctxt->base);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	/*
 	 * If we have more ringbuffer commands than space reserved

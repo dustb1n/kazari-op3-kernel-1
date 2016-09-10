@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -105,7 +109,10 @@ struct hdd_tgt_cfg {
         v_U8_t lpss_support;
 #endif
         uint8_t ap_arpns_support;
+<<<<<<< HEAD
 	uint32_t fine_time_measurement_cap;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 };
 
 struct hdd_dfs_radar_ind {

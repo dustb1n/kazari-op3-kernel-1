@@ -199,9 +199,16 @@ dfs_process_phyerr_owl(struct ath_dfs *dfs, void *buf, u_int16_t datalen,
    /*
     * This is a spurious event; toss.
     */
+<<<<<<< HEAD
    if (rssi == 0 && dur == 0)
       dfs->ath_dfs_stats.datalen_discards++;
       return (0);
+=======
+   if (rssi == 0 && dur == 0) {
+      dfs->ath_dfs_stats.datalen_discards++;
+      return 0;
+   }
+>>>>>>> sultanxda/cm-13.0-sultan
 
    /*
     * Fill out dfs_phy_err with the information we have

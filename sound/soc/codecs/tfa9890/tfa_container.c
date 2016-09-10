@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-#define DEBUG
 #define pr_fmt(fmt) "%s(): " fmt, __func__
 #include <linux/cdev.h>
 #include <linux/clk.h>
@@ -25,7 +24,6 @@
 #include <linux/pm.h>
 #include <linux/slab.h>
 #include <linux/crc32.h>
-#include <sound/sounddebug.h>
 #include "tfa98xx-core.h"
 #include "tfa98xx-regs.h"
 #include "tfa_container.h"
@@ -289,7 +287,7 @@ int tfaContWriteRegsProf(struct tfa98xx *tfa98xx, int profile)
 			err = tfaRunWriteBitfield(tfa98xx, tfaContDsc2Bf(prof->list[i]));
 		}
 
-		if (!prof->list[i].type == dscRegister) {
+		if (prof->list[i].type == dscRegister) {
 			err = tfaRunWriteRegister(tfa98xx, (struct nxpTfaRegpatch *)(base + prof->list[i].offset));
 		}
 

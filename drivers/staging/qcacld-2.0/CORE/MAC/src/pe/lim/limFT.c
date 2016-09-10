@@ -825,7 +825,10 @@ void limFillFTSession(tpAniSirGlobal pMac,
    tSchBeaconStruct  *pBeaconStruct;
    tANI_U32          selfDot11Mode;
    ePhyChanBondState cbEnabledMode;
+<<<<<<< HEAD
    VOS_STATUS vosStatus;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
    pBeaconStruct = vos_mem_malloc(sizeof(tSchBeaconStruct));
    if (NULL == pBeaconStruct) {
@@ -988,6 +991,7 @@ void limFillFTSession(tpAniSirGlobal pMac,
    pftSessionEntry->encryptType = psessionEntry->encryptType;
 #ifdef WLAN_FEATURE_11W
    pftSessionEntry->limRmfEnabled = psessionEntry->limRmfEnabled;
+<<<<<<< HEAD
 
    if (psessionEntry->limRmfEnabled) {
        psessionEntry->pmfComebackTimerInfo.pMac = pMac;
@@ -1002,6 +1006,8 @@ void limFillFTSession(tpAniSirGlobal pMac,
                   FL("cannot init pmf comeback timer."));
        }
    }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 
    if (pftSessionEntry->limRFBand == SIR_BAND_2_4_GHZ)
@@ -1019,6 +1025,7 @@ void limFillFTSession(tpAniSirGlobal pMac,
       pftSessionEntry->htSupportedChannelWidthSet;
 
    pftSessionEntry->enableHtSmps = psessionEntry->enableHtSmps;
+<<<<<<< HEAD
    pftSessionEntry->htSmpsvalue = psessionEntry->htSmpsvalue;
    /*
     * By default supported NSS 1x1 is set to true
@@ -1032,6 +1039,11 @@ void limFillFTSession(tpAniSirGlobal pMac,
           pftSessionEntry->enableHtSmps,
           pftSessionEntry->htSmpsvalue,
           pftSessionEntry->supported_nss_1x1);
+=======
+   pftSessionEntry->smpsMode = psessionEntry->smpsMode;
+   limLog(pMac, LOG1, FL("FT session enable smps: %d mode: %d"),
+          pftSessionEntry->enableHtSmps, pftSessionEntry->smpsMode);
+>>>>>>> sultanxda/cm-13.0-sultan
 
    vos_mem_free(pBeaconStruct);
 }
@@ -1288,7 +1300,10 @@ void limHandleFTPreAuthRsp(tpAniSirGlobal pMac, tSirRetStatus status,
       vos_mem_copy(&(pftSessionEntry->htConfig), &(psessionEntry->htConfig),
             sizeof(psessionEntry->htConfig));
       pftSessionEntry->limSmeState = eLIM_SME_WT_REASSOC_STATE;
+<<<<<<< HEAD
       pftSessionEntry->smpsMode = psessionEntry->smpsMode;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
       if (IS_5G_CH(psessionEntry->ftPEContext.pFTPreAuthReq->preAuthchannelNum))
           pftSessionEntry->vdev_nss = pMac->vdev_type_nss_5g.sta;
@@ -1460,12 +1475,15 @@ void limProcessMlmFTReassocReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf,
         vos_mem_free(pMlmReassocReq);
         goto end;
     }
+<<<<<<< HEAD
 
     lim_update_caps_info_for_bss(pMac, &caps,
                   psessionEntry->pLimReAssocReq->bssDescription.capabilityInfo);
 
     limLog(pMac, LOG1, FL("Capabilities info FT Reassoc: 0x%X"), caps);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     pMlmReassocReq->capabilityInfo = caps;
 
     /* Update PE sessionId*/

@@ -921,8 +921,13 @@ static const char *config_cmdline = "";
 int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
 				     int depth, void *data)
 {
+<<<<<<< HEAD
     int l = 0;
     const char *p = NULL;
+=======
+	int l = 0;
+	const char *p = NULL;
+>>>>>>> sultanxda/cm-13.0-sultan
 	char *cmdline = data;
 
 	pr_debug("search \"chosen\", depth: %d, uname: %s\n", depth, uname);

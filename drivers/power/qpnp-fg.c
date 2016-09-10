@@ -299,7 +299,7 @@ enum fg_mem_backup_index {
 
 static struct fg_mem_data fg_backup_regs[FG_BACKUP_MAX] = {
 	/*       ID           Address, Offset, Length, Value*/
-	BACKUP(SOC,		0x560,   0,      28,     -EINVAL),
+	BACKUP(SOC,		0x564,   0,      24,     -EINVAL),
 	BACKUP(CYCLE_COUNT,	0x5E8,   0,      16,     -EINVAL),
 	BACKUP(CC_SOC_COEFF,	0x5BC,   0,      8,     -EINVAL),
 	BACKUP(IGAIN,		0x424,   0,      4,     -EINVAL),
@@ -407,6 +407,21 @@ static struct register_offset offset[] = {
 		((chip)->mem_base + (chip)->offset[MEM_INTF_RD_DATA0])
 #define MEM_INTF_WR_DATA0(chip) \
 		((chip)->mem_base + (chip)->offset[MEM_INTF_WR_DATA0])
+
+static struct external_battery_gauge *ext_fg;
+
+void external_battery_gauge_register(struct external_battery_gauge *batt_gauge)
+{
+	if (ext_fg)
+		pr_err("qpnp-charger %s multiple battery gauge called\n",
+								__func__);
+	ext_fg = batt_gauge;
+}
+
+void external_battery_gauge_unregister(struct external_battery_gauge *batt_gauge)
+{
+	ext_fg = NULL;
+}
 
 struct fg_wakeup_source {
 	struct wakeup_source	source;
@@ -3024,9 +3039,7 @@ static int estimate_battery_age(struct fg_chip *chip, int *actual_capacity)
 	}
 
 	battery_soc = get_battery_soc_raw(chip) * 100 / FULL_PERCENT_3B;
-	if (rc) {
-		goto error_done;
-	} else if (battery_soc < 25 || battery_soc > 75) {
+	if (battery_soc < 25 || battery_soc > 75) {
 		if (fg_debug_mask & FG_AGING)
 			pr_info("Battery SoC (%d) out of range, aborting\n",
 					(int)battery_soc);
@@ -3154,6 +3167,7 @@ static int fg_power_get_property(struct power_supply *psy,
 			val->strval = chip->batt_type;
 		break;
 	case POWER_SUPPLY_PROP_CAPACITY:
+<<<<<<< HEAD
 		if ( chip->use_external_fg && external_fg && external_fg->get_battery_soc)
 		        val->intval = external_fg->get_battery_soc();
 		else if(get_extern_fg_regist_done()==false)
@@ -3164,6 +3178,12 @@ static int fg_power_get_property(struct power_supply *psy,
 		{
 	        val->intval = 50;
 		}
+=======
+		if (ext_fg && ext_fg->get_battery_soc)
+			val->intval = ext_fg->get_battery_soc();
+		else
+			val->intval = get_prop_capacity(chip);
+>>>>>>> sultanxda/cm-13.0-sultan
 		break;
 	case POWER_SUPPLY_PROP_CAPACITY_RAW:
 		val->intval = get_sram_prop_now(chip, FG_DATA_BATT_SOC);
@@ -3172,6 +3192,7 @@ static int fg_power_get_property(struct power_supply *psy,
 		val->intval = get_sram_prop_now(chip, FG_DATA_VINT_ERR);
 		break;
 	case POWER_SUPPLY_PROP_CURRENT_NOW:
+<<<<<<< HEAD
 		if ( chip->use_external_fg && external_fg && external_fg->get_average_current)
 		        val->intval = external_fg->get_average_current();
 		else
@@ -3182,6 +3203,18 @@ static int fg_power_get_property(struct power_supply *psy,
 		        val->intval = external_fg->get_battery_mvolts();
 		else
 		        val->intval = get_sram_prop_now(chip, FG_DATA_VOLTAGE);
+=======
+		if (ext_fg && ext_fg->get_average_current)
+			val->intval = ext_fg->get_average_current();
+		else
+			val->intval = get_sram_prop_now(chip, FG_DATA_CURRENT);
+		break;
+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+		if (ext_fg && ext_fg->get_battery_mvolts)
+			val->intval = ext_fg->get_battery_mvolts();
+		else
+			val->intval = get_sram_prop_now(chip, FG_DATA_VOLTAGE);
+>>>>>>> sultanxda/cm-13.0-sultan
 		break;
 	case POWER_SUPPLY_PROP_VOLTAGE_OCV:
 		val->intval = get_sram_prop_now(chip, FG_DATA_OCV);
@@ -3190,6 +3223,7 @@ static int fg_power_get_property(struct power_supply *psy,
 		val->intval = chip->batt_max_voltage_uv;
 		break;
 	case POWER_SUPPLY_PROP_TEMP:
+<<<<<<< HEAD
 		if ( chip->use_external_fg && external_fg && external_fg->get_battery_temperature)
 		{
 	        val->intval = external_fg->get_battery_temperature();
@@ -3202,6 +3236,12 @@ static int fg_power_get_property(struct power_supply *psy,
 		{
 	        val->intval = -400;
 		}
+=======
+		if (ext_fg && ext_fg->get_battery_temperature)
+			val->intval = ext_fg->get_battery_temperature();
+		else
+			val->intval = get_sram_prop_now(chip, FG_DATA_BATT_TEMP);
+>>>>>>> sultanxda/cm-13.0-sultan
 		break;
 	case POWER_SUPPLY_PROP_COOL_TEMP:
 		val->intval = get_prop_jeita_temp(chip, FG_MEM_SOFT_COLD);
@@ -4177,6 +4217,8 @@ static void oem_update_cc_cv_setpoint(struct fg_chip *chip,int cv_float_point);
 static void oneplus_set_allow_read_iic(struct fg_chip *chip,bool status);
 static void oneplus_set_lcd_off_status(struct fg_chip *chip,bool status);
 
+static void oem_update_cc_cv_setpoint(struct fg_chip *chip, int cv_float_point);
+
 static int fg_power_set_property(struct power_supply *psy,
 				  enum power_supply_property psp,
 				  const union power_supply_propval *val)
@@ -4212,6 +4254,7 @@ static int fg_power_set_property(struct power_supply *psy,
 			fg_hysteresis_config(chip);
 		break;
 	case POWER_SUPPLY_PROP_CC_TO_CV_POINT:
+<<<<<<< HEAD
 		oem_update_cc_cv_setpoint(chip,val->intval);
 	break;
 	case POWER_SUPPLY_PROP_SET_ALLOW_READ_EXTERN_FG_IIC:
@@ -4220,6 +4263,18 @@ static int fg_power_set_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_UPDATE_LCD_IS_OFF:
 		oneplus_set_lcd_off_status(chip,val->intval);
 	break;
+=======
+		oem_update_cc_cv_setpoint(chip, val->intval);
+		break;
+	case POWER_SUPPLY_PROP_SET_ALLOW_READ_EXTERN_FG_IIC:
+		if (ext_fg && ext_fg->set_alow_reading)
+			ext_fg->set_alow_reading(val->intval);
+		break;
+	case POWER_SUPPLY_PROP_UPDATE_LCD_IS_OFF:
+		if (ext_fg && ext_fg->set_lcd_off_status)
+			ext_fg->set_lcd_off_status(val->intval);
+		break;
+>>>>>>> sultanxda/cm-13.0-sultan
 	case POWER_SUPPLY_PROP_CHARGE_DONE:
 		chip->charge_done = val->intval;
 		 pr_err("qpnp_fg:charge_done:soc:%d,VOLT:%d,current:%d\n", get_prop_capacity(chip),get_sram_prop_now(chip, FG_DATA_VOLTAGE),get_sram_prop_now(chip, FG_DATA_CURRENT));
@@ -5110,6 +5165,25 @@ static void oneplus_set_lcd_off_status(struct fg_chip *chip,bool status)
 	}
 }
 
+
+static void oem_update_cc_cv_setpoint(struct fg_chip *chip, int cv_float_point)
+{
+	int rc;
+	u8 tmp[2];
+
+	if (!cv_float_point)
+		return;
+	batt_to_setpoint_adc(cv_float_point, tmp);
+	rc = fg_mem_write(chip, tmp, CC_CV_SETPOINT_REG, 2,
+				CC_CV_SETPOINT_OFFSET, 0);
+	if (rc) {
+		pr_err("failed to write CC_CV_VOLT rc=%d\n", rc);
+		return;
+	}
+	if (fg_debug_mask & FG_STATUS)
+		pr_info("oem Wrote %x %x to address %x for CC_CV setpoint\n",
+			tmp[0], tmp[1], CC_CV_SETPOINT_REG);
+}
 
 #define CBITS_INPUT_FILTER_REG		0x4B4
 #define CBITS_RMEAS1_OFFSET		1
@@ -7403,7 +7477,7 @@ static int fg_hw_init(struct fg_chip *chip)
 		/* Setup workaround flag based on PMIC type */
 		if (fg_sense_type == INTERNAL_CURRENT_SENSE)
 			chip->wa_flag |= IADC_GAIN_COMP_WA;
-		if (chip->pmic_revision[REVID_DIG_MAJOR] > 1)
+		if (chip->pmic_revision[REVID_DIG_MAJOR] >= 1)
 			chip->wa_flag |= USE_CC_SOC_REG;
 
 		break;
@@ -7533,6 +7607,7 @@ static void ima_error_recovery_work(struct work_struct *work)
 				ima_error_recovery_work.work);
 	bool tried_again = false;
 	int rc;
+	u8 buf[4] = {0, 0, 0, 0};
 
 	fg_stay_awake(&chip->fg_reset_wakeup_source);
 	mutex_lock(&chip->ima_recovery_lock);
@@ -7654,6 +7729,17 @@ wait:
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	rc = fg_mem_write(chip, buf, fg_data[FG_DATA_VINT_ERR].address,
+			fg_data[FG_DATA_VINT_ERR].len,
+			fg_data[FG_DATA_VINT_ERR].offset, 0);
+	if (rc < 0)
+		pr_err("Error in clearing VACT_INT_ERR, rc=%d\n", rc);
+
+	if (fg_debug_mask & FG_STATUS)
+		pr_info("IMA error recovery done...\n");
+>>>>>>> sultanxda/cm-13.0-sultan
 out:
 	mutex_unlock(&chip->ima_recovery_lock);
 	fg_restore_soc(chip);
@@ -7680,7 +7766,8 @@ static int fg_setup_memif_offset(struct fg_chip *chip)
 		return rc;
 	}
 
-	switch (chip->revision[DIG_MAJOR]) {
+	dig_major = chip->revision[DIG_MAJOR];
+	switch (dig_major) {
 	case DIG_REV_1:
 	case DIG_REV_2:
 		chip->offset = offset[0].address;
@@ -8026,13 +8113,15 @@ static int fg_probe(struct spmi_device *spmi)
 	 */
 	chip->batt_psy_name = "battery";
 
+#ifdef CONFIG_DEBUG_FS
 	if (chip->mem_base) {
 		rc = fg_dfs_create(chip);
 		if (rc < 0) {
 			pr_err("failed to create debugfs rc = %d\n", rc);
-			goto power_supply_unregister;
+			rc = 0;
 		}
 	}
+#endif
 
 	schedule_work(&chip->init_work);
 
@@ -8043,8 +8132,6 @@ static int fg_probe(struct spmi_device *spmi)
 
 	return rc;
 
-power_supply_unregister:
-	power_supply_unregister(&chip->bms_psy);
 cancel_work:
 	fg_cancel_all_works(chip);
 of_init_fail:

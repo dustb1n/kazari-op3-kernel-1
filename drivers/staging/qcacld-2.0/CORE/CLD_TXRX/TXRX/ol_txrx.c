@@ -2240,6 +2240,7 @@ ol_txrx_peer_display(ol_txrx_peer_handle peer, int indent)
  * *
  * to update the stats
  *
+<<<<<<< HEAD
  * Return: VOS_STATUS
  */
 VOS_STATUS
@@ -2248,6 +2249,14 @@ ol_txrx_stats(ol_txrx_vdev_handle vdev, char *buffer, unsigned buf_len)
 	int ret;
 
 	ret = snprintf(buffer, buf_len,
+=======
+ * Return: None
+ */
+void
+ol_txrx_stats(ol_txrx_vdev_handle vdev, char *buffer, unsigned buf_len)
+{
+	snprintf(buffer, buf_len,
+>>>>>>> sultanxda/cm-13.0-sultan
 		"\nTXRX stats:\n"
 		"\nllQueue State : %s"
 		"\n pause %u unpause %u"
@@ -2259,12 +2268,15 @@ ol_txrx_stats(ol_txrx_vdev_handle vdev, char *buffer, unsigned buf_len)
 		vdev->ll_pause.q_overflow_cnt,
 		((vdev->ll_pause.is_q_timer_on == FALSE)
 			? "NOT-RUNNING" : "RUNNING"));
+<<<<<<< HEAD
 	if (ret >= buf_len) {
 		VOS_TRACE(VOS_MODULE_ID_TXRX, VOS_TRACE_LEVEL_ERROR,
 			"Insufficient buffer:%d, %d", buf_len, ret);
 		return VOS_STATUS_E_NOMEM;
 	}
 	return VOS_STATUS_SUCCESS;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 #if TXRX_STATS_LEVEL != TXRX_STATS_LEVEL_OFF

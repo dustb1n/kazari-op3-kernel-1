@@ -747,7 +747,11 @@ PopulateDot11fHTCaps(tpAniSirGlobal           pMac,
     }
 
     /* If STA and mimo power save is enabled include ht smps */
+<<<<<<< HEAD
     if (psessionEntry &&
+=======
+    if (psessionEntry && (!pMac->lteCoexAntShare) &&
+>>>>>>> sultanxda/cm-13.0-sultan
         LIM_IS_STA_ROLE(psessionEntry) &&
         (psessionEntry->enableHtSmps) &&
         (!psessionEntry->supported_nss_1x1)) {
@@ -1203,6 +1207,7 @@ PopulateDot11fExtCap(tpAniSirGlobal   pMac,
        return eSIR_FAILURE;
     }
 
+<<<<<<< HEAD
     if (val)
     {
         if (!psessionEntry || LIM_IS_STA_ROLE(psessionEntry)) {
@@ -1215,6 +1220,20 @@ PopulateDot11fExtCap(tpAniSirGlobal   pMac,
               (pMac->fine_time_meas_cap & WMI_FW_AP_RTT_INITR) ? 1 : 0;
             p_ext_cap->fine_time_meas_responder =
               (pMac->fine_time_meas_cap & WMI_FW_AP_RTT_RESPR) ? 1 : 0;
+=======
+    if (val)   // If set to true then set RTTv3
+    {
+        if (!psessionEntry || LIM_IS_STA_ROLE(psessionEntry)) {
+            p_ext_cap->fine_time_meas_initiator =
+              (pMac->fine_time_meas_cap & FINE_TIME_MEAS_STA_INITIATOR) ? 1 : 0;
+            p_ext_cap->fine_time_meas_responder =
+              (pMac->fine_time_meas_cap & FINE_TIME_MEAS_STA_RESPONDER) ? 1 : 0;
+        } else if (LIM_IS_AP_ROLE(psessionEntry)) {
+            p_ext_cap->fine_time_meas_initiator =
+              (pMac->fine_time_meas_cap & FINE_TIME_MEAS_SAP_INITIATOR) ? 1 : 0;
+            p_ext_cap->fine_time_meas_responder =
+              (pMac->fine_time_meas_cap & FINE_TIME_MEAS_SAP_RESPONDER) ? 1 : 0;
+>>>>>>> sultanxda/cm-13.0-sultan
         }
     }
 
@@ -1721,8 +1740,12 @@ PopulateDot11fSuppRates(tpAniSirGlobal      pMac,
 tSirRetStatus
 populate_dot11f_rates_tdls(tpAniSirGlobal p_mac,
 			   tDot11fIESuppRates *p_supp_rates,
+<<<<<<< HEAD
 			   tDot11fIEExtSuppRates *p_ext_supp_rates,
 			   uint8_t curr_oper_channel)
+=======
+			   tDot11fIEExtSuppRates *p_ext_supp_rates)
+>>>>>>> sultanxda/cm-13.0-sultan
 {
 	tSirMacRateSet temp_rateset;
 	tSirMacRateSet temp_rateset2;
@@ -1732,6 +1755,7 @@ populate_dot11f_rates_tdls(tpAniSirGlobal p_mac,
 	wlan_cfgGetInt(p_mac, WNI_CFG_DOT11_MODE, &self_dot11mode);
 
 	/**
+<<<<<<< HEAD
 	 * Include 11b rates only when the device configured in
 	 * auto, 11a/b/g or 11b_only and also if current base
 	 * channel is 5 GHz then no need to advertise the 11b rates.
@@ -1744,11 +1768,21 @@ populate_dot11f_rates_tdls(tpAniSirGlobal p_mac,
 
 	if ((curr_oper_channel <= SIR_11B_CHANNEL_END) &&
 	    ((self_dot11mode == WNI_CFG_DOT11_MODE_ALL) ||
+=======
+         * Include 11b rates only when the device configured in
+	 * auto, 11a/b/g or 11b_only
+         */
+	if ((self_dot11mode == WNI_CFG_DOT11_MODE_ALL) ||
+>>>>>>> sultanxda/cm-13.0-sultan
 	    (self_dot11mode == WNI_CFG_DOT11_MODE_11A) ||
 	    (self_dot11mode == WNI_CFG_DOT11_MODE_11AC) ||
 	    (self_dot11mode == WNI_CFG_DOT11_MODE_11N) ||
 	    (self_dot11mode == WNI_CFG_DOT11_MODE_11G) ||
+<<<<<<< HEAD
 	    (self_dot11mode == WNI_CFG_DOT11_MODE_11B))) {
+=======
+	    (self_dot11mode == WNI_CFG_DOT11_MODE_11B) ) {
+>>>>>>> sultanxda/cm-13.0-sultan
 		val = WNI_CFG_SUPPORTED_RATES_11B_LEN;
 		wlan_cfgGetStr(p_mac, WNI_CFG_SUPPORTED_RATES_11B,
 				(tANI_U8 *)&temp_rateset.rate, &val);
@@ -2188,7 +2222,11 @@ tSirRetStatus sirvalidateandrectifyies(tpAniSirGlobal pMac,
                                     tANI_U32 *nMissingRsnBytes)
 {
     tANI_U32 length = SIZE_OF_FIXED_PARAM;
+<<<<<<< HEAD
     tANI_U8 *refFrame;
+=======
+    tANI_U8 *refFrame = NULL;
+>>>>>>> sultanxda/cm-13.0-sultan
 
     /* Frame contains atleast one IE */
     if (nFrameBytes > (SIZE_OF_FIXED_PARAM + 2)) {
@@ -2198,6 +2236,11 @@ tSirRetStatus sirvalidateandrectifyies(tpAniSirGlobal pMac,
             length += (tANI_U32)(SIZE_OF_TAG_PARAM_NUM + SIZE_OF_TAG_PARAM_LEN
                                  + (*(refFrame + SIZE_OF_TAG_PARAM_NUM)));
         }
+<<<<<<< HEAD
+=======
+	if (!refFrame)
+		return eSIR_FAILURE;
+>>>>>>> sultanxda/cm-13.0-sultan
         if (length != nFrameBytes) {
             /*
              * Workaround : Some APs may not include RSN Capability but
@@ -3681,6 +3724,14 @@ sirParseBeaconIE(tpAniSirGlobal        pMac,
     pBeaconStruct->Vendor1IEPresent = pBies->Vendor1IE.present;
     pBeaconStruct->Vendor2IEPresent = pBies->Vendor2IE.present;
     pBeaconStruct->Vendor3IEPresent = pBies->Vendor3IE.present;
+<<<<<<< HEAD
+=======
+    if (pBies->ExtCap.present) {
+        pBeaconStruct->ExtCap.present = 1;
+        vos_mem_copy( &pBeaconStruct->ExtCap, &pBies->ExtCap,
+                sizeof(tDot11fIEExtCap));
+    }
+>>>>>>> sultanxda/cm-13.0-sultan
 
     vos_mem_free(pBies);
     return eSIR_SUCCESS;

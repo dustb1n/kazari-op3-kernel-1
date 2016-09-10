@@ -150,7 +150,11 @@ CONFIG_ADF_SUPPORT := 1
 CONFIG_ATH_PERF_PWR_OFFLOAD := 1
 
 #Disable packet log
+<<<<<<< HEAD
 CONFIG_REMOVE_PKT_LOG := 0
+=======
+CONFIG_REMOVE_PKT_LOG := 1
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #Enable 11AC TX
 ifeq ($(CONFIG_ROME_IF),pci)
@@ -949,8 +953,12 @@ CDEFINES :=	-DANI_LITTLE_BYTE_ENDIAN \
 		-DFEATURE_WLAN_EXTSCAN \
 		-DFEATURE_WLAN_LFR \
 		-DFEATURE_WLAN_CH144 \
+<<<<<<< HEAD
 		-DHTC_CRP_DEBUG \
 		-DWLAN_VOWIFI_DEBUG
+=======
+		-DHTC_CRP_DEBUG
+>>>>>>> sultanxda/cm-13.0-sultan
 
 ifeq ($(CONFIG_QCA_WIFI_SDIO), 1)
 CDEFINES +=     -DCONFIG_HL_SUPPORT \

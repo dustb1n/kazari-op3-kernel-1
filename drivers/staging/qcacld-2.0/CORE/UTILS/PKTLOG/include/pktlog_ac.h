@@ -27,9 +27,17 @@
 
 #ifndef _PKTLOG_AC_H_
 #define _PKTLOG_AC_H_
+<<<<<<< HEAD
 #ifndef REMOVE_PKT_LOG
 
 #include "ol_if_athvar.h"
+=======
+
+#include "ol_if_athvar.h"
+
+#ifndef REMOVE_PKT_LOG
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #include <pktlog_ac_api.h>
 #include <pktlog_ac_fmt.h>
 #include "osdep.h"
@@ -148,6 +156,7 @@ static inline void pktlog_init(struct ol_softc *scn)
 {
 	return;
 }
+<<<<<<< HEAD
 static int pktlog_enable(struct ol_softc *scn, int32_t log_state)
 {
 	return 0;
@@ -157,6 +166,21 @@ static int pktlog_setsize(struct ol_softc *scn, int32_t log_state)
 	return 0;
 }
 static int pktlog_disable(struct ol_softc *scn)
+=======
+static inline int pktlog_enable(struct ol_softc *scn, int32_t log_state)
+{
+	return 0;
+}
+static inline int pktlog_setsize(struct ol_softc *scn, int32_t log_state)
+{
+	return 0;
+}
+static inline int pktlog_disable(struct ol_softc *scn)
+{
+	return 0;
+}
+static inline int pktlog_send_per_pkt_stats_to_user(void)
+>>>>>>> sultanxda/cm-13.0-sultan
 {
 	return 0;
 }

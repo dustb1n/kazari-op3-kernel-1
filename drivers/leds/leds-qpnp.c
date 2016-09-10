@@ -2787,7 +2787,11 @@ static ssize_t rgb_blink_store(struct device *dev,
 	const char *buf, size_t count)
 {
 	struct rgb_sync *rgb_sync;
+<<<<<<< HEAD
 	struct qpnp_led_data *led;
+=======
+	struct qpnp_led_data *led = NULL;
+>>>>>>> sultanxda/cm-13.0-sultan
 	unsigned long blinking;
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
 	ssize_t rc = -EINVAL, i;

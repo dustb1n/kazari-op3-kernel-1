@@ -61,8 +61,12 @@
 typedef struct tagOemDataReq
 {
     tANI_U8   sessionId;
+<<<<<<< HEAD
     uint8_t   data_len;
     uint8_t   *data;
+=======
+    tANI_U8   oemDataReq[OEM_DATA_REQ_SIZE];
+>>>>>>> sultanxda/cm-13.0-sultan
 } tOemDataReq, tOemDataReqConfig;
 
 /*************************************************************************************************************

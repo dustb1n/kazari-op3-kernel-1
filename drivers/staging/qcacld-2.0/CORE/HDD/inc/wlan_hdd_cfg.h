@@ -1094,6 +1094,7 @@ enum
 #define CFG_ROAM_RESCAN_RSSI_DIFF_MAX                   (100)
 #define CFG_ROAM_RESCAN_RSSI_DIFF_DEFAULT               (5)
 
+<<<<<<< HEAD
 /*
  * This parameter is the continuous packets dropping threshold that will trigger
  * kickout peer event from fw.
@@ -1101,6 +1102,10 @@ enum
  */
 #define CFG_DROPPED_PKT_DISCONNECT_TH_NAME      "gDroppedPktDisconnectTh"
 #define CFG_DROPPED_PKT_DISCONNECT_TH_MIN       (0)
+=======
+#define CFG_DROPPED_PKT_DISCONNECT_TH_NAME      "gDroppedPktDisconnectTh"
+#define CFG_DROPPED_PKT_DISCONNECT_TH_MIN       (48)
+>>>>>>> sultanxda/cm-13.0-sultan
 #define CFG_DROPPED_PKT_DISCONNECT_TH_MAX       (1024)
 #define CFG_DROPPED_PKT_DISCONNECT_TH_DEFAULT   (512)
 
@@ -2653,12 +2658,20 @@ This feature requires the dependent cfg.ini "gRoamPrefer5GHz" set to 1 */
 #define CFG_SET_TXPOWER_LIMIT2G_NAME               "TxPower2g"
 #define CFG_SET_TXPOWER_LIMIT2G_MIN                ( 0 )
 #define CFG_SET_TXPOWER_LIMIT2G_MAX                ( 30 )
+<<<<<<< HEAD
 #define CFG_SET_TXPOWER_LIMIT2G_DEFAULT            ( 30 )
+=======
+#define CFG_SET_TXPOWER_LIMIT2G_DEFAULT            ( 15 )
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #define CFG_SET_TXPOWER_LIMIT5G_NAME               "TxPower5g"
 #define CFG_SET_TXPOWER_LIMIT5G_MIN                ( 0 )
 #define CFG_SET_TXPOWER_LIMIT5G_MAX                ( 30 )
+<<<<<<< HEAD
 #define CFG_SET_TXPOWER_LIMIT5G_DEFAULT            ( 30 )
+=======
+#define CFG_SET_TXPOWER_LIMIT5G_DEFAULT            ( 15 )
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #ifdef QCA_LL_TX_FLOW_CT
 /* Default, single interface case flow control parameters */
@@ -2874,7 +2887,10 @@ This feature requires the dependent cfg.ini "gRoamPrefer5GHz" set to 1 */
 #define CFG_IPA_UC_OFFLOAD_ENABLED_MAX             ( 1 )
 #define CFG_IPA_UC_OFFLOAD_ENABLED_DEFAULT         ( 0 )
 
+<<<<<<< HEAD
 /* IpaUcTxBufCount should be power of 2 */
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #define CFG_IPA_UC_TX_BUF_COUNT_NAME               "IpaUcTxBufCount"
 #define CFG_IPA_UC_TX_BUF_COUNT_MIN                ( 0 )
 #define CFG_IPA_UC_TX_BUF_COUNT_MAX                ( 2048 )
@@ -2885,7 +2901,10 @@ This feature requires the dependent cfg.ini "gRoamPrefer5GHz" set to 1 */
 #define CFG_IPA_UC_TX_BUF_SIZE_MAX                ( 4096 )
 #define CFG_IPA_UC_TX_BUF_SIZE_DEFAULT            ( 2048 )
 
+<<<<<<< HEAD
 /* IpaUcRxIndRingCount should be power of 2 */
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #define CFG_IPA_UC_RX_IND_RING_COUNT_NAME          "IpaUcRxIndRingCount"
 #define CFG_IPA_UC_RX_IND_RING_COUNT_MIN           ( 0 )
 #define CFG_IPA_UC_RX_IND_RING_COUNT_MAX           ( 2048 )
@@ -2916,6 +2935,7 @@ This feature requires the dependent cfg.ini "gRoamPrefer5GHz" set to 1 */
 #define CFG_WLAN_LOGGING_NUM_BUF_DEFAULT            ( 256 )
 #endif /* WLAN_LOGGING_SOCK_SVC_ENABLE */
 
+<<<<<<< HEAD
 /*
  * Sifs burst feature configuration
  * gEnableSifsBurst = 0 means sifs burst toally disable
@@ -2925,6 +2945,11 @@ This feature requires the dependent cfg.ini "gRoamPrefer5GHz" set to 1 */
 #define CFG_ENABLE_SIFS_BURST                      "gEnableSifsBurst"
 #define CFG_ENABLE_SIFS_BURST_MIN                  ( 0 )
 #define CFG_ENABLE_SIFS_BURST_MAX                  (3)
+=======
+#define CFG_ENABLE_SIFS_BURST                      "gEnableSifsBurst"
+#define CFG_ENABLE_SIFS_BURST_MIN                  ( 0 )
+#define CFG_ENABLE_SIFS_BURST_MAX                  ( 1 )
+>>>>>>> sultanxda/cm-13.0-sultan
 #define CFG_ENABLE_SIFS_BURST_DEFAULT              ( 0 )
 
 #ifdef WLAN_FEATURE_LPSS
@@ -3397,6 +3422,7 @@ enum dot11p_mode {
 #define CFG_FIRST_SCAN_BUCKET_THRESHOLD_MAX       (-30)
 #define CFG_FIRST_SCAN_BUCKET_THRESHOLD_DEFAULT   (-30)
 
+<<<<<<< HEAD
 /*
  * sap tx leakage threshold
  * customer can set this value from 100 to 1000 which means
@@ -3413,6 +3439,8 @@ enum dot11p_mode {
 #define CFG_TGT_GTX_USR_CFG_DEFAULT   (32)
 
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /*---------------------------------------------------------------------------
   Type declarations
   -------------------------------------------------------------------------*/
@@ -3997,7 +4025,11 @@ typedef struct
    v_U32_t                     wlanLoggingNumBuf;
 #endif /* WLAN_LOGGING_SOCK_SVC_ENABLE */
 
+<<<<<<< HEAD
    v_U8_t                      enableSifsBurst;
+=======
+   v_BOOL_t                    enableSifsBurst;
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #ifdef WLAN_FEATURE_LPSS
    v_BOOL_t                    enablelpasssupport;
@@ -4109,9 +4141,12 @@ typedef struct
    uint16_t                    max_mgmt_tx_fail_count;
    int8_t                      first_scan_bucket_threshold;
    uint8_t                     ht_mpdu_density;
+<<<<<<< HEAD
    uint16_t                    sap_tx_leakage_threshold;
    /* parameter to control GTX */
    uint32_t                    tgt_gtx_usr_cfg;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 } hdd_config_t;
 
 #ifdef WLAN_FEATURE_MBSSID

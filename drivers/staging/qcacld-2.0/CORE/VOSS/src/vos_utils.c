@@ -1230,6 +1230,7 @@ v_U8_t vos_chan_to_band(v_U32_t chan)
 
     return VOS_BAND_5GHZ;
 }
+<<<<<<< HEAD
 
 /**
  * vos_rounddown_pow_of_two() - Round down to nearest power of two
@@ -1246,3 +1247,5 @@ unsigned long vos_rounddown_pow_of_two(unsigned long n)
 
 	return __rounddown_pow_of_two(n);
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -173,7 +177,13 @@ typedef enum {
     eSAP_ASSOC_STA_CALLBACK_EVENT,  /*Event sent when user called WLANSAP_GetAssocStations */
     eSAP_GET_WPSPBC_SESSION_EVENT,  /* Event send when user call  WLANSAP_getWpsSessionOverlap */
     eSAP_WPS_PBC_PROBE_REQ_EVENT, /* Event send on WPS PBC probe request is received */
+<<<<<<< HEAD
     eSAP_REMAIN_CHAN_READY,
+=======
+    eSAP_INDICATE_MGMT_FRAME,
+    eSAP_REMAIN_CHAN_READY,
+    eSAP_SEND_ACTION_CNF,
+>>>>>>> sultanxda/cm-13.0-sultan
     eSAP_DISCONNECT_ALL_P2P_CLIENT,
     eSAP_MAC_TRIG_STOP_BSS_EVENT,
     eSAP_UNKNOWN_STA_JOIN, /* Event send when a STA in neither white list or black list tries to associate in softap mode */
@@ -411,7 +421,12 @@ typedef struct sap_Event_s {
         tSap_AssocStaListEvent                    sapAssocStaListEvent; /*SAP_ASSOC_STA_CALLBACK_EVENT */
         tSap_GetWPSPBCSessionEvent                sapGetWPSPBCSessionEvent; /*SAP_GET_WPSPBC_SESSION_EVENT */
         tSap_WPSPBCProbeReqEvent                  sapPBCProbeReqEvent; /*eSAP_WPS_PBC_PROBE_REQ_EVENT */
+<<<<<<< HEAD
         tSap_SendActionCnf                        sapActionCnf;
+=======
+        tSap_ManagementFrameInfo                  sapManagementFrameInfo; /*eSAP_INDICATE_MGMT_FRAME*/
+        tSap_SendActionCnf                        sapActionCnf;  /* eSAP_SEND_ACTION_CNF */
+>>>>>>> sultanxda/cm-13.0-sultan
         tSap_UnknownSTAJoinEvent                  sapUnknownSTAJoin; /* eSAP_UNKNOWN_STA_JOIN */
         tSap_MaxAssocExceededEvent                sapMaxAssocExceeded; /* eSAP_MAX_ASSOC_EXCEEDED */
         tSap_DfsNolInfo                           sapDfsNolInfo;    /*eSAP_DFS_NOL_XXX */
@@ -628,7 +643,10 @@ typedef struct sSapDfsInfo
      * channel switch is disabled.
      */
     v_U8_t              disable_dfs_ch_switch;
+<<<<<<< HEAD
     uint16_t tx_leakage_threshold;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 } tSapDfsInfo;
 
 typedef struct tagSapCtxList
@@ -2375,11 +2393,14 @@ WLANSAP_ACS_CHSelect(v_PVOID_t pvosGCtx,
 
 eCsrPhyMode
 wlansap_get_phymode(v_PVOID_t pctx);
+<<<<<<< HEAD
 
 VOS_STATUS wlansap_set_tx_leakage_threshold(tHalHandle hal,
 			uint16 tx_leakage_threshold);
 
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef __cplusplus
  }
 #endif

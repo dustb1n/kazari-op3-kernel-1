@@ -709,10 +709,13 @@ static int tlshim_mgmt_rx_process(void *context, u_int8_t *data,
 				adf_nbuf_pull_head(wbuf, IEEE80211_CCMP_HEADERLEN);
 				adf_nbuf_trim_tail(wbuf, IEEE80211_CCMP_MICLEN);
 
+<<<<<<< HEAD
 				/* wh is moved, restore wh with relocated
 				 * ieee80211_frame header.
 				 */
 				wh = (struct ieee80211_frame *) adf_nbuf_data(wbuf);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 				rx_pkt->pkt_meta.mpdu_hdr_ptr = adf_nbuf_data(wbuf);
 				rx_pkt->pkt_meta.mpdu_len = adf_nbuf_len(wbuf);
 				rx_pkt->pkt_meta.mpdu_data_len =
@@ -1791,9 +1794,15 @@ VOS_STATUS WLANTL_Start(void *vos_ctx)
 VOS_STATUS WLANTL_Close(void *vos_ctx)
 {
 	struct txrx_tl_shim_ctx *tl_shim;
+<<<<<<< HEAD
 	struct tlshim_buf *cache_buf, *tmp;
 	struct tlshim_sta_info *sta_info;
 	u_int16_t i;
+=======
+#if defined(QCA_LL_TX_FLOW_CT) || defined(QCA_SUPPORT_TXRX_VDEV_PAUSE_LL)
+	u_int8_t i;
+#endif /* QCA_LL_TX_FLOW_CT */
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	ENTER();
 	tl_shim = vos_get_context(VOS_MODULE_ID_TL, vos_ctx);
@@ -1825,6 +1834,7 @@ VOS_STATUS WLANTL_Close(void *vos_ctx)
 	vos_flush_work(&tl_shim->iapp_work.deferred_work);
 #endif
 	vos_flush_work(&tl_shim->cache_flush_work);
+<<<<<<< HEAD
 	for (i = 0; i < WLAN_MAX_STA_COUNT; i++) {
 		sta_info = &tl_shim->sta_info[i];
 		adf_os_spin_lock_bh(&tl_shim->bufq_lock);
@@ -1838,6 +1848,9 @@ VOS_STATUS WLANTL_Close(void *vos_ctx)
 		}
 		adf_os_spin_unlock_bh(&tl_shim->bufq_lock);
 	}
+=======
+
+>>>>>>> sultanxda/cm-13.0-sultan
 	wdi_in_pdev_detach(((pVosContextType) vos_ctx)->pdev_txrx_ctx, 1);
 	// Delete beacon buffer hanging off tl_shim
 	if (tl_shim->last_beacon_data) {
@@ -2068,9 +2081,14 @@ WLANTL_PauseUnPauseQs(void *vos_context, v_BOOL_t flag)
  *
  * HDD will call this API to get the OL-TXRX module stats
  *
+<<<<<<< HEAD
  * Return: VOS_STATUS
  */
 VOS_STATUS WLANTL_Get_llStats
+=======
+ */
+void WLANTL_Get_llStats
+>>>>>>> sultanxda/cm-13.0-sultan
 (
 	uint8_t sessionId,
 	char *buffer,
@@ -2082,22 +2100,38 @@ VOS_STATUS WLANTL_Get_llStats
 	struct ol_txrx_vdev_t *vdev;
 
 	if (!vos_context) {
+<<<<<<< HEAD
 		return VOS_STATUS_E_FAILURE;
+=======
+		return;
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 	tl_shim = vos_get_context(VOS_MODULE_ID_TL, vos_context);
 	if (!tl_shim) {
 		TLSHIM_LOGD("%s, tl_shim is NULL",
                     __func__);
+<<<<<<< HEAD
 		return VOS_STATUS_E_FAILURE;
+=======
+		return;
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 	vdev = tl_shim->session_flow_control[sessionId].vdev;
 	if (!vdev) {
 		TLSHIM_LOGE("%s, vdev is NULL", __func__);
+<<<<<<< HEAD
 		return VOS_STATUS_E_FAILURE;
 	}
 	return ol_txrx_stats(vdev, buffer, (unsigned)length);
+=======
+		return;
+	}
+	ol_txrx_stats(vdev, buffer, (unsigned)length);
+	return;
+
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /*=============================================================================

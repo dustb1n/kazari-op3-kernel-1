@@ -21,6 +21,7 @@
 #include <linux/sort.h>
 #include <linux/clk.h>
 #include <linux/bitmap.h>
+#include <linux/workqueue.h>
 
 #include <soc/qcom/event_timer.h>
 #include "mdss_fb.h"
@@ -946,7 +947,7 @@ static void mdss_mdp_perf_calc_mixer(struct mdss_mdp_mixer *mixer,
 	u32 prefill_val = 0;
 	struct mdss_data_type *mdata = mdss_mdp_get_mdata();
 	bool apply_fudge = true;
-	struct mdss_mdp_format_params *fmt;
+	struct mdss_mdp_format_params *fmt = NULL;
 
 	BUG_ON(num_pipes > MAX_PIPES_PER_LM);
 
@@ -2401,7 +2402,8 @@ int mdss_mdp_display_wakeup_time(struct mdss_mdp_ctl *ctl,
 				 ktime_t *wakeup_time)
 {
 	struct mdss_panel_info *pinfo;
-	u32 clk_rate, clk_period;
+	u64 clk_rate;
+	u32 clk_period;
 	u32 current_line, total_line;
 	u32 time_of_line, time_to_vsync, adjust_line_ns;
 
@@ -2416,7 +2418,7 @@ int mdss_mdp_display_wakeup_time(struct mdss_mdp_ctl *ctl,
 
 	clk_rate = mdss_mdp_get_pclk_rate(ctl);
 
-	clk_rate /= 1000;	/* in kHz */
+	clk_rate = DIV_ROUND_UP_ULL(clk_rate, 1000); /* in kHz */
 	if (!clk_rate)
 		return -EINVAL;
 
@@ -2425,7 +2427,7 @@ int mdss_mdp_display_wakeup_time(struct mdss_mdp_ctl *ctl,
 	 * accuracy with high pclk rate and this number is in 17 bit
 	 * range.
 	 */
-	clk_period = 1000000000 / clk_rate;
+	clk_period = DIV_ROUND_UP_ULL(1000000000, clk_rate);
 	if (!clk_period)
 		return -EINVAL;
 
@@ -2464,7 +2466,7 @@ int mdss_mdp_display_wakeup_time(struct mdss_mdp_ctl *ctl,
 
 	*wakeup_time = ktime_add_ns(current_time, time_to_vsync);
 
-	pr_debug("clk_rate=%dkHz clk_period=%d cur_line=%d tot_line=%d\n",
+	pr_debug("clk_rate=%lldkHz clk_period=%d cur_line=%d tot_line=%d\n",
 		clk_rate, clk_period, current_line, total_line);
 	pr_debug("time_to_vsync=%d current_time=%d wakeup_time=%d\n",
 		time_to_vsync, (int)ktime_to_ms(current_time),
@@ -3648,10 +3650,32 @@ int mdss_mdp_ctl_destroy(struct mdss_mdp_ctl *ctl)
 	return 0;
 }
 
+struct intf_handler_info {
+	struct work_struct work;
+	struct completion cmd_done;
+	struct list_head item;
+	int (*event_handler) (struct mdss_panel_data *pdata, int e, void *arg);
+	struct mdss_panel_data *pdata;
+	int event;
+	void *arg;
+	int rc;
+};
+
+static void intf_handler_work(struct work_struct *work)
+{
+        struct intf_handler_info *info = container_of(work,
+                struct intf_handler_info, work);
+
+	info->rc = info->event_handler(info->pdata, info->event, info->arg);
+	complete(&info->cmd_done);
+}
+
 int mdss_mdp_ctl_intf_event(struct mdss_mdp_ctl *ctl, int event, void *arg,
 	u32 flags)
 {
 	struct mdss_panel_data *pdata;
+	struct intf_handler_info *n, *info;
+	LIST_HEAD(handlers);
 	int rc = 0;
 
 	if (!ctl || !ctl->panel_data)
@@ -3671,11 +3695,30 @@ int mdss_mdp_ctl_intf_event(struct mdss_mdp_ctl *ctl, int event, void *arg,
 	pr_debug("sending ctl=%d event=%d flag=0x%x\n", ctl->num, event, flags);
 
 	do {
-		if (pdata->event_handler)
-			rc = pdata->event_handler(pdata, event, arg);
+		if (pdata->event_handler) {
+			info = kzalloc(sizeof(*info), GFP_KERNEL);
+			INIT_WORK(&info->work, intf_handler_work);
+			init_completion(&info->cmd_done);
+
+			info->event_handler = pdata->event_handler;
+			info->pdata = pdata;
+			info->event = event;
+			info->arg = arg;
+
+			list_add(&info->item, &handlers);
+
+			schedule_work(&info->work);
+		}
 		pdata = pdata->next;
-	} while (rc == 0 && pdata && pdata->active &&
+	} while (pdata && pdata->active &&
 		!(flags & CTL_INTF_EVENT_FLAG_SKIP_BROADCAST));
+
+	list_for_each_entry_safe(info, n, &handlers, item) {
+		wait_for_completion(&info->cmd_done);
+		if (!rc)
+			rc = info->rc;
+		kfree(info);
+	}
 
 	return rc;
 }
@@ -4651,14 +4694,14 @@ int mdss_mdp_get_pipe_flush_bits(struct mdss_mdp_pipe *pipe)
 	u32 flush_bits;
 
 	if (pipe->type == MDSS_MDP_PIPE_TYPE_DMA)
-		flush_bits |= BIT(pipe->num) << 5;
+		flush_bits = BIT(pipe->num) << 5;
 	else if (pipe->num == MDSS_MDP_SSPP_VIG3 ||
 			pipe->num == MDSS_MDP_SSPP_RGB3)
-		flush_bits |= BIT(pipe->num) << 10;
+		flush_bits = BIT(pipe->num) << 10;
 	else if (pipe->type == MDSS_MDP_PIPE_TYPE_CURSOR)
-		flush_bits |= BIT(22 + pipe->num - MDSS_MDP_SSPP_CURSOR0);
+		flush_bits = BIT(22 + pipe->num - MDSS_MDP_SSPP_CURSOR0);
 	else /* RGB/VIG 0-2 pipes */
-		flush_bits |= BIT(pipe->num);
+		flush_bits = BIT(pipe->num);
 
 	return flush_bits;
 }

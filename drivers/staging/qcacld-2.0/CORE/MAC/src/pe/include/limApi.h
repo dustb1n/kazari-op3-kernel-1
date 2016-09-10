@@ -125,9 +125,12 @@ void limDumpInit(tpAniSirGlobal pMac);
 extern void limCleanup(tpAniSirGlobal);
 /// Function to post messages to LIM thread
 extern tANI_U32  limPostMsgApi(tpAniSirGlobal, tSirMsgQ *);
+<<<<<<< HEAD
 uint32_t
 lim_post_msg_high_pri(tpAniSirGlobal mac, tSirMsgQ *msg);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /**
  * Function to process messages posted to LIM thread
  * and dispatch to various sub modules within LIM module.

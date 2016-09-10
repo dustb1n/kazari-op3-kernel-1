@@ -158,7 +158,10 @@ void pe_reset_protection_callback(void *ptr)
 
     old_op_mode = pe_session_entry->htOperMode;
     pe_session_entry->htOperMode = eSIR_HT_OP_MODE_PURE;
+<<<<<<< HEAD
     mac_ctx->lim.gHTOperMode = eSIR_HT_OP_MODE_PURE;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     vos_mem_zero(&beacon_params, sizeof(tUpdateBeaconParams));
     /* index 0, is self node, peers start from 1 */
@@ -662,21 +665,30 @@ void peDeleteSession(tpAniSirGlobal pMac, tpPESession psessionEntry)
     {
         vos_mem_free( psessionEntry->beacon);
         psessionEntry->beacon = NULL;
+<<<<<<< HEAD
         psessionEntry->bcnLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     if (psessionEntry->assocReq != NULL)
     {
         vos_mem_free( psessionEntry->assocReq);
         psessionEntry->assocReq = NULL;
+<<<<<<< HEAD
         psessionEntry->assocReqLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
     if (psessionEntry->assocRsp != NULL)
     {
         vos_mem_free( psessionEntry->assocRsp);
         psessionEntry->assocRsp = NULL;
+<<<<<<< HEAD
         psessionEntry->assocRspLen = 0;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     }
 
 

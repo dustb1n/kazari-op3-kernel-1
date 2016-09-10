@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -95,6 +99,7 @@ tSirRetStatus schGetP2pIeOffset(tANI_U8 *pExtraIe, tANI_U32 extraIeLen, tANI_U16
 
 tSirRetStatus schAppendAddnIE(tpAniSirGlobal pMac, tpPESession psessionEntry,
                                      tANI_U8 *pFrame, tANI_U32 maxBeaconSize,
+<<<<<<< HEAD
                                      tANI_U32 *nBytes, uint8_t *addn_ie,
                                      uint16_t addn_ielen)
 {
@@ -140,6 +145,60 @@ tSirRetStatus schAppendAddnIE(tpAniSirGlobal pMac, tpPESession psessionEntry,
             {
                 schLog(pMac, LOGW, FL("Not able to insert because of"
                     " addn_ielength constraint %d"), addn_ielen);
+=======
+                                     tANI_U32 *nBytes)
+{
+    tSirRetStatus status = eSIR_FAILURE;
+    tANI_U32 present, len;
+    tANI_U8 addIE[WNI_CFG_PROBE_RSP_BCN_ADDNIE_DATA_LEN];
+
+    present = (psessionEntry->addIeParams.probeRespBCNDataLen != 0);
+    if(present)
+    {
+        len = psessionEntry->addIeParams.probeRespBCNDataLen;
+
+        if(len <= WNI_CFG_PROBE_RSP_BCN_ADDNIE_DATA_LEN && len &&
+          ((len + *nBytes) <= maxBeaconSize))
+        {
+
+            vos_mem_copy(&addIE[0],
+                psessionEntry->addIeParams.probeRespBCNData_buff, len);
+
+            {
+                tANI_U8* pP2pIe = limGetP2pIEPtr(pMac, &addIE[0], len);
+                if ((pP2pIe != NULL) && !pMac->beacon_offload)
+                {
+                    tANI_U8 noaLen = 0;
+                    tANI_U8 noaStream[SIR_MAX_NOA_ATTR_LEN + SIR_P2P_IE_HEADER_LEN];
+                    //get NoA attribute stream P2P IE
+                    noaLen = limGetNoaAttrStream(pMac, noaStream, psessionEntry);
+                    if(noaLen)
+                    {
+                        if ((noaLen + len) <=
+                                        WNI_CFG_PROBE_RSP_BCN_ADDNIE_DATA_LEN) {
+                            vos_mem_copy(&addIE[len], noaStream, noaLen);
+                            len += noaLen;
+                            /* Update IE Len */
+                            pP2pIe[1] += noaLen;
+                        }
+                        else
+                        {
+                            schLog(pMac, LOGE,
+                               FL("Not able to insert NoA because of length constraint"));
+                        }
+                    }
+                }
+                if(len <= WNI_CFG_PROBE_RSP_BCN_ADDNIE_DATA_LEN)
+                {
+                    vos_mem_copy(pFrame, &addIE[0], len);
+                    *nBytes = *nBytes + len;
+                }
+                else
+                {
+                    schLog(pMac, LOGW, FL("Not able to insert because of"
+                        " length constraint %d"), len);
+                }
+>>>>>>> sultanxda/cm-13.0-sultan
             }
         }
     }
@@ -181,10 +240,13 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
     tANI_U16 p2pIeOffset = 0;
     tSirRetStatus status = eSIR_SUCCESS;
     tANI_BOOLEAN  isVHTEnabled = eANI_BOOLEAN_FALSE;
+<<<<<<< HEAD
     uint16_t addn_ielen = 0;
     uint8_t *addn_ie = NULL;
     tDot11fIEExtCap extracted_extcap;
     bool extcap_present = true, addnie_present = false;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     pBcn1 = vos_mem_malloc(sizeof(tDot11fBeacon1));
     if ( NULL == pBcn1 )
@@ -384,8 +446,12 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
     }
 #endif
 
+<<<<<<< HEAD
     if (psessionEntry->limSystemRole != eLIM_STA_IN_IBSS_ROLE)
         PopulateDot11fExtCap(pMac, isVHTEnabled, &pBcn2->ExtCap, psessionEntry);
+=======
+    PopulateDot11fExtCap(pMac, isVHTEnabled, &pBcn2->ExtCap, psessionEntry);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     PopulateDot11fExtSuppRates( pMac, POPULATE_DOT11F_RATES_OPERATIONAL,
                                 &pBcn2->ExtSuppRates, psessionEntry );
@@ -468,6 +534,7 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
 
     }
 
+<<<<<<< HEAD
     addnie_present = (psessionEntry->addIeParams.probeRespBCNDataLen != 0);
     if (addnie_present) {
         addn_ielen = psessionEntry->addIeParams.probeRespBCNDataLen;
@@ -496,6 +563,8 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
 
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     nStatus = dot11fPackBeacon2( pMac, pBcn2,
                                  psessionEntry->pSchBeaconFrameEnd,
                                  SCH_MAX_BEACON_SIZE, &nBytes );
@@ -506,7 +575,10 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
       vos_mem_free(pBcn1);
       vos_mem_free(pBcn2);
       vos_mem_free(pWscProbeRes);
+<<<<<<< HEAD
       vos_mem_free(addn_ie);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
       return eSIR_FAILURE;
     }
     else if ( DOT11F_WARNED( nStatus ) )
@@ -518,10 +590,17 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
     pExtraIe = psessionEntry->pSchBeaconFrameEnd + nBytes;
     extraIeOffset = nBytes;
 
+<<<<<<< HEAD
     if (addn_ielen > 0)
         schAppendAddnIE(pMac, psessionEntry,
                     psessionEntry->pSchBeaconFrameEnd + nBytes,
                     SCH_MAX_BEACON_SIZE, &nBytes, addn_ie, addn_ielen);
+=======
+    //TODO: Append additional IE here.
+    schAppendAddnIE(pMac, psessionEntry,
+                    psessionEntry->pSchBeaconFrameEnd + nBytes,
+                    SCH_MAX_BEACON_SIZE, &nBytes);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     psessionEntry->schBeaconOffsetEnd = ( tANI_U16 )nBytes;
 
@@ -549,7 +628,10 @@ tSirRetStatus schSetFixedBeaconFields(tpAniSirGlobal pMac,tpPESession psessionEn
     vos_mem_free(pBcn1);
     vos_mem_free(pBcn2);
     vos_mem_free(pWscProbeRes);
+<<<<<<< HEAD
     vos_mem_free(addn_ie);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     return eSIR_SUCCESS;
 }
 

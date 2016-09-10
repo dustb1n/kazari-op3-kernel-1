@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -342,7 +346,10 @@
 #define WNI_CFG_DFS_MASTER_ENABLED    295
 #define WNI_CFG_VHT_ENABLE_TXBF_20MHZ    296
 #define WNI_CFG_TDLS_WMM_MODE_ENABLED    297
+<<<<<<< HEAD
 #define WNI_CFG_TGT_GTX_USR_CFG    298
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /*
  * String parameter lengths
@@ -2508,6 +2515,7 @@
 #define WNI_CFG_TDLS_WMM_MODE_ENABLED_APMAX    1
 #define WNI_CFG_TDLS_WMM_MODE_ENABLED_APDEF    0
 
+<<<<<<< HEAD
 #define WNI_CFG_TGT_GTX_USR_CFG_STAMIN    0
 #define WNI_CFG_TGT_GTX_USR_CFG_STAMAX    32
 #define WNI_CFG_TGT_GTX_USR_CFG_STADEF    32
@@ -2520,6 +2528,12 @@
 #define CFG_AP_IBUF_MAX_SIZE      246
 #define CFG_AP_SBUF_MAX_SIZE      3233
 #define CFG_STA_IBUF_MAX_SIZE     242
+=======
+#define CFG_PARAM_MAX_NUM         298
+#define CFG_AP_IBUF_MAX_SIZE      246
+#define CFG_AP_SBUF_MAX_SIZE      3233
+#define CFG_STA_IBUF_MAX_SIZE     241
+>>>>>>> sultanxda/cm-13.0-sultan
 #define CFG_STA_SBUF_MAX_SIZE     3199
 #define CFG_SEM_MAX_NUM           19
 

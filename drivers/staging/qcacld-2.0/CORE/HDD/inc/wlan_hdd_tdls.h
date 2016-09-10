@@ -217,6 +217,10 @@ typedef struct {
     tANI_U32        discovery_sent_cnt;
     tANI_S8         ap_rssi;
     struct _hddTdlsPeer_t  *curr_candidate;
+<<<<<<< HEAD
+=======
+    struct work_struct implicit_setup;
+>>>>>>> sultanxda/cm-13.0-sultan
     v_U32_t            magic;
 } tdlsCtx_t;
 
@@ -236,7 +240,10 @@ typedef struct _hddTdlsPeer_t {
     tANI_U16    rx_pkt;
     tANI_U8     uapsdQueues;
     tANI_U8     maxSp;
+<<<<<<< HEAD
     uint8_t     qos;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     tANI_U8     isBufSta;
     tANI_U8     isOffChannelSupported;
     tANI_U8     supported_channels_len;
@@ -321,8 +328,12 @@ int wlan_hdd_tdls_set_peer_caps(hdd_adapter_t *pAdapter,
                                 const u8 *mac,
                                 tCsrStaParams *StaParams,
                                 tANI_BOOLEAN isBufSta,
+<<<<<<< HEAD
                                 tANI_BOOLEAN isOffChannelSupported,
                                 bool is_qos_wmm_sta);
+=======
+                                tANI_BOOLEAN isOffChannelSupported);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 int wlan_hdd_tdls_set_rssi(hdd_adapter_t *pAdapter, const u8 *mac,
                            tANI_S8 rxRssi);
@@ -380,7 +391,14 @@ void wlan_hdd_tdls_indicate_teardown(hdd_adapter_t *pAdapter,
                                      hddTdlsPeer_t *curr_peer,
                                      tANI_U16 reason);
 
+<<<<<<< HEAD
 void wlan_hdd_tdls_implicit_send_discovery_request(tdlsCtx_t *pHddTdlsCtx);
+=======
+#ifdef CONFIG_TDLS_IMPLICIT
+void wlan_hdd_tdls_pre_setup_init_work(tdlsCtx_t *pHddTdlsCtx,
+                                       hddTdlsPeer_t *curr_candidate);
+#endif
+>>>>>>> sultanxda/cm-13.0-sultan
 
 int wlan_hdd_tdls_set_extctrl_param(hdd_adapter_t *pAdapter,
                                     const uint8_t  *mac,
@@ -449,10 +467,13 @@ static inline int wlan_hdd_tdls_antenna_switch(hdd_context_t *hdd_ctx,
 {
 	return 0;
 }
+<<<<<<< HEAD
 static inline void
 wlan_hdd_tdls_implicit_send_discovery_request(void *pHddTdlsCtx)
 {
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 
 #endif // __HDD_TDSL_H

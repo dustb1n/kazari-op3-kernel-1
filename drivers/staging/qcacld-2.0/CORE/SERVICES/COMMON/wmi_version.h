@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -36,7 +40,11 @@
 #define __WMI_VER_MINOR_    0
 /** WMI revision number has to be incremented when there is a
  *  change that may or may not break compatibility. */
+<<<<<<< HEAD
 #define __WMI_REVISION_ 184
+=======
+#define __WMI_REVISION_ 240
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /** The Version Namespace should not be normally changed. Only
  *  host and firmware of the same WMI namespace will work

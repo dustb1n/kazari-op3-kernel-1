@@ -54,6 +54,7 @@
 #include <linux/input/mt.h>
 
 #include "synaptics_redremote.h"
+<<<<<<< HEAD
 #include <linux/project_info.h>
 #include "synaptics_baseline.h"
 
@@ -72,6 +73,10 @@ static int s2w_switch = 0;
 static int dt2w_switch = 0;
 #endif
 
+=======
+#include "synaptics_baseline.h"
+
+>>>>>>> sultanxda/cm-13.0-sultan
 /*------------------------------------------------Global Define--------------------------------------------*/
 
 #define TP_UNKNOWN 0
@@ -220,7 +225,10 @@ static int sleep_enable;
 
 static struct synaptics_ts_data *ts_g = NULL;
 static struct workqueue_struct *synaptics_wq = NULL;
+<<<<<<< HEAD
 static struct workqueue_struct *synaptics_report = NULL;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static struct workqueue_struct *get_base_report = NULL;
 static struct proc_dir_entry *prEntry_tp = NULL;
 
@@ -459,7 +467,10 @@ struct synaptics_ts_data {
 	uint32_t pre_finger_state;
 	uint32_t pre_btn_state;
 	struct delayed_work  base_work;
+<<<<<<< HEAD
 	struct work_struct  report_work;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	struct delayed_work speed_up_work;
 	struct input_dev *input_dev;
 	struct hrtimer timer;
@@ -499,8 +510,19 @@ struct synaptics_ts_data {
         struct kobject *properties_kobj;
 #endif
 
+<<<<<<< HEAD
 	ktime_t timestamp;
 	struct work_struct pm_work;
+=======
+	struct work_struct pm_work;
+
+	ktime_t timestamp;
+
+	struct wakeup_source syna_isr_ws;
+	spinlock_t isr_lock;
+	bool i2c_awake;
+	struct completion i2c_resume;
+>>>>>>> sultanxda/cm-13.0-sultan
 };
 
 static struct device_attribute attrs_oem[] = {
@@ -536,7 +558,11 @@ static void touch_disable(struct synaptics_ts_data *ts)
 
 static int tpd_hw_pwron(struct synaptics_ts_data *ts)
 {
+<<<<<<< HEAD
 	int rc;
+=======
+	int rc = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	/***enable the 2v8 power*****/
 	if (!IS_ERR(ts->vdd_2v8)) {
@@ -1184,10 +1210,13 @@ static void gesture_judge(struct synaptics_ts_data *ts)
 	// Get key code based on registered gesture.
 	switch (gesture) {
 		case DouTap:
+<<<<<<< HEAD
 #ifdef WAKE_GESTURES
 			if (!dt2w_switch && s2w_switch)
 				break;
 #endif
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 			keyCode = KEY_DOUBLE_TAP;
 			break;
 		case UpVee:
@@ -1229,6 +1258,7 @@ static void gesture_judge(struct synaptics_ts_data *ts)
 
     TPD_DEBUG("gesture suport LeftVee:%d RightVee:%d DouSwip:%d Circle:%d UpVee:%d DouTap:%d\n",\
         LeftVee_gesture,RightVee_gesture,DouSwip_gesture,Circle_gesture,UpVee_gesture,DouTap_gesture);
+<<<<<<< HEAD
 
 #ifdef WAKE_GESTURES
 	if ((gesture == Down2UpSwip && s2w_switch & SWEEP_UP) ||
@@ -1279,6 +1309,8 @@ static void gesture_judge(struct synaptics_ts_data *ts)
 		}
 	} else
 #endif
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	if((gesture == DouTap && DouTap_gesture)||(gesture == RightVee && RightVee_gesture)\
         ||(gesture == LeftVee && LeftVee_gesture)||(gesture == UpVee && UpVee_gesture)\
         ||(gesture == Circle && Circle_gesture)||(gesture == DouSwip && DouSwip_gesture)){
@@ -1439,6 +1471,10 @@ void int_touch(void)
 	mutex_unlock(&ts->mutexreport);
 }
 
+<<<<<<< HEAD
+=======
+#ifndef TPD_USE_EINT
+>>>>>>> sultanxda/cm-13.0-sultan
 static void synaptics_ts_work_func(struct work_struct *work)
 {
 	int ret,status_check;
@@ -1494,7 +1530,10 @@ END:
 	return;
 }
 
+<<<<<<< HEAD
 #ifndef TPD_USE_EINT
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static enum hrtimer_restart synaptics_ts_timer_func(struct hrtimer *timer)
 {
 	struct synaptics_ts_data *ts = container_of(timer, struct synaptics_ts_data, timer);
@@ -1508,11 +1547,80 @@ static enum hrtimer_restart synaptics_ts_timer_func(struct hrtimer *timer)
 static irqreturn_t synaptics_irq_thread_fn(int irq, void *dev_id)
 {
 	struct synaptics_ts_data *ts = (struct synaptics_ts_data *)dev_id;
+<<<<<<< HEAD
 	mutex_lock(&ts->mutex);
 	ts->timestamp = ktime_get();
     touch_disable(ts);
 	queue_work(synaptics_report, &ts->report_work);
 	mutex_unlock(&ts->mutex);
+=======
+	int ret,status_check;
+	uint8_t status = 0;
+	uint8_t inte = 0;
+	unsigned long flags;
+	bool i2c_active;
+
+	if (atomic_read(&ts->is_stop) == 1)
+	{
+		return IRQ_HANDLED;
+	}
+
+	if( ts->enable_remote) {
+		return IRQ_HANDLED;
+	}
+
+	if (ts->is_suspended) {
+		spin_lock_irqsave(&ts->isr_lock, flags);
+		i2c_active = ts->i2c_awake;
+		spin_unlock_irqrestore(&ts->isr_lock, flags);
+
+		/* I2C bus must be active */
+		if (!i2c_active) {
+			__pm_stay_awake(&ts->syna_isr_ws);
+			/* Wait for I2C to resume before proceeding */
+			reinit_completion(&ts->i2c_resume);
+			wait_for_completion_timeout(&ts->i2c_resume,
+							msecs_to_jiffies(30));
+		}
+	}
+
+	ts->timestamp = ktime_get();
+
+	ret = synaptics_rmi4_i2c_write_byte(ts->client, 0xff, 0x00 );
+	ret = synaptics_rmi4_i2c_read_word(ts->client, F01_RMI_DATA_BASE);
+
+	if( ret < 0 ) {
+		TPDTM_DMESG("Synaptic:ret = %d\n", ret);
+        synaptics_hard_reset(ts);
+		goto exit;
+	}
+	status = ret & 0xff;
+	inte = (ret & 0x7f00)>>8;
+	//TPD_ERR("%s status[0x%x],inte[0x%x]\n",__func__,status,inte);
+        if(status & 0x80){
+		TPD_DEBUG("enter reset tp status,and ts->in_gesture_mode is:%d\n",ts->in_gesture_mode);
+		status_check = synaptics_init_panel(ts);
+		if (status_check < 0) {
+			TPD_ERR("synaptics_init_panel failed\n");
+		}
+		if ((ts->is_suspended == 1) && (ts->gesture_enable == 1)){
+			synaptics_enable_interrupt_for_gesture(ts, 1);
+		}
+	}
+/*
+	if(0 != status && 1 != status) {//0:no error;1: after hard reset;the two state don't need soft reset
+        TPD_ERR("%s status[0x%x],inte[0x%x]\n",__func__,status,inte);
+		int_state(ts);
+		goto END;
+	}
+*/
+	if ( inte & 0x04 )
+		int_touch();
+
+exit:
+	if (ts->syna_isr_ws.active)
+		__pm_relax(&ts->syna_isr_ws);
+>>>>>>> sultanxda/cm-13.0-sultan
 	return IRQ_HANDLED;
 }
 #endif
@@ -1610,8 +1718,12 @@ static ssize_t coordinate_proc_read_func(struct file *file, char __user *user_bu
 
 static void gesture_enable(struct synaptics_ts_data *ts)
 {
+<<<<<<< HEAD
 	ts->gesture_enable = gestures_switch || s2w_switch || dt2w_switch ||
 		DouTap_gesture || Circle_gesture || UpVee_gesture ||
+=======
+	ts->gesture_enable = DouTap_gesture || Circle_gesture || UpVee_gesture ||
+>>>>>>> sultanxda/cm-13.0-sultan
                 (LeftVee_gesture && RightVee_gesture && DouSwip_gesture) ? 1 : 0;
 }
 
@@ -1815,7 +1927,11 @@ static ssize_t synap_write_address(struct file *file, const char __user *buffer,
     }
     else
         block = temp_block;
+<<<<<<< HEAD
 	return count;
+=======
+    return count;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 #ifdef SUPPORT_GLOVES_MODE
@@ -2491,10 +2607,13 @@ static int	synaptics_input_init(struct synaptics_ts_data *ts)
 	set_bit(KEY_GESTURE_TWO_SWIPE, ts->input_dev->keybit);
 	set_bit(KEY_GESTURE_LEFT_V, ts->input_dev->keybit);
 	set_bit(KEY_GESTURE_RIGHT_V, ts->input_dev->keybit);
+<<<<<<< HEAD
 #ifdef WAKE_GESTURES
 	set_bit(KEY_POWER, ts->input_dev->keybit);
 	input_set_capability(ts->input_dev, EV_KEY, KEY_POWER);
 #endif
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 	set_bit(BTN_TOOL_FINGER, ts->input_dev->keybit);
 	/* For multi touch */
@@ -2588,7 +2707,10 @@ static int synatpitcs_fw_update(struct device *dev, bool force)
         if(1 == check_version ) {
 		TPD_DEBUG("enter version 15801 update mode\n");
 	        strcpy(ts->fw_name,"tp/fw_synaptics_15801.img");
+<<<<<<< HEAD
 		push_component_info(TP, ts->fw_id, "S3718_vA");
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 		ret = request_firmware(&fw, ts->fw_name, dev);
 		if (ret < 0) {
 			TPD_ERR("Request firmware failed - %s (%d)\n",ts->fw_name, ret);
@@ -2597,7 +2719,10 @@ static int synatpitcs_fw_update(struct device *dev, bool force)
 
 	 }else{
                 TPD_DEBUG("enter version 15801 vb update mode\n");
+<<<<<<< HEAD
 		push_component_info(TP, ts->fw_id, "S3718_vB");
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 		ret = request_firmware(&fw, ts->fw_name, dev);
 		if (ret < 0) {
 			TPD_ERR("Request firmware failed - %s (%d)\n",ts->fw_name, ret);
@@ -3720,6 +3845,7 @@ static int synaptics_ts_init_virtual_key(struct synaptics_ts_data *ts )
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef WAKE_GESTURES
 static ssize_t sweep2wake_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -3800,6 +3926,8 @@ static DEVICE_ATTR(wake_gestures, (S_IWUSR|S_IRUGO),
 	wake_gestures_show, wake_gestures_dump);
 #endif
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 #ifdef CONFIG_SYNAPTIC_RED
@@ -3876,8 +4004,13 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	TP_FW = CURRENT_FIRMWARE_ID;
 	sprintf(ts->fw_id,"0x%x",TP_FW);
 
+<<<<<<< HEAD
 	memset(ts->fw_name,TP_FW_NAME_MAX_LEN,0);
 	memset(ts->test_limit_name,TP_FW_NAME_MAX_LEN,0);
+=======
+	memset(ts->fw_name, 0, TP_FW_NAME_MAX_LEN);
+	memset(ts->test_limit_name, 0, TP_FW_NAME_MAX_LEN);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	//sprintf(ts->manu_name, "TP_SYNAPTICS");
     synaptics_rmi4_i2c_read_block(ts->client, F01_RMI_QUERY11,\
@@ -3896,18 +4029,24 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	}
 	INIT_DELAYED_WORK(&ts->speed_up_work,speedup_synaptics_resume);
 
+<<<<<<< HEAD
 	synaptics_report = create_singlethread_workqueue("synaptics_report");
 	if( !synaptics_report ){
 		ret = -ENOMEM;
 		goto exit_createworkqueue_failed;
 	}
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	get_base_report = create_singlethread_workqueue("get_base_report");
 	if( !get_base_report ){
 		ret = -ENOMEM;
 		goto exit_createworkqueue_failed;
 	}
+<<<<<<< HEAD
 	INIT_WORK(&ts->report_work,synaptics_ts_work_func);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	INIT_DELAYED_WORK(&ts->base_work,tp_baseline_get_work);
 
 	ret = synaptics_init_panel(ts); /* will also switch back to page 0x04 */
@@ -3954,6 +4093,14 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	hrtimer_start(&ts->timer, ktime_set(3, 0), HRTIMER_MODE_REL);
 #endif
 
+<<<<<<< HEAD
+=======
+	init_completion(&ts->i2c_resume);
+	spin_lock_init(&ts->isr_lock);
+	wakeup_source_init(&ts->syna_isr_ws, "synaptics-isr");
+	ts->i2c_awake = true;
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef TPD_USE_EINT
 	/****************
 	  shoud set the irq GPIO
@@ -4024,6 +4171,7 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	}
 #endif
 	init_synaptics_proc();
+<<<<<<< HEAD
 
 #ifdef WAKE_GESTURES
 	gesture_dev = input_allocate_device();
@@ -4068,13 +4216,21 @@ err_gesture_dev:
 	input_free_device(gesture_dev);
 #endif
 
+=======
+	TPDTM_DMESG("synaptics_ts_probe 3203: normal end\n");
+	return 0;
+
+>>>>>>> sultanxda/cm-13.0-sultan
 exit_init_failed:
 	free_irq(client->irq,ts);
 exit_createworkqueue_failed:
 	destroy_workqueue(synaptics_wq);
 	synaptics_wq = NULL;
+<<<<<<< HEAD
 	destroy_workqueue(synaptics_report);
 	synaptics_report = NULL;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	destroy_workqueue(get_base_report);
 	get_base_report = NULL;
 
@@ -4216,6 +4372,14 @@ static int synaptics_i2c_suspend(struct device *dev)
 {
 	int ret;
 	struct synaptics_ts_data *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&ts->isr_lock, flags);
+	ts->i2c_awake = false;
+	spin_unlock_irqrestore(&ts->isr_lock, flags);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	TPD_DEBUG("%s: is called\n", __func__);
 	if (ts->gesture_enable == 1){
@@ -4243,6 +4407,16 @@ static int synaptics_i2c_suspend(struct device *dev)
 static int synaptics_i2c_resume(struct device *dev)
 {
 	struct synaptics_ts_data *ts = dev_get_drvdata(dev);
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&ts->isr_lock, flags);
+	ts->i2c_awake = true;
+	spin_unlock_irqrestore(&ts->isr_lock, flags);
+
+	complete(&ts->i2c_resume);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	TPD_DEBUG("%s is called\n", __func__);
     queue_delayed_work(synaptics_wq,&ts->speed_up_work, msecs_to_jiffies(5));

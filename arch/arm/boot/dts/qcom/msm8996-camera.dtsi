@@ -790,6 +790,7 @@
 };
 
 &i2c_freq_custom {
+<<<<<<< HEAD
 	qcom,hw-thigh = <38>;
 	qcom,hw-tlow = <56>;
 	qcom,hw-tsu-sto = <40>;
@@ -797,6 +798,15 @@
 	qcom,hw-thd-dat = <22>;
 	qcom,hw-thd-sta = <35>;
 	qcom,hw-tbuf = <62>;
+=======
+	qcom,hw-thigh = <20>;
+	qcom,hw-tlow = <28>;
+	qcom,hw-tsu-sto = <21>;
+	qcom,hw-tsu-sta = <21>;
+	qcom,hw-thd-dat = <13>;
+	qcom,hw-thd-sta = <18>;
+	qcom,hw-tbuf = <32>;
+>>>>>>> sultanxda/cm-13.0-sultan
 	qcom,hw-scl-stretch-en = <1>;
 	qcom,hw-trdhld = <6>;
 	qcom,hw-tsp = <3>;

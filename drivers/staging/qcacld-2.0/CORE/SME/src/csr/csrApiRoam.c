@@ -489,9 +489,12 @@ eHalStatus csrUpdateChannelList(tpAniSirGlobal pMac)
 
     for (i = 0; i < pScan->base20MHzChannels.numChannels; i++)
     {
+<<<<<<< HEAD
         if (vos_is_dsrc_channel(vos_chan_to_freq(
            pScan->base20MHzChannels.channelList[i])))
             continue;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         if (pScan->fcc_constraint) {
             if (pScan->base20MHzChannels.channelList[i] == 12)
                 continue;
@@ -1751,9 +1754,24 @@ eHalStatus csrChangeDefaultConfigParam(tpAniSirGlobal pMac, tCsrConfigParam *pPa
         {
             pMac->roam.configParam.nPassiveMinChnTimeConc = pParam->nPassiveMinChnTimeConc;
         }
+<<<<<<< HEAD
         pMac->roam.configParam.nRestTimeConc = pParam->nRestTimeConc;
         pMac->roam.configParam.min_rest_time_conc = pParam->min_rest_time_conc;
         pMac->roam.configParam.idle_time_conc = pParam->idle_time_conc;
+=======
+        if (pParam->nRestTimeConc)
+        {
+            pMac->roam.configParam.nRestTimeConc = pParam->nRestTimeConc;
+        }
+        if (pParam->min_rest_time_conc)
+        {
+            pMac->roam.configParam.min_rest_time_conc = pParam->min_rest_time_conc;
+        }
+        if (pParam->idle_time_conc)
+        {
+            pMac->roam.configParam.idle_time_conc = pParam->idle_time_conc;
+        }
+>>>>>>> sultanxda/cm-13.0-sultan
         if (pParam->nNumStaChanCombinedConc)
         {
             pMac->roam.configParam.nNumStaChanCombinedConc = pParam->nNumStaChanCombinedConc;
@@ -2127,8 +2145,11 @@ eHalStatus csrGetConfigParam(tpAniSirGlobal pMac, tCsrConfigParam *pParam)
                      pMac->roam.configParam.sendDeauthBeforeCon;
         pParam->first_scan_bucket_threshold =
                      pMac->first_scan_bucket_threshold;
+<<<<<<< HEAD
         pParam->enableHtSmps = pMac->roam.configParam.enableHtSmps;
         pParam->htSmps = pMac->roam.configParam.htSmps;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         status = eHAL_STATUS_SUCCESS;
     }
     return (status);
@@ -8553,13 +8574,17 @@ static void csrRoamRoamingStateReassocRspProcessor( tpAniSirGlobal pMac, tpSirSm
                            &pMac->roam.neighborRoamInfo[pSmeJoinRsp->sessionId];
     tCsrRoamInfo roamInfo;
     tANI_U32 roamId = 0;
+<<<<<<< HEAD
     tCsrRoamSession *csr_session;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if ( eSIR_SME_SUCCESS == pSmeJoinRsp->statusCode )
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_DEBUG,
         FL("CSR SmeReassocReq Successful"));
         result = eCsrReassocSuccess;
+<<<<<<< HEAD
         csr_session = CSR_GET_SESSION(pMac, pSmeJoinRsp->sessionId);
         if(NULL != csr_session) {
             csr_session->supported_nss_1x1 = pSmeJoinRsp->supported_nss_1x1;
@@ -8567,6 +8592,8 @@ static void csrRoamRoamingStateReassocRspProcessor( tpAniSirGlobal pMac, tpSirSm
                    csr_session->supported_nss_1x1);
         }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         /* Defeaturize this part later if needed */
 #ifdef WLAN_FEATURE_NEIGHBOR_ROAMING
         /*
@@ -9017,6 +9044,7 @@ void csrRoamingStateMsgProcessor( tpAniSirGlobal pMac, void *pMsgBuf )
         case eWNI_SME_DEAUTH_RSP:    // or the Deauthentication response message...
             if ( CSR_IS_ROAM_SUBSTATE_DEAUTH_REQ( pMac, pSmeRsp->sessionId ) )
             {
+<<<<<<< HEAD
                 /*
                  * Lets remove  eSmeCommandWmStatusChange command from pending
                  * list as SME got DEAUTH_RSP  msg from PE which means that PE
@@ -9027,6 +9055,8 @@ void csrRoamingStateMsgProcessor( tpAniSirGlobal pMac, void *pMsgBuf )
                                         pSmeRsp->sessionId,
                                         &pMac->sme.smeScanCmdPendingList,
                                         eSmeCommandWmStatusChange);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
                 csrRoamRoamingStateDeauthRspProcessor( pMac, (tSirSmeDeauthRsp *)pSmeRsp );
             }
             break;
@@ -11846,6 +11876,7 @@ static eCsrCfgDot11Mode csrRoamGetPhyModeBandForBss( tpAniSirGlobal pMac, tCsrRo
      cfgDot11Mode = eCSR_CFG_DOT11_MODE_11B;
    }
 
+<<<<<<< HEAD
     if (IS_24G_CH(operationChn) &&
        (false == pMac->roam.configParam.enableVhtFor24GHz) &&
        (eCSR_CFG_DOT11_MODE_11AC == cfgDot11Mode ||
@@ -11853,6 +11884,8 @@ static eCsrCfgDot11Mode csrRoamGetPhyModeBandForBss( tpAniSirGlobal pMac, tCsrRo
         cfgDot11Mode = eCSR_CFG_DOT11_MODE_11N;
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     /* Incase of WEP Security encryption type is coming as part of add key.
        So while Start BSS dont have information */
     if ((!CSR_IS_11n_ALLOWED(pProfile->EncryptionType.encryptionType[0]) ||
@@ -11911,6 +11944,7 @@ eHalStatus csrRoamIssueStopBss( tpAniSirGlobal pMac, tANI_U32 sessionId, eCsrRoa
 //pNumChan is a caller allocated space with the sizeof pChannels
 eHalStatus csrGetCfgValidChannels(tpAniSirGlobal pMac, tANI_U8 *pChannels, tANI_U32 *pNumChan)
 {
+<<<<<<< HEAD
     uint8_t num_chan_temp = 0;
     int i;
     eHalStatus status;
@@ -11930,6 +11964,12 @@ eHalStatus csrGetCfgValidChannels(tpAniSirGlobal pMac, tANI_U8 *pChannels, tANI_
 
     *pNumChan = num_chan_temp;
     return status;
+=======
+
+    return (ccmCfgGetStr(pMac, WNI_CFG_VALID_CHANNEL_LIST,
+                  (tANI_U8 *)pChannels,
+                  pNumChan));
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 tPowerdBm csrGetCfgMaxTxPower (tpAniSirGlobal pMac, tANI_U8 channel)
@@ -17134,6 +17174,7 @@ bool csr_is_RSO_cmd_allowed(tpAniSirGlobal mac_ctx, uint8_t command,
 	return ret_val;
 }
 
+<<<<<<< HEAD
 VOS_STATUS csr_roam_send_rso_cmd(tpAniSirGlobal pMac, tANI_U8 session_id,
        tSirRoamOffloadScanReq *pRequestBuf)
 {
@@ -17149,10 +17190,41 @@ VOS_STATUS csr_roam_send_rso_cmd(tpAniSirGlobal pMac, tANI_U8 session_id,
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
+=======
+void csr_roam_send_restart_cmd(tpAniSirGlobal pMac, tANI_U8 session_id,
+		tANI_U8 command, tANI_U8 reason)
+{
+	struct sir_sme_roam_restart_req *msg;
+	eHalStatus status;
+
+	msg = vos_mem_malloc(sizeof(struct sir_sme_roam_restart_req));
+	if (msg == NULL) {
+		VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
+			FL("Memory allocation failed"));
+		VOS_ASSERT(msg);
+		return;
+	}
+	vos_mem_set(msg, sizeof(struct sir_sme_roam_restart_req), 0);
+	msg->message_type = eWNI_SME_ROAM_RESTART_REQ;
+	msg->length = sizeof(struct sir_sme_roam_restart_req);
+	msg->sme_session_id = session_id;
+	msg->command = command;
+	msg->reason = reason;
+	status = palSendMBMessage(pMac->hHdd, msg);
+	if (eHAL_STATUS_FAILURE == status) {
+		VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
+			FL("Sending msg eWNI_SME_ROAM_RESTART_REQ failed"));
+		vos_mem_free(msg);
+	}
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 eHalStatus csrRoamOffloadScan(tpAniSirGlobal pMac, tANI_U8 sessionId,
                               tANI_U8 command, tANI_U8 reason)
 {
+<<<<<<< HEAD
+=======
+   vos_msg_t msg;
+>>>>>>> sultanxda/cm-13.0-sultan
    tSirRoamOffloadScanReq *pRequestBuf;
    tpCsrNeighborRoamControlInfo pNeighborRoamInfo =
                                      &pMac->roam.neighborRoamInfo[sessionId];
@@ -17201,6 +17273,13 @@ eHalStatus csrRoamOffloadScan(tpAniSirGlobal pMac, tANI_U8 sessionId,
         command, pNeighborRoamInfo->lastSentCmd);
       return eHAL_STATUS_FAILURE;
    }
+<<<<<<< HEAD
+=======
+   if (ROAM_SCAN_OFFLOAD_RESTART == command) {
+       csr_roam_send_restart_cmd(pMac, sessionId, command, reason);
+       goto cmd_sent;
+   }
+>>>>>>> sultanxda/cm-13.0-sultan
    if ((VOS_TRUE == bRoamScanOffloadStarted) && (ROAM_SCAN_OFFLOAD_START == command))
    {
      smsLog( pMac, LOGE,"Roam Scan Offload is already started");
@@ -17576,11 +17655,21 @@ eHalStatus csrRoamOffloadScan(tpAniSirGlobal pMac, tANI_U8 sessionId,
            MAC_ADDR_ARRAY(roam_params_dst->bssid_favored[i]),
            roam_params_dst->bssid_favored_factor[i]);
     }
+<<<<<<< HEAD
 
    if (!VOS_IS_STATUS_SUCCESS(csr_roam_send_rso_cmd(pMac,
                                         sessionId, pRequestBuf)))
    {
        VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_ROAM_SCAN_OFFLOAD_REQ message to PE", __func__);
+=======
+   msg.type     = WDA_ROAM_SCAN_OFFLOAD_REQ;
+   msg.reserved = 0;
+   msg.bodyptr  = pRequestBuf;
+   if (!VOS_IS_STATUS_SUCCESS(vos_mq_post_message(VOS_MODULE_ID_WDA, &msg)))
+   {
+       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_ROAM_SCAN_OFFLOAD_REQ message to WDA", __func__);
+       vos_mem_free(pRequestBuf);
+>>>>>>> sultanxda/cm-13.0-sultan
        return eHAL_STATUS_FAILURE;
    }
    else
@@ -17590,6 +17679,10 @@ eHalStatus csrRoamOffloadScan(tpAniSirGlobal pMac, tANI_U8 sessionId,
         else if (ROAM_SCAN_OFFLOAD_STOP == command)
             bRoamScanOffloadStarted = VOS_FALSE;
    }
+<<<<<<< HEAD
+=======
+cmd_sent:
+>>>>>>> sultanxda/cm-13.0-sultan
    /* update the last sent cmd */
    pNeighborRoamInfo->lastSentCmd = command;
 
@@ -18939,12 +19032,15 @@ csrRoamChannelChangeReq(tpAniSirGlobal pMac, tCsrBssid bssid,
     pMsg->dot11mode =
        csrTranslateToWNICfgDot11Mode(pMac,pMac->roam.configParam.uCfgDot11Mode);
 
+<<<<<<< HEAD
     if (IS_24G_CH(pMsg->targetChannel) &&
        (false == pMac->roam.configParam.enableVhtFor24GHz) &&
        (WNI_CFG_DOT11_MODE_11AC == pMsg->dot11mode ||
            WNI_CFG_DOT11_MODE_11AC_ONLY == pMsg->dot11mode)) {
         pMsg->dot11mode = WNI_CFG_DOT11_MODE_11N;
     }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     vos_mem_copy(pMsg->bssid, bssid, VOS_MAC_ADDR_SIZE);
     vos_mem_copy((void*)&pMsg->operational_rateset,
                  (void*)&param.operationalRateSet, sizeof(tSirMacRateSet));
@@ -19037,7 +19133,10 @@ csrRoamModifyAddIEs(tpAniSirGlobal pMac,
     pModifyAddIEInd->modifyIE.ieIDLen = pModifyIE->ieIDLen;
     pModifyAddIEInd->modifyIE.pIEBuffer = pLocalBuffer;
     pModifyAddIEInd->modifyIE.ieBufferlength = pModifyIE->ieBufferlength;
+<<<<<<< HEAD
     pModifyAddIEInd->modifyIE.oui_length = pModifyIE->oui_length;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     pModifyAddIEInd->updateType = updateType;
 

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2013-2014, 2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2013-2014 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -115,12 +119,15 @@ typedef enum
 } VOS_MQ_ID;
 
 
+<<<<<<< HEAD
 #define HIGH_PRIORITY 1
 #define LOW_PRIORITY  0
 VOS_STATUS vos_mq_post_message_by_priority(VOS_MQ_ID msg_queue_id,
 					   vos_msg_t *message,
 					   int is_high_priority);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /**---------------------------------------------------------------------------
 
   \brief vos_mq_post_message() - post a message to a message queue
@@ -135,7 +142,11 @@ VOS_STATUS vos_mq_post_message_by_priority(VOS_MQ_ID msg_queue_id,
     <li> TL
   </ul>
 
+<<<<<<< HEAD
   \param msg_queue_id - identifies the message queue upon which the message
+=======
+  \param msgQueueId - identifies the message queue upon which the message
+>>>>>>> sultanxda/cm-13.0-sultan
          will be posted.
 
   \param message - a pointer to a message buffer.  Memory for this message
@@ -158,12 +169,16 @@ VOS_STATUS vos_mq_post_message_by_priority(VOS_MQ_ID msg_queue_id,
   \sa
 
   --------------------------------------------------------------------------*/
+<<<<<<< HEAD
 static inline VOS_STATUS vos_mq_post_message(VOS_MQ_ID msg_queue_id,
 					     vos_msg_t *message)
 {
 	return vos_mq_post_message_by_priority (msg_queue_id, message,
 						LOW_PRIORITY);
 }
+=======
+VOS_STATUS vos_mq_post_message( VOS_MQ_ID msgQueueId, vos_msg_t *message );
+>>>>>>> sultanxda/cm-13.0-sultan
 
 
 /**---------------------------------------------------------------------------

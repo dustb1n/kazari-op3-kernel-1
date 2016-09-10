@@ -215,6 +215,181 @@ static void a5xx_critical_packet_destroy(struct adreno_device *adreno_dev)
 	kgsl_free_global(&adreno_dev->dev, &crit_pkts_refbuf2);
 	kgsl_free_global(&adreno_dev->dev, &crit_pkts_refbuf3);
 
+<<<<<<< HEAD
+	kgsl_sharedmem_free(&crit_pkts_refbuf0);
+
+}
+=======
+	*cmds++ = cp_type7_packet(CP_CONTEXT_SWITCH_YIELD, 4);
+	cmds += cp_gpuaddr(adreno_dev, cmds, gpuaddr);
+	*cmds++ = 1;
+	/* generate interrupt on preemption completion */
+	*cmds++ = 1;
+>>>>>>> sultanxda/cm-13.0-sultan
+
+static void _do_fixup(const struct adreno_critical_fixup *fixups, int count,
+		uint64_t *gpuaddrs, unsigned int *buffer)
+{
+	int i;
+
+	for (i = 0; i < count; i++) {
+		buffer[fixups[i].lo_offset] =
+			lower_32_bits(gpuaddrs[fixups[i].buffer]) |
+			fixups[i].mem_offset;
+
+		buffer[fixups[i].hi_offset] =
+			upper_32_bits(gpuaddrs[fixups[i].buffer]);
+	}
+}
+
+static int a5xx_critical_packet_construct(struct adreno_device *adreno_dev)
+{
+
+<<<<<<< HEAD
+	unsigned int *cmds;
+	uint64_t gpuaddrs[CRITICAL_PACKET_MAX];
+	int ret;
+=======
+	if (context) {
+		/*
+		 * Preemption from secure to unsecure needs Zap shader to be
+		 * run to clear all secure content. CP does not know during
+		 * preemption if it is switching between secure and unsecure
+		 * contexts so restrict Secure contexts to be preempted at
+		 * ringbuffer level.
+		 */
+		if (context->flags & KGSL_CONTEXT_SECURE)
+			preempt_style = KGSL_CONTEXT_PREEMPT_STYLE_RINGBUFFER;
+		else
+			preempt_style = ADRENO_PREEMPT_STYLE(context->flags);
+	}
+>>>>>>> sultanxda/cm-13.0-sultan
+
+	ret = kgsl_allocate_global(&adreno_dev->dev,
+					&crit_pkts, PAGE_SIZE,
+					KGSL_MEMFLAGS_GPUREADONLY, 0);
+	if (ret)
+		return ret;
+
+	ret = kgsl_allocate_user(&adreno_dev->dev, &crit_pkts_refbuf0,
+					NULL, PAGE_SIZE, KGSL_MEMFLAGS_SECURE);
+	if (ret)
+		return ret;
+
+	kgsl_add_global_secure_entry(&adreno_dev->dev,
+					&crit_pkts_refbuf0);
+
+	ret = kgsl_allocate_global(&adreno_dev->dev,
+					&crit_pkts_refbuf1,
+					PAGE_SIZE, 0, 0);
+	if (ret)
+		return ret;
+
+	ret = kgsl_allocate_global(&adreno_dev->dev,
+					&crit_pkts_refbuf2,
+					PAGE_SIZE, 0, 0);
+	if (ret)
+		return ret;
+
+<<<<<<< HEAD
+	ret = kgsl_allocate_global(&adreno_dev->dev,
+					&crit_pkts_refbuf3,
+					PAGE_SIZE, 0, 0);
+	if (ret)
+		return ret;
+
+	cmds = crit_pkts.hostptr;
+
+	gpuaddrs[CRITICAL_PACKET0] = crit_pkts_refbuf0.gpuaddr;
+	gpuaddrs[CRITICAL_PACKET1] = crit_pkts_refbuf1.gpuaddr;
+	gpuaddrs[CRITICAL_PACKET2] = crit_pkts_refbuf2.gpuaddr;
+	gpuaddrs[CRITICAL_PACKET3] = crit_pkts_refbuf3.gpuaddr;
+
+	crit_pkts_dwords = ARRAY_SIZE(_a5xx_critical_pkts);
+
+	memcpy(cmds, _a5xx_critical_pkts, crit_pkts_dwords << 2);
+=======
+	/* Enable CP_CONTEXT_SWITCH_YIELD packets in the IB2s */
+	*cmds++ = cp_type7_packet(CP_YIELD_ENABLE, 1);
+	*cmds++ = 2;
+
+	return cmds - cmds_orig;
+}
+
+/*
+ * a5xx_preemption_yield_enable() - Below PM4 commands are
+ * added after every cmdbatch submission.
+ */
+static int a5xx_preemption_yield_enable(unsigned int *cmds)
+{
+	/*
+	 * SRM -- set render mode (ex binning, direct render etc)
+	 * SRM is set by UMD usually at start of IB to tell CP the type of
+	 * preemption.
+	 * KMD needs to set SRM to NULL to indicate CP that rendering is
+	 * done by IB.
+	 */
+	*cmds++ = cp_type7_packet(CP_SET_RENDER_MODE, 5);
+	*cmds++ = 0;
+	*cmds++ = 0;
+	*cmds++ = 0;
+	*cmds++ = 0;
+	*cmds++ = 0;
+
+	*cmds++ = cp_type7_packet(CP_YIELD_ENABLE, 1);
+	*cmds++ = 1;
+
+	return 8;
+}
+
+/*
+ * a5xx_preemption_post_ibsubmit() - Below PM4 commands are
+ * added after every cmdbatch submission.
+ */
+static int a5xx_preemption_post_ibsubmit(struct adreno_device *adreno_dev,
+			struct adreno_ringbuffer *rb, unsigned int *cmds,
+			struct kgsl_context *context)
+{
+	struct kgsl_device *device = KGSL_DEVICE(adreno_dev);
+	unsigned int ctx_id = context ? context->id : 0;
+
+	return a5xx_preemption_token(adreno_dev, rb, cmds,
+				device->memstore.gpuaddr +
+				KGSL_MEMSTORE_OFFSET(ctx_id, preempted));
+
+}
+>>>>>>> sultanxda/cm-13.0-sultan
+
+	_do_fixup(critical_pkt_fixups, ARRAY_SIZE(critical_pkt_fixups),
+		gpuaddrs, cmds);
+
+	cmds = crit_pkts_refbuf1.hostptr;
+	memcpy(cmds, _a5xx_critical_pkts_mem01,
+			ARRAY_SIZE(_a5xx_critical_pkts_mem01) << 2);
+
+	cmds = crit_pkts_refbuf2.hostptr;
+	memcpy(cmds, _a5xx_critical_pkts_mem02,
+			ARRAY_SIZE(_a5xx_critical_pkts_mem02) << 2);
+
+	cmds = crit_pkts_refbuf3.hostptr;
+	memcpy(cmds, _a5xx_critical_pkts_mem03,
+			ARRAY_SIZE(_a5xx_critical_pkts_mem03) << 2);
+
+	_do_fixup(critical_pkt_mem03_fixups,
+		ARRAY_SIZE(critical_pkt_mem03_fixups), gpuaddrs, cmds);
+
+	critical_packet_constructed = 1;
+
+	return 0;
+}
+
+static void a5xx_critical_packet_destroy(struct adreno_device *adreno_dev)
+{
+	kgsl_free_global(&adreno_dev->dev, &crit_pkts);
+	kgsl_free_global(&adreno_dev->dev, &crit_pkts_refbuf1);
+	kgsl_free_global(&adreno_dev->dev, &crit_pkts_refbuf2);
+	kgsl_free_global(&adreno_dev->dev, &crit_pkts_refbuf3);
+
 	kgsl_sharedmem_free(&crit_pkts_refbuf0);
 
 }
@@ -312,8 +487,11 @@ static void a5xx_init(struct adreno_device *adreno_dev)
 	if (ADRENO_FEATURE(adreno_dev, ADRENO_GPMU))
 		INIT_WORK(&adreno_dev->gpmu_work, a5xx_gpmu_reset);
 
+<<<<<<< HEAD
 	INIT_WORK(&adreno_dev->irq_storm_work, a5xx_irq_storm_worker);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	if (ADRENO_QUIRK(adreno_dev, ADRENO_QUIRK_CRITICAL_PACKETS))
 		a5xx_critical_packet_construct(adreno_dev);
 
@@ -2170,6 +2348,36 @@ static int a5xx_critical_packet_submit(struct adreno_device *adreno_dev,
 	return ret;
 }
 
+static int a5xx_critical_packet_submit(struct adreno_device *adreno_dev,
+					struct adreno_ringbuffer *rb)
+{
+	unsigned int *cmds;
+	int ret;
+
+	if (!critical_packet_constructed)
+		return 0;
+
+	cmds = adreno_ringbuffer_allocspace(rb, 4);
+	if (IS_ERR(cmds))
+		return PTR_ERR(cmds);
+
+	*cmds++ = cp_mem_packet(adreno_dev, CP_INDIRECT_BUFFER_PFE, 2, 1);
+	cmds += cp_gpuaddr(adreno_dev, cmds, crit_pkts.gpuaddr);
+	*cmds++ = crit_pkts_dwords;
+
+	ret = adreno_ringbuffer_submit_spin(rb, NULL, 20);
+	if (ret != 0) {
+		struct kgsl_device *device = &adreno_dev->dev;
+
+		dev_err(device->dev,
+			"Critical packet submission failed to idle\n");
+		spin_idle_debug(device);
+		kgsl_device_snapshot(device, NULL);
+	}
+
+	return ret;
+}
+
 /*
  * a5xx_send_me_init() - Initialize ringbuffer
  * @adreno_dev: Pointer to adreno device
@@ -2223,6 +2431,12 @@ static int a5xx_set_unsecured_mode(struct adreno_device *adreno_dev,
 		struct adreno_ringbuffer *rb)
 {
 	int ret = 0;
+
+	if (ADRENO_QUIRK(adreno_dev, ADRENO_QUIRK_CRITICAL_PACKETS)) {
+		ret = a5xx_critical_packet_submit(adreno_dev, rb);
+		if (ret)
+			return ret;
+	}
 
 	if (ADRENO_QUIRK(adreno_dev, ADRENO_QUIRK_CRITICAL_PACKETS)) {
 		ret = a5xx_critical_packet_submit(adreno_dev, rb);
@@ -3449,7 +3663,12 @@ struct adreno_gpudev adreno_a5xx_gpudev = {
 	.platform_setup = a5xx_platform_setup,
 	.init = a5xx_init,
 	.remove = a5xx_remove,
+<<<<<<< HEAD
 	.rb_start = a5xx_rb_start,
+=======
+	.rb_init = a5xx_rb_init,
+	.hw_init = a5xx_hw_init,
+>>>>>>> sultanxda/cm-13.0-sultan
 	.microcode_read = a5xx_microcode_read,
 	.perfcounters = &a5xx_perfcounters,
 	.vbif_xin_halt_ctrl0_mask = A5XX_VBIF_XIN_HALT_CTRL0_MASK,
@@ -3462,6 +3681,10 @@ struct adreno_gpudev adreno_a5xx_gpudev = {
 				a5xx_preemption_yield_enable,
 	.preemption_post_ibsubmit =
 			a5xx_preemption_post_ibsubmit,
+<<<<<<< HEAD
+=======
+	.preemption_token = a5xx_preemption_token,
+>>>>>>> sultanxda/cm-13.0-sultan
 	.preemption_init = a5xx_preemption_init,
 	.preemption_schedule = a5xx_preemption_schedule,
 	.enable_64bit = a5xx_enable_64bit,

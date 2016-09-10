@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011-2014, 2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011-2014 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -2695,7 +2699,11 @@ void WLANTL_PauseUnPauseQs(void *vos_context, v_BOOL_t flag);
  * HDD will call this API to get the OL-TXRX module stats
  *
  */
+<<<<<<< HEAD
 VOS_STATUS WLANTL_Get_llStats
+=======
+void WLANTL_Get_llStats
+>>>>>>> sultanxda/cm-13.0-sultan
 (
   v_U8_t sessionId,
   char *buffer,
@@ -2846,15 +2854,23 @@ void WLANTL_SetAdapterMaxQDepth
    int max_q_depth
 );
 #else
+<<<<<<< HEAD
 static inline VOS_STATUS WLANTL_Get_llStats
+=======
+static inline void WLANTL_Get_llStats
+>>>>>>> sultanxda/cm-13.0-sultan
 (
    uint8_t sessionId,
    char *buffer,
    uint16_t length
+<<<<<<< HEAD
 )
 {
     return VOS_STATUS_SUCCESS;
 }
+=======
+) {}
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #endif /* QCA_LL_TX_FLOW_CT */
 

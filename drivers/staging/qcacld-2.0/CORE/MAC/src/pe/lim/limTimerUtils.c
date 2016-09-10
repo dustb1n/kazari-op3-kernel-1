@@ -40,7 +40,11 @@
 #include "limAssocUtils.h"
 #include "limSecurityUtils.h"
 #include "pmmApi.h"
+<<<<<<< HEAD
 #include "limApi.h"
+=======
+
+>>>>>>> sultanxda/cm-13.0-sultan
 
 // default value 5000 ms for background scan period when it is disabled
 #define LIM_BACKGROUND_SCAN_PERIOD_DEFAULT_MS    5000
@@ -828,8 +832,12 @@ limTimerHandler(void *pMacGlobal, tANI_U32 param)
     msg.bodyptr = NULL;
     msg.bodyval = 0;
 
+<<<<<<< HEAD
     statusCode = lim_post_msg_high_pri(pMac, &msg);
     if (statusCode != eSIR_SUCCESS)
+=======
+    if ((statusCode = limPostMsgApi(pMac, &msg)) != eSIR_SUCCESS)
+>>>>>>> sultanxda/cm-13.0-sultan
         limLog(pMac, LOGE,
                FL("posting message %X to LIM failed, reason=%d"),
                msg.type, statusCode);

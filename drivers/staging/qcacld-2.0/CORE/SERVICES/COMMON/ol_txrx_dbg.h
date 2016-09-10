@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011, 2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2011 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -36,7 +40,10 @@
 #include <adf_os_lock.h>   /* adf_os_mutex_t */
 #include <htt.h>           /* htt_dbg_stats_type */
 #include <ol_txrx_stats.h> /* ol_txrx_stats */
+<<<<<<< HEAD
 #include "vos_status.h"
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 typedef void (*ol_txrx_stats_callback)(
     void *ctxt,
@@ -142,7 +149,11 @@ void ol_txrx_peer_display(ol_txrx_peer_handle peer, int indent);
 #endif
 
 /*--- txrx stats display debug functions ---*/
+<<<<<<< HEAD
 VOS_STATUS ol_txrx_stats(ol_txrx_vdev_handle vdev, char *buffer,
+=======
+void ol_txrx_stats(ol_txrx_vdev_handle vdev, char *buffer,
+>>>>>>> sultanxda/cm-13.0-sultan
                    unsigned length);
 
 #if TXRX_STATS_LEVEL != TXRX_STATS_LEVEL_OFF

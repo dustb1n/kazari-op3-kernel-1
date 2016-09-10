@@ -55,7 +55,10 @@
 
 #include "synaptics_s1302_redremote.h"
 //#include <linux/boot_mode.h>
+<<<<<<< HEAD
 #include <linux/project_info.h>
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 enum oem_boot_mode{
 	MSM_BOOT_MODE__NORMAL,
 	MSM_BOOT_MODE__FASTBOOT,
@@ -296,12 +299,21 @@ struct synaptics_ts_data {
 	char fw_id[12];
 	char manu_name[12];
 
+<<<<<<< HEAD
+=======
+	struct work_struct pm_work;
+
+>>>>>>> sultanxda/cm-13.0-sultan
 	bool stop_keypad;
 };
 
 static int tc_hw_pwron(struct synaptics_ts_data *ts)
 {
+<<<<<<< HEAD
 	int rc;
+=======
+	int rc = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	//enable the 2v8 power
 	if (!IS_ERR(ts->vdd_2v8)) {
@@ -1082,7 +1094,11 @@ static ssize_t synaptics_s1302_radd_write(struct file *file, const char __user *
     }
     else
         block = temp_block;
+<<<<<<< HEAD
 	return count;
+=======
+    return count;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 static int synaptics_s1302_radd_open(struct inode *inode, struct file *file)
 {
@@ -1777,9 +1793,27 @@ static void synaptics_hard_reset(struct synaptics_ts_data *ts)
     }
 
 }
+<<<<<<< HEAD
 static int synaptics_parse_dts(struct device *dev, struct synaptics_ts_data *ts)
 {
 	int rc;
+=======
+
+static void synaptics_suspend_resume(struct work_struct *work)
+{
+	struct synaptics_ts_data *ts =
+		container_of(work, typeof(*ts), pm_work);
+
+	if (ts->suspended)
+		synaptics_ts_suspend(&ts->client->dev);
+	else
+		synaptics_ts_resume(&ts->client->dev);
+}
+
+static int synaptics_parse_dts(struct device *dev, struct synaptics_ts_data *ts)
+{
+	int rc = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 	int retval;
 	struct device_node *np;
 
@@ -2012,12 +2046,19 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	TPD_ERR("CURRENT_FIRMWARE_ID = 0x%x\n", CURRENT_FIRMWARE_ID);
     sprintf(ts->fw_id,"0x%x",CURRENT_FIRMWARE_ID);
 
+<<<<<<< HEAD
 	memset(ts->fw_name,TP_FW_NAME_MAX_LEN,0);
 	strcpy(ts->fw_name,"tp/fw_synaptics_touchkey.img");
 	TPD_DEBUG("synatpitcs_fw: fw_name = %s \n",ts->fw_name);
 
 	push_component_info(TOUCH_KEY, ts->fw_id, ts->manu_name);
 
+=======
+	memset(ts->fw_name, 0, TP_FW_NAME_MAX_LEN);
+	strcpy(ts->fw_name,"tp/fw_synaptics_touchkey.img");
+	TPD_DEBUG("synatpitcs_fw: fw_name = %s \n",ts->fw_name);
+
+>>>>>>> sultanxda/cm-13.0-sultan
 	bootloader_mode = synaptics_rmi4_i2c_read_byte(ts->client, F01_RMI_DATA_BASE);
 	bootloader_mode = bootloader_mode&0x40;
 	TPD_ERR("before fw update,bootloader_mode = 0x%x\n", bootloader_mode);
@@ -2032,6 +2073,12 @@ static int synaptics_ts_probe(struct i2c_client *client, const struct i2c_device
 	if(ret < 0) {
 		TPD_ERR("synaptics_input_init failed!\n");
 	}
+<<<<<<< HEAD
+=======
+
+	INIT_WORK(&ts->pm_work, synaptics_suspend_resume);
+
+>>>>>>> sultanxda/cm-13.0-sultan
 #if defined(CONFIG_FB)
 	ts->suspended = 0;
 	ts->fb_notif.notifier_call = fb_notifier_callback;
@@ -2188,6 +2235,7 @@ ERR_RESUME:
 #if defined(CONFIG_FB)
 static int fb_notifier_callback(struct notifier_block *self, unsigned long event, void *data)
 {
+<<<<<<< HEAD
 	struct fb_event *evdata = data;
 	int *blank;
 
@@ -2212,6 +2260,32 @@ static int fb_notifier_callback(struct notifier_block *self, unsigned long event
 		}
 	}
 	return 0;
+=======
+	struct synaptics_ts_data *ts =
+		container_of(self, struct synaptics_ts_data, fb_notif);
+	struct fb_event *evdata = data;
+	int *blank = evdata->data;
+
+	if (event != FB_EVENT_BLANK)
+		return NOTIFY_OK;
+
+	switch (*blank) {
+	case FB_BLANK_UNBLANK:
+	case FB_BLANK_NORMAL:
+		if (ts->suspended) {
+			ts->suspended = 0;
+			queue_work(system_highpri_wq, &ts->pm_work);
+		}
+		break;
+	case FB_BLANK_POWERDOWN:
+		if (!ts->suspended) {
+			ts->suspended = 1;
+			queue_work(system_highpri_wq, &ts->pm_work);
+		}
+	}
+
+	return NOTIFY_OK;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 #endif
 

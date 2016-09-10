@@ -1352,19 +1352,30 @@ void limSendHalOemDataReq(tpAniSirGlobal pMac)
     tpStartOemDataReq pStartOemDataReq = NULL;
     tSirRetStatus rc = eSIR_SUCCESS;
     tpLimMlmOemDataRsp pMlmOemDataRsp;
+<<<<<<< HEAD
+=======
+    tANI_U32 reqLen = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
     if(NULL == pMac->lim.gpLimMlmOemDataReq)
     {
         PELOGE(limLog(pMac, LOGE,  FL("Null pointer"));)
         goto error;
     }
 
+<<<<<<< HEAD
     pStartOemDataReq = vos_mem_malloc(sizeof(*pStartOemDataReq));
+=======
+    reqLen = sizeof(tStartOemDataReq);
+
+    pStartOemDataReq = vos_mem_malloc(reqLen);
+>>>>>>> sultanxda/cm-13.0-sultan
     if ( NULL == pStartOemDataReq )
     {
         PELOGE(limLog(pMac, LOGE,  FL("OEM_DATA: Could not allocate memory for pStartOemDataReq"));)
         goto error;
     }
 
+<<<<<<< HEAD
     pStartOemDataReq->data =
         vos_mem_malloc(pMac->lim.gpLimMlmOemDataReq->data_len);
     if (!pStartOemDataReq->data) {
@@ -1372,17 +1383,26 @@ void limSendHalOemDataReq(tpAniSirGlobal pMac)
         vos_mem_free(pStartOemDataReq);
         goto error;
     }
+=======
+    vos_mem_set((tANI_U8*)(pStartOemDataReq), reqLen, 0);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     //Now copy over the information to the OEM DATA REQ to HAL
     vos_mem_copy(pStartOemDataReq->selfMacAddr,
                  pMac->lim.gpLimMlmOemDataReq->selfMacAddr,
                  sizeof(tSirMacAddr));
 
+<<<<<<< HEAD
     pStartOemDataReq->data_len =
                  pMac->lim.gpLimMlmOemDataReq->data_len;
     vos_mem_copy(pStartOemDataReq->data,
                  pMac->lim.gpLimMlmOemDataReq->data,
                  pMac->lim.gpLimMlmOemDataReq->data_len);
+=======
+    vos_mem_copy(pStartOemDataReq->oemDataReq,
+                 pMac->lim.gpLimMlmOemDataReq->oemDataReq,
+                 OEM_DATA_REQ_SIZE);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     //Create the message to be passed to HAL
     msg.type = WDA_START_OEM_DATA_REQ;
@@ -1399,9 +1419,14 @@ void limSendHalOemDataReq(tpAniSirGlobal pMac)
     }
 
     SET_LIM_PROCESS_DEFD_MESGS(pMac, true);
+<<<<<<< HEAD
     vos_mem_free(pStartOemDataReq->data);
     vos_mem_free(pStartOemDataReq);
     PELOGE(limLog(pMac, LOGE,  FL("OEM_DATA: posting WDA_pStartOemDataReq to HAL failed"));)
+=======
+    vos_mem_free(pStartOemDataReq);
+    PELOGE(limLog(pMac, LOGE,  FL("OEM_DATA: posting WDA_START_OEM_DATA_REQ to HAL failed"));)
+>>>>>>> sultanxda/cm-13.0-sultan
 
 error:
     pMac->lim.gLimMlmState = pMac->lim.gLimPrevMlmState;
@@ -1416,10 +1441,13 @@ error:
 
     if(NULL != pMac->lim.gpLimMlmOemDataReq)
     {
+<<<<<<< HEAD
         if (NULL != pMac->lim.gpLimMlmOemDataReq->data) {
             vos_mem_free(pMac->lim.gpLimMlmOemDataReq->data);
             pMac->lim.gpLimMlmOemDataReq->data = NULL;
         }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         vos_mem_free(pMac->lim.gpLimMlmOemDataReq);
         pMac->lim.gpLimMlmOemDataReq = NULL;
     }
@@ -1999,7 +2027,10 @@ limProcessMlmScanReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
 static void limProcessMlmOemDataReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
 {
     tLimMlmOemDataRsp*     pMlmOemDataRsp;
+<<<<<<< HEAD
     tLimMlmOemDataReq *data_req = (tLimMlmOemDataReq *)pMsgBuf;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
     if (((pMac->lim.gLimMlmState == eLIM_MLM_IDLE_STATE) ||
          (pMac->lim.gLimMlmState == eLIM_MLM_JOINED_STATE) ||
@@ -2014,16 +2045,24 @@ static void limProcessMlmOemDataReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
          * second OEM data request
          */
         if (pMac->lim.gpLimMlmOemDataReq) {
+<<<<<<< HEAD
             if (pMac->lim.gpLimMlmOemDataReq->data) {
                 vos_mem_free(pMac->lim.gpLimMlmOemDataReq->data);
                 pMac->lim.gpLimMlmOemDataReq->data = NULL;
             }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             vos_mem_free(pMac->lim.gpLimMlmOemDataReq);
             pMac->lim.gpLimMlmOemDataReq = NULL;
         }
 
+<<<<<<< HEAD
         pMac->lim.gpLimMlmOemDataReq = data_req;
         pMac->lim.gpLimMlmOemDataReq->data = data_req->data;
+=======
+        pMac->lim.gpLimMlmOemDataReq = (tLimMlmOemDataReq*)pMsgBuf;
+
+>>>>>>> sultanxda/cm-13.0-sultan
         pMac->lim.gLimPrevMlmState = pMac->lim.gLimMlmState;
 
         PELOG2(limLog(pMac, LOG2,
@@ -3730,8 +3769,12 @@ tLimMlmRemoveKeyCnf  mlmRemoveKeyCnf;
 
 
       goto end;
+<<<<<<< HEAD
   }
   else
+=======
+  } else {
+>>>>>>> sultanxda/cm-13.0-sultan
     staIdx = pStaDs->staIndex;
 
 
@@ -3742,6 +3785,10 @@ tLimMlmRemoveKeyCnf  mlmRemoveKeyCnf;
     // Package WDA_REMOVE_STAKEY_REQ message parameters
     limSendRemoveStaKeyReq( pMac,pMlmRemoveKeyReq,staIdx,psessionEntry);
     return;
+<<<<<<< HEAD
+=======
+  }
+>>>>>>> sultanxda/cm-13.0-sultan
 
 end:
     limPostSmeRemoveKeyCnf( pMac,

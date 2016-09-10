@@ -92,7 +92,13 @@ extern void qosReleaseCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
 extern void csr_release_roc_req_cmd(tpAniSirGlobal mac_ctx);
 extern eHalStatus p2pProcessRemainOnChannelCmd(tpAniSirGlobal pMac, tSmeCmd *p2pRemainonChn);
 extern eHalStatus sme_remainOnChnRsp( tpAniSirGlobal pMac, tANI_U8 *pMsg);
+<<<<<<< HEAD
 extern eHalStatus sme_remainOnChnReady( tHalHandle hHal, tANI_U8* pMsg);
+=======
+extern eHalStatus sme_mgmtFrmInd( tHalHandle hHal, tpSirSmeMgmtFrameInd pSmeMgmtFrm);
+extern eHalStatus sme_remainOnChnReady( tHalHandle hHal, tANI_U8* pMsg);
+extern eHalStatus sme_sendActionCnf( tHalHandle hHal, tANI_U8* pMsg);
+>>>>>>> sultanxda/cm-13.0-sultan
 extern eHalStatus p2pProcessNoAReq(tpAniSirGlobal pMac, tSmeCmd *pNoACmd);
 
 static eHalStatus initSmeCmdList(tpAniSirGlobal pMac);
@@ -1190,6 +1196,7 @@ sme_process_cmd:
                                 VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO,
                                         "sending TDLS Command 0x%x to PE", pCommand->command);
 
+<<<<<<< HEAD
                                 csrLLUnlock(&pMac->sme.smeCmdActiveList);
                                 status = csrTdlsProcessCmd(pMac, pCommand);
                                 if (!HAL_STATUS_SUCCESS(status)) {
@@ -1201,6 +1208,10 @@ sme_process_cmd:
                                         csrReleaseCommand(pMac, pCommand);
                                     }
                                 }
+=======
+                                csrLLUnlock( &pMac->sme.smeCmdActiveList );
+                                status = csrTdlsProcessCmd( pMac, pCommand );
+>>>>>>> sultanxda/cm-13.0-sultan
                             }
                             break ;
 #endif
@@ -2104,6 +2115,79 @@ eHalStatus sme_HDDReadyInd(tHalHandle hHal)
    return status;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * sme_set_allowed_action_frames() - Set allowed action frames to wma
+ * @hal: Handler to HAL
+ *
+ * This function conveys the list of action frames that needs to be forwarded
+ * to driver by FW. Rest of the action frames can be dropped in FW. Bitmask is
+ * set with ALLOWED_ACTION_FRAMES_BITMAP0~7
+ *
+ * Return: None
+ */
+static void sme_set_allowed_action_frames(tHalHandle hal)
+{
+	eHalStatus status;
+	tpAniSirGlobal mac = PMAC_STRUCT(hal);
+	vos_msg_t message;
+	VOS_STATUS vos_status;
+	struct sir_allowed_action_frames *sir_allowed_action_frames;
+
+	sir_allowed_action_frames =
+			vos_mem_malloc(sizeof(*sir_allowed_action_frames));
+	if (!sir_allowed_action_frames) {
+		VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
+			"Not able to allocate memory for WDA_SET_ALLOWED_ACTION_FRAMES_IND");
+		return;
+	}
+
+	vos_mem_zero(sir_allowed_action_frames,
+			sizeof(*sir_allowed_action_frames));
+	sir_allowed_action_frames->operation = WOW_ACTION_WAKEUP_OPERATION_SET;
+
+	sir_allowed_action_frames->action_category_map[0] =
+				(ALLOWED_ACTION_FRAMES_BITMAP0);
+	sir_allowed_action_frames->action_category_map[1] =
+				(ALLOWED_ACTION_FRAMES_BITMAP1);
+	sir_allowed_action_frames->action_category_map[2] =
+				(ALLOWED_ACTION_FRAMES_BITMAP2);
+	sir_allowed_action_frames->action_category_map[3] =
+				(ALLOWED_ACTION_FRAMES_BITMAP3);
+	sir_allowed_action_frames->action_category_map[4] =
+				(ALLOWED_ACTION_FRAMES_BITMAP4);
+	sir_allowed_action_frames->action_category_map[5] =
+				(ALLOWED_ACTION_FRAMES_BITMAP5);
+	sir_allowed_action_frames->action_category_map[6] =
+				(ALLOWED_ACTION_FRAMES_BITMAP6);
+	sir_allowed_action_frames->action_category_map[7] =
+				(ALLOWED_ACTION_FRAMES_BITMAP7);
+
+	status = sme_AcquireGlobalLock(&mac->sme);
+	if (status == eHAL_STATUS_SUCCESS) {
+		/* serialize the req through MC thread */
+		message.bodyptr = sir_allowed_action_frames;
+		message.type = SIR_HAL_SET_ALLOWED_ACTION_FRAMES;
+
+		vos_status = vos_mq_post_message(VOS_MQ_ID_WDA, &message);
+		if (!VOS_IS_STATUS_SUCCESS(vos_status)) {
+			VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
+				"Not able to post SIR_HAL_SET_ALLOWED_ACTION_FRAMES message to HAL");
+			vos_mem_free(sir_allowed_action_frames);
+		}
+
+		sme_ReleaseGlobalLock( &mac->sme );
+	} else {
+		VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: "
+			"sme_AcquireGlobalLock error", __func__);
+		vos_mem_free(sir_allowed_action_frames);
+	}
+
+	return;
+}
+
+>>>>>>> sultanxda/cm-13.0-sultan
 /*--------------------------------------------------------------------------
 
   \brief sme_Start() - Put all SME modules at ready state.
@@ -2166,6 +2250,11 @@ eHalStatus sme_Start(tHalHandle hHal)
       pMac->sme.state = SME_STATE_START;
    }while (0);
 
+<<<<<<< HEAD
+=======
+   sme_set_allowed_action_frames(hHal);
+
+>>>>>>> sultanxda/cm-13.0-sultan
    return status;
 }
 
@@ -2506,6 +2595,7 @@ static void sme_process_fw_mem_dump_rsp(tpAniSirGlobal pMac, vos_msg_t* pMsg)
 {
 }
 #endif
+<<<<<<< HEAD
 eHalStatus sme_IbssPeerInfoResponseHandleer( tHalHandle hHal,
                                       tpSirIbssGetPeerInfoRspParams pIbssPeerInfoParams)
 {
@@ -2527,6 +2617,8 @@ eHalStatus sme_IbssPeerInfoResponseHandleer( tHalHandle hHal,
                                         &pIbssPeerInfoParams->ibssPeerInfoRspParams);
    return eHAL_STATUS_SUCCESS;
 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /*--------------------------------------------------------------------------
 
@@ -2713,6 +2805,31 @@ eHalStatus sme_ProcessMsg(tHalHandle hHal, vos_msg_t* pMsg)
                     smsLog( pMac, LOGE, "Empty rsp message for meas (eWNI_SME_REMAIN_ON_CHN_RDY_IND), nothing to process");
                 }
                 break;
+<<<<<<< HEAD
+=======
+           case eWNI_SME_MGMT_FRM_IND:
+                if(pMsg->bodyptr)
+                {
+                    sme_mgmtFrmInd(pMac, pMsg->bodyptr);
+                    vos_mem_free(pMsg->bodyptr);
+                }
+                else
+                {
+                    smsLog( pMac, LOGE, "Empty rsp message for meas (eWNI_SME_MGMT_FRM_IND), nothing to process");
+                }
+                break;
+           case eWNI_SME_ACTION_FRAME_SEND_CNF:
+                if(pMsg->bodyptr)
+                {
+                    status = sme_sendActionCnf(pMac, pMsg->bodyptr);
+                    vos_mem_free(pMsg->bodyptr);
+                }
+                else
+                {
+                    smsLog( pMac, LOGE, "Empty rsp message for meas (eWNI_SME_ACTION_FRAME_SEND_CNF), nothing to process");
+                }
+                break;
+>>>>>>> sultanxda/cm-13.0-sultan
           case eWNI_SME_COEX_IND:
                 if(pMsg->bodyptr)
                 {
@@ -2908,6 +3025,7 @@ eHalStatus sme_ProcessMsg(tHalHandle hHal, vos_msg_t* pMsg)
                 break;
 #endif /* FEATURE_WLAN_LPHB */
 
+<<<<<<< HEAD
           case eWNI_SME_IBSS_PEER_INFO_RSP:
               if (pMsg->bodyptr)
               {
@@ -2922,6 +3040,8 @@ eHalStatus sme_ProcessMsg(tHalHandle hHal, vos_msg_t* pMsg)
               }
               break ;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
            case eWNI_SME_READY_TO_SUSPEND_IND:
                 if (pMsg->bodyptr)
                 {
@@ -6628,6 +6748,7 @@ eHalStatus sme_DHCPStopInd( tHalHandle hHal,
     return (status);
 }
 
+<<<<<<< HEAD
 /*---------------------------------------------------------------------------
 
     \fn sme_TXFailMonitorStopInd
@@ -6684,6 +6805,8 @@ eHalStatus sme_TXFailMonitorStartStopInd(tHalHandle hHal, tANI_U8 tx_fail_count,
     return (status);
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /* ---------------------------------------------------------------------------
     \fn sme_BtcSignalBtEvent
     \brief  API to signal Bluetooth (BT) event to the WLAN driver. Based on the
@@ -7557,6 +7680,7 @@ eHalStatus sme_GetOperationChannel(tHalHandle hHal, tANI_U32 *pChannel, tANI_U8 
     return eHAL_STATUS_FAILURE;
 }// sme_GetOperationChannel ends here
 
+<<<<<<< HEAD
 /**
  * sme_register_p2p_ack_ind_callback() - p2p ack indication callback
  * @hal: hal pointer
@@ -7639,6 +7763,8 @@ eHalStatus sme_register_mgmt_frame_ind_callback(tHalHandle hal,
 	return eHAL_STATUS_FAILURE;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /* ---------------------------------------------------------------------------
 
     \fn sme_RegisterMgtFrame
@@ -11973,16 +12099,26 @@ eHalStatus sme_UpdateTdlsPeerState(tHalHandle hHal,
                                          csrGetCfgMaxTxPower(pMac, chanId);
 
                if (vos_nv_getChannelEnabledState(chanId) == NV_CHANNEL_DFS)
+<<<<<<< HEAD
                    continue;
+=======
+               {
+                   pTdlsPeerStateParams->peerCap.peerChan[num].dfsSet =
+                                                                  VOS_TRUE;
+               }
+>>>>>>> sultanxda/cm-13.0-sultan
                else
                {
                    pTdlsPeerStateParams->peerCap.peerChan[num].dfsSet =
                                                                   VOS_FALSE;
                }
+<<<<<<< HEAD
 
                if (vos_nv_skip_dsrc_dfs_2g(chanId, NV_CHANNEL_SKIP_DSRC))
                    continue;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
                num++;
            }
        }
@@ -12648,6 +12784,10 @@ void sme_set_pdev_ht_vht_ies(tHalHandle hal, bool enable2x2)
 		if (eHAL_STATUS_SUCCESS != status) {
 			smsLog(mac_ctx, LOGE, FL(
 				"SME_PDEV_SET_HT_VHT_IE msg to PE failed"));
+<<<<<<< HEAD
+=======
+			vos_mem_free(ht_vht_cfg);
+>>>>>>> sultanxda/cm-13.0-sultan
 		}
 		sme_ReleaseGlobalLock(&mac_ctx->sme);
 	}
@@ -12940,6 +13080,7 @@ sme_DelPeriodicTxPtrn(tHalHandle hal,
 	return status;
 }
 
+<<<<<<< HEAD
 /**
  * sme_enable_rmc() - enable RMC
  * @hHal: handle
@@ -13124,6 +13265,8 @@ eHalStatus sme_SendCesiumEnableInd(tHalHandle hHal, tANI_U32 sessionId)
     return(status);
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 void smeGetCommandQStatus( tHalHandle hHal )
 {
     tSmeCmd *pTempCmd = NULL;
@@ -14338,6 +14481,7 @@ eHalStatus sme_set_miracast(tHalHandle hal, uint8_t filter_type)
 	uint32_t *val;
 	tpAniSirGlobal mac_ptr = PMAC_STRUCT(hal);
 
+<<<<<<< HEAD
     if (NULL == mac_ptr) {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                 "%s: Invalid MAC pointer", __func__);
@@ -14345,6 +14489,10 @@ eHalStatus sme_set_miracast(tHalHandle hal, uint8_t filter_type)
     }
 	val = vos_mem_malloc(sizeof(*val));
 	if (NULL == val) {
+=======
+	val = vos_mem_malloc(sizeof(*val));
+	if (NULL == val || NULL == mac_ptr) {
+>>>>>>> sultanxda/cm-13.0-sultan
 		VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
 				"%s: Invalid pointer", __func__);
 		return eHAL_STATUS_E_MALLOC_FAILED;
@@ -14359,7 +14507,11 @@ eHalStatus sme_set_miracast(tHalHandle hal, uint8_t filter_type)
 	if (!VOS_IS_STATUS_SUCCESS(
 				vos_mq_post_message(VOS_MODULE_ID_WDA, &msg))) {
 		VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
+<<<<<<< HEAD
 		        "%s: Not able to post SIR_HAL_SET_MIRACAST to WMA!",
+=======
+				"%s: Not able to post WDA_SET_MAS_ENABLE_DISABLE to WMA!",
+>>>>>>> sultanxda/cm-13.0-sultan
 				__func__);
 		vos_mem_free(val);
 		return eHAL_STATUS_FAILURE;
@@ -17778,17 +17930,21 @@ bool sme_is_sta_smps_allowed(tHalHandle hal, uint8_t session_id)
 		return false;
 	}
 
+<<<<<<< HEAD
 	csr_session = CSR_GET_SESSION(mac_ctx, session_id);
 	if (NULL == csr_session) {
 		smsLog(mac_ctx, LOGE, "SME session not valid: %d", session_id);
 		return false;
 	}
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	if (!CSR_IS_SESSION_VALID(mac_ctx, session_id)) {
 		smsLog(mac_ctx, LOGE, "CSR session not valid: %d", session_id);
 		return false;
 	}
 
+<<<<<<< HEAD
 	return (csr_session->supported_nss_1x1 == true) ? false : true;
 }
 
@@ -17952,3 +18108,14 @@ VOS_STATUS sme_is_session_valid(tHalHandle hal_handle, uint8_t session_id)
 
 	return VOS_STATUS_E_FAILURE;
 }
+=======
+	csr_session = CSR_GET_SESSION(mac_ctx, session_id);
+	if (NULL == csr_session) {
+		smsLog(mac_ctx, LOGE, "SME session not valid: %d", session_id);
+		return false;
+	}
+
+	return (csr_session->supported_nss_1x1 == true) ? false : true;
+}
+
+>>>>>>> sultanxda/cm-13.0-sultan

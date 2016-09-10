@@ -4194,6 +4194,7 @@ REG_TABLE_ENTRY g_registry_table[] =
                 CFG_FIRST_SCAN_BUCKET_THRESHOLD_DEFAULT,
                 CFG_FIRST_SCAN_BUCKET_THRESHOLD_MIN,
                 CFG_FIRST_SCAN_BUCKET_THRESHOLD_MAX),
+<<<<<<< HEAD
 
    REG_VARIABLE(CFG_SAP_TX_LEAKAGE_THRESHOLD_NAME,
                 WLAN_PARAM_Integer,
@@ -4209,6 +4210,8 @@ REG_TABLE_ENTRY g_registry_table[] =
                 CFG_TGT_GTX_USR_CFG_DEFAULT,
                 CFG_TGT_GTX_USR_CFG_MIN,
                 CFG_TGT_GTX_USR_CFG_MAX),
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 };
 
 #ifdef WLAN_FEATURE_MBSSID
@@ -4286,8 +4289,13 @@ static char *i_trim(char *str)
 
    /* Find the first non white-space*/
    for (ptr = str; i_isspace(*ptr); ptr++);
+<<<<<<< HEAD
       if (*ptr == '\0')
          return str;
+=======
+   if (*ptr == '\0')
+      return str;
+>>>>>>> sultanxda/cm-13.0-sultan
 
    /* This is the new start of the string*/
    str = ptr;
@@ -4295,8 +4303,13 @@ static char *i_trim(char *str)
    /* Find the last non white-space */
    ptr += strlen(ptr) - 1;
    for (; ptr != str && i_isspace(*ptr); ptr--);
+<<<<<<< HEAD
       /* Null terminate the following character */
       ptr[1] = '\0';
+=======
+   /* Null terminate the following character */
+   ptr[1] = '\0';
+>>>>>>> sultanxda/cm-13.0-sultan
 
    return str;
 }
@@ -4894,9 +4907,12 @@ void print_hdd_cfg(hdd_context_t *pHddCtx)
   hddLog(LOG2, "Name = [gIdleTimeConc] Value = [%u]",
                    pHddCtx->cfg_ini->idle_time_conc);
 
+<<<<<<< HEAD
   hddLog(LOG2, "Name = [%s] Value = [%u]",
                  CFG_TGT_GTX_USR_CFG_NAME,
                  pHddCtx->cfg_ini->tgt_gtx_usr_cfg);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 #define CFG_VALUE_MAX_LEN 256
@@ -4974,7 +4990,11 @@ static VOS_STATUS hdd_cfg_get_config(REG_TABLE_ENTRY *reg_table,
       // ideally we want to return the config to the application
       // however the config is too big so we just printk() for now
 #ifdef RETURN_IN_BUFFER
+<<<<<<< HEAD
       if (curlen < buflen)
+=======
+      if (curlen <= buflen)
+>>>>>>> sultanxda/cm-13.0-sultan
       {
          // copy string + '\0'
          memcpy(pCur, configStr, curlen+1);
@@ -5738,7 +5758,11 @@ VOS_STATUS hdd_hex_string_to_u16_array(char *str,
 		uint16_t *int_array, uint8_t *len, uint8_t int_array_max_len)
 {
 	char *s = str;
+<<<<<<< HEAD
 	uint32_t val = 0;
+=======
+	int val = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 	if (str == NULL || int_array == NULL || len == NULL)
 		return VOS_STATUS_E_INVAL;
 
@@ -5997,6 +6021,13 @@ v_BOOL_t hdd_update_config_dat( hdd_context_t *pHddCtx )
 #if defined WLAN_FEATURE_VOWIFI
     if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_MCAST_BCAST_FILTER_SETTING, pConfig->mcastBcastFilterSetting,
                      NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+<<<<<<< HEAD
+=======
+     {
+        fStatus = FALSE;
+        hddLog(LOGE,"Failure: Could not pass on WNI_CFG_MCAST_BCAST_FILTER_SETTING configuration info to CCM");
+     }
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif
 
      if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_SINGLE_TID_RC, pConfig->bSingleTidRc,
@@ -6451,6 +6482,7 @@ v_BOOL_t hdd_update_config_dat( hdd_context_t *pHddCtx )
       fStatus = FALSE;
       hddLog(LOGE, "Could not pass on WNI_CFG_IBSS_ATIM_WIN_SIZE to CCM");
    }
+<<<<<<< HEAD
 
    if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_TGT_GTX_USR_CFG,
                     pConfig->tgt_gtx_usr_cfg, NULL,
@@ -6460,6 +6492,8 @@ v_BOOL_t hdd_update_config_dat( hdd_context_t *pHddCtx )
       hddLog(LOGE, "Could not pass on WNI_CFG_TGT_GTX_USR_CFG to CCM");
    }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    return fStatus;
 }
 

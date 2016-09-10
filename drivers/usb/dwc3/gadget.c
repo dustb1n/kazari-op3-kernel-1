@@ -2885,7 +2885,11 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
 	usb_gadget_set_state(&dwc->gadget, USB_STATE_DEFAULT);
 
 	dwc3_gadget_usb3_phy_suspend(dwc, false);
-	//usb_gadget_vbus_draw(&dwc->gadget, 0);
+
+#ifndef CONFIG_MACH_MSM8996_15801
+	usb_gadget_vbus_draw(&dwc->gadget, 0);
+#endif
+
 	if (dwc->gadget.speed != USB_SPEED_UNKNOWN)
 		dwc3_disconnect_gadget(dwc);
 

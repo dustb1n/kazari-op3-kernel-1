@@ -236,7 +236,11 @@
  */
 #define CFG_TGT_NUM_TDLS_CONC_BUFFER_STAS    1
 
+<<<<<<< HEAD
 #define CFG_TGT_MAX_MULTICAST_FILTER_ENTRIES 16
+=======
+#define CFG_TGT_MAX_MULTICAST_FILTER_ENTRIES 5
+>>>>>>> sultanxda/cm-13.0-sultan
 /*
  * Maximum number of VDEV that beacon tx offload will support
  */
@@ -255,6 +259,14 @@
  */
 #define CFG_TGT_DEFAULT_GTX_VHT_MASK        0x80200
 /*
+<<<<<<< HEAD
+=======
+ * resv for furture use, bit 30 is used for fix tpc, bit0-3 for Power save
+ * balance
+ */
+#define CFG_TGT_DEFAULT_GTX_USR_CFG     0xa
+/*
+>>>>>>> sultanxda/cm-13.0-sultan
  * threshold to enable GTX
  */
 #define CFG_TGT_DEFAULT_GTX_PER_THRESHOLD   3

@@ -505,6 +505,7 @@ VOS_STATUS vos_spin_lock_destroy(vos_spin_lock_t *pLock)
   --------------------------------------------------------------------------*/
 VOS_STATUS vos_wake_lock_init(vos_wake_lock_t *pLock, const char *name)
 {
+<<<<<<< HEAD
 	if (!pLock->is_initialized) {
 #if defined CONFIG_CNSS
 		cnss_pm_wake_lock_init(&pLock->lock, name);
@@ -518,6 +519,15 @@ VOS_STATUS vos_wake_lock_init(vos_wake_lock_t *pLock, const char *name)
 			FL("wakelock is already intialized"));
 		return VOS_STATUS_E_INVAL;
 	}
+=======
+#if defined CONFIG_CNSS
+    cnss_pm_wake_lock_init(&pLock->lock, name);
+#elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
+    wake_lock_init(&pLock->lock, WAKE_LOCK_SUSPEND, name);
+#endif
+
+    return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /**
@@ -532,10 +542,17 @@ VOS_STATUS vos_wake_lock_init(vos_wake_lock_t *pLock, const char *name)
 static const char* vos_wake_lock_name(vos_wake_lock_t *pLock)
 {
 #if defined CONFIG_CNSS
+<<<<<<< HEAD
 	if ((pLock->is_initialized) && (pLock->lock.name))
 		return pLock->lock.name;
 #elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
 	 if ((pLock->is_initialized) && (pLock->lock.ws.name))
+=======
+	if (pLock->lock.name)
+		return pLock->lock.name;
+#elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
+	if (pLock->lock.ws.name)
+>>>>>>> sultanxda/cm-13.0-sultan
 		return pLock->lock.ws.name;
 #endif
 	return "UNNAMED_WAKELOCK";
@@ -553,6 +570,7 @@ static const char* vos_wake_lock_name(vos_wake_lock_t *pLock)
 VOS_STATUS vos_wake_lock_acquire(vos_wake_lock_t *pLock,
                                  uint32_t reason)
 {
+<<<<<<< HEAD
 	if (pLock->is_initialized) {
 		vos_log_wlock_diag(reason, vos_wake_lock_name(pLock),
 		WIFI_POWER_EVENT_DEFAULT_WAKELOCK_TIMEOUT,
@@ -568,6 +586,18 @@ VOS_STATUS vos_wake_lock_acquire(vos_wake_lock_t *pLock,
 			FL("wakelock is not intialized yet"));
 		return VOS_STATUS_E_INVAL;
 	}
+=======
+    vos_log_wlock_diag(reason, vos_wake_lock_name(pLock),
+                       WIFI_POWER_EVENT_DEFAULT_WAKELOCK_TIMEOUT,
+                       WIFI_POWER_EVENT_WAKELOCK_TAKEN);
+
+#if defined CONFIG_CNSS
+    cnss_pm_wake_lock(&pLock->lock);
+#elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
+    wake_lock(&pLock->lock);
+#endif
+    return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /*--------------------------------------------------------------------------
@@ -582,6 +612,7 @@ VOS_STATUS vos_wake_lock_acquire(vos_wake_lock_t *pLock,
 VOS_STATUS vos_wake_lock_timeout_acquire(vos_wake_lock_t *pLock, v_U32_t msec,
                                          uint32_t reason)
 {
+<<<<<<< HEAD
 	if (pLock->is_initialized) {
 		/* Wakelock for Rx is frequent.
 		* It is reported only during active debug
@@ -603,6 +634,24 @@ VOS_STATUS vos_wake_lock_timeout_acquire(vos_wake_lock_t *pLock, v_U32_t msec,
 			FL("wakelock is not intialized yet"));
 		return VOS_STATUS_E_INVAL;
 	}
+=======
+    /* Wakelock for Rx is frequent.
+     * It is reported only during active debug
+     */
+    if (((vos_get_ring_log_level(RING_ID_WAKELOCK) >= WLAN_LOG_LEVEL_ACTIVE)
+         && (WIFI_POWER_EVENT_WAKELOCK_HOLD_RX == reason)) ||
+         (WIFI_POWER_EVENT_WAKELOCK_HOLD_RX != reason)) {
+        vos_log_wlock_diag(reason, vos_wake_lock_name(pLock), msec,
+                           WIFI_POWER_EVENT_WAKELOCK_TAKEN);
+    }
+
+#if defined CONFIG_CNSS
+    cnss_pm_wake_lock_timeout(&pLock->lock, msec);
+#elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
+    wake_lock_timeout(&pLock->lock, msecs_to_jiffies(msec));
+#endif
+    return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /*--------------------------------------------------------------------------
@@ -616,6 +665,7 @@ VOS_STATUS vos_wake_lock_timeout_acquire(vos_wake_lock_t *pLock, v_U32_t msec,
   ------------------------------------------------------------------------*/
 VOS_STATUS vos_wake_lock_release(vos_wake_lock_t *pLock, uint32_t reason)
 {
+<<<<<<< HEAD
 	if (pLock->is_initialized) {
 		vos_log_wlock_diag(reason, vos_wake_lock_name(pLock),
 			WIFI_POWER_EVENT_DEFAULT_WAKELOCK_TIMEOUT,
@@ -632,6 +682,18 @@ VOS_STATUS vos_wake_lock_release(vos_wake_lock_t *pLock, uint32_t reason)
 		return VOS_STATUS_E_INVAL;
 
 	}
+=======
+    vos_log_wlock_diag(reason, vos_wake_lock_name(pLock),
+                       WIFI_POWER_EVENT_DEFAULT_WAKELOCK_TIMEOUT,
+                       WIFI_POWER_EVENT_WAKELOCK_RELEASED);
+#if defined CONFIG_CNSS
+    cnss_pm_wake_lock_release(&pLock->lock);
+#elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
+    wake_unlock(&pLock->lock);
+#endif
+
+    return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 /*--------------------------------------------------------------------------
@@ -645,6 +707,7 @@ VOS_STATUS vos_wake_lock_release(vos_wake_lock_t *pLock, uint32_t reason)
   ------------------------------------------------------------------------*/
 VOS_STATUS vos_wake_lock_destroy(vos_wake_lock_t *pLock)
 {
+<<<<<<< HEAD
 	if (pLock->is_initialized) {
 #if defined CONFIG_CNSS
 		cnss_pm_wake_lock_destroy(&pLock->lock);
@@ -658,6 +721,14 @@ VOS_STATUS vos_wake_lock_destroy(vos_wake_lock_t *pLock)
 			FL("wakelock is not intialized yet"));
 		return VOS_STATUS_E_INVAL;
 	}
+=======
+#if defined CONFIG_CNSS
+    cnss_pm_wake_lock_destroy(&pLock->lock);
+#elif defined(WLAN_OPEN_SOURCE) && defined(CONFIG_HAS_WAKELOCK)
+    wake_lock_destroy(&pLock->lock);
+#endif
+    return VOS_STATUS_SUCCESS;
+>>>>>>> sultanxda/cm-13.0-sultan
 }
 
 VOS_STATUS vos_runtime_pm_prevent_suspend(runtime_pm_context_t runtime_pm_ctx)

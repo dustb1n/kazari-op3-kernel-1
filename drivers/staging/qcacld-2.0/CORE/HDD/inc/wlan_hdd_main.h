@@ -126,7 +126,11 @@
 #define WLAN_WAIT_TIME_SESSIONOPENCLOSE  15000
 #define WLAN_WAIT_TIME_ABORTSCAN  2000
 #define WLAN_WAIT_TIME_EXTSCAN  1000
+<<<<<<< HEAD
 #define WLAN_WAIT_TIME_LL_STATS 800
+=======
+#define WLAN_WAIT_TIME_LL_STATS 5000
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #define WLAN_WAIT_SMPS_FORCE_MODE  500
 
@@ -231,9 +235,12 @@
 
 #define HDD_MAC_ADDR_LEN    6
 #define HDD_SESSION_ID_ANY  50 //This should be same as CSR_SESSION_ID_ANY
+<<<<<<< HEAD
 /* This should be same as CSR_ROAM_SESSION_MAX */
 #define HDD_SESSION_MAX  5
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #define HDD_MIN_TX_POWER (-100) // minimum tx power
 #define HDD_MAX_TX_POWER (+100)  // maximum tx power
@@ -710,8 +717,11 @@ struct hdd_station_ctx
 
    /*Save the wep/wpa-none keys*/
    tCsrRoamSetKey ibss_enc_key;
+<<<<<<< HEAD
    tSirPeerInfoRspParams ibss_peer_info;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    v_BOOL_t hdd_ReassocScenario;
 
    /* STA ctx debug variables */
@@ -991,8 +1001,11 @@ struct hdd_adapter_s
    eHalStatus tdlsAddStaStatus;
 #endif
 
+<<<<<<< HEAD
    struct completion ibss_peer_info_comp;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
    /* Track whether the linkup handling is needed  */
    v_BOOL_t isLinkUpSvcNeeded;
 
@@ -1641,7 +1654,10 @@ struct hdd_context_s
     vos_timer_t memdump_cleanup_timer;
     struct mutex memdump_lock;
     bool memdump_in_progress;
+<<<<<<< HEAD
     bool memdump_init_done;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #endif /* WLAN_FEATURE_MEMDUMP */
 
     /* number of rf chains supported by target */
@@ -1669,11 +1685,14 @@ struct hdd_context_s
     uint8_t supp_5g_chain_mask;
     /* Current number of TX X RX chains being used */
     enum antenna_mode current_antenna_mode;
+<<<<<<< HEAD
     /*
      * place to store FTM capab of target. This allows changing of FTM capab
      * at runtime and intersecting it with target capab before updating.
      */
     uint32_t fine_time_meas_cap_target;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 };
 
 /*---------------------------------------------------------------------------
@@ -1779,7 +1798,10 @@ int wlan_hdd_setIPv6Filter(hdd_context_t *pHddCtx, tANI_U8 filterType, tANI_U8 s
 void hdd_ipv6_notifier_work_queue(struct work_struct *work);
 #endif
 
+<<<<<<< HEAD
 v_MACADDR_t* hdd_wlan_get_ibss_mac_addr_from_staid(hdd_adapter_t *pAdapter, v_U8_t staIdx);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 void hdd_checkandupdate_phymode( hdd_context_t *pHddCtx);
 
@@ -1949,9 +1971,15 @@ wlan_hdd_clean_tx_flow_control_timer(hdd_context_t *hddctx,
 #endif
 
 void hdd_connect_result(struct net_device *dev, const u8 *bssid,
+<<<<<<< HEAD
 			tCsrRoamInfo *roam_info, const u8 *req_ie,
 			size_t req_ie_len, const u8 * resp_ie,
 			size_t resp_ie_len, u16 status, gfp_t gfp);
+=======
+			const u8 *req_ie, size_t req_ie_len,
+			const u8 * resp_ie, size_t resp_ie_len,
+			u16 status, gfp_t gfp);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 int wlan_hdd_init_tx_rx_histogram(hdd_context_t *pHddCtx);
 void wlan_hdd_deinit_tx_rx_histogram(hdd_context_t *pHddCtx);
@@ -1960,6 +1988,7 @@ void wlan_hdd_clear_tx_rx_histogram(hdd_context_t *pHddCtx);
 
 void hdd_runtime_suspend_init(hdd_context_t *);
 void hdd_runtime_suspend_deinit(hdd_context_t *);
+<<<<<<< HEAD
 void hdd_indicate_mgmt_frame(tSirSmeMgmtFrameInd *frame_ind);
 hdd_adapter_t *hdd_get_adapter_by_sme_session_id(hdd_context_t *hdd_ctx,
 						uint32_t sme_session_id);
@@ -1969,5 +1998,10 @@ int wlan_hdd_update_txrx_chain_mask(hdd_context_t *hdd_ctx,
 void
 hdd_get_ibss_peer_info_cb(v_VOID_t *pUserData,
                                     tSirPeerInfoRspParams *pPeerInfo);
+=======
+
+int wlan_hdd_update_txrx_chain_mask(hdd_context_t *hdd_ctx,
+				    uint8_t chain_mask);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #endif    // end #if !defined( WLAN_HDD_MAIN_H )

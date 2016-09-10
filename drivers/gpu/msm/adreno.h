@@ -738,7 +738,12 @@ struct adreno_gpudev {
 	void (*platform_setup)(struct adreno_device *);
 	void (*init)(struct adreno_device *);
 	void (*remove)(struct adreno_device *);
+<<<<<<< HEAD
 	int (*rb_start)(struct adreno_device *, unsigned int start_type);
+=======
+	int (*rb_init)(struct adreno_device *, struct adreno_ringbuffer *);
+	int (*hw_init)(struct adreno_device *);
+>>>>>>> sultanxda/cm-13.0-sultan
 	int (*microcode_read)(struct adreno_device *);
 	void (*perfcounter_init)(struct adreno_device *);
 	void (*perfcounter_close)(struct adreno_device *);
@@ -749,12 +754,26 @@ struct adreno_gpudev {
 	void (*pwrlevel_change_settings)(struct adreno_device *,
 				unsigned int prelevel, unsigned int postlevel,
 				bool post);
+<<<<<<< HEAD
 	unsigned int (*preemption_pre_ibsubmit)(struct adreno_device *,
 				struct adreno_ringbuffer *rb,
 				unsigned int *, struct kgsl_context *);
 	int (*preemption_yield_enable)(unsigned int *);
 	unsigned int (*preemption_post_ibsubmit)(struct adreno_device *,
 				unsigned int *);
+=======
+	int (*preemption_pre_ibsubmit)(struct adreno_device *,
+				struct adreno_ringbuffer *, unsigned int *,
+				struct kgsl_context *, uint64_t cond_addr,
+				struct kgsl_memobj_node *);
+	int (*preemption_yield_enable)(unsigned int *);
+	int (*preemption_post_ibsubmit)(struct adreno_device *,
+				struct adreno_ringbuffer *, unsigned int *,
+				struct kgsl_context *);
+	int (*preemption_token)(struct adreno_device *,
+				struct adreno_ringbuffer *, unsigned int *,
+				uint64_t gpuaddr);
+>>>>>>> sultanxda/cm-13.0-sultan
 	int (*preemption_init)(struct adreno_device *);
 	void (*preemption_schedule)(struct adreno_device *);
 	void (*enable_64bit)(struct adreno_device *);

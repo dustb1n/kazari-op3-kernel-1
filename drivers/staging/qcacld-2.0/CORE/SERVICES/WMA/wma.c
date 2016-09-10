@@ -170,8 +170,11 @@
 #define WMI_MAX_HOST_CREDITS 2
 #define WMI_WOW_REQUIRED_CREDITS 1
 
+<<<<<<< HEAD
 #define WMI_MAX_MHF_ENTRIES 32
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef FEATURE_WLAN_D0WOW
 #define DISABLE_PCIE_POWER_COLLAPSE 1
 #define ENABLE_PCIE_POWER_COLLAPSE  0
@@ -685,7 +688,12 @@ static tANI_U8 wma_get_mcs_idx(tANI_U16 maxRate, tANI_U8 rate_flags,
 				goto rate_found;
 			}
 		}
+<<<<<<< HEAD
 		if (rate_flags & eHAL_TX_RATE_HT20) {
+=======
+		if ((rate_flags & eHAL_TX_RATE_HT20) ||
+			(rate_flags & eHAL_TX_RATE_HT40)) {
+>>>>>>> sultanxda/cm-13.0-sultan
 			/* check for ht20 nss1/2 rate set */
 			cur_rate = mcs_rate_match(maxRate, &is_sgi, nss,
 					mcs_nss1[curIdx].ht20_rate[0],
@@ -1261,9 +1269,12 @@ static int wma_vdev_start_rsp_ind(tp_wma_handle wma, u_int8_t *buf)
 		params->chainMask = resp_event->chain_mask;
 		params->smpsMode = host_map_smps_mode(resp_event->smps_mode);
 		params->status = resp_event->status;
+<<<<<<< HEAD
 		if (wma->interfaces[resp_event->vdev_id].is_channel_switch)
 			wma->interfaces[resp_event->vdev_id].is_channel_switch =
 				VOS_FALSE;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 		if (resp_event->resp_type == WMI_VDEV_RESTART_RESP_EVENT &&
 			(iface->type == WMI_VDEV_TYPE_STA)) {
 
@@ -1521,7 +1532,11 @@ static int32_t wmi_unified_peer_delete_send(wmi_unified_t wmi,
 
 	if (wmi_unified_cmd_send(wmi, buf, len, WMI_PEER_DELETE_CMDID)) {
 		WMA_LOGP("%s: Failed to send peer delete command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	WMA_LOGD("%s: peer_addr %pM vdev_id %d", __func__, peer_addr, vdev_id);
@@ -1554,7 +1569,11 @@ static int32_t wmi_unified_peer_flush_tids_send(wmi_unified_t wmi,
 
 	if (wmi_unified_cmd_send(wmi, buf, len, WMI_PEER_FLUSH_TIDS_CMDID)) {
 		WMA_LOGP("%s: Failed to send flush tid command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	WMA_LOGD("%s: peer_addr %pM vdev_id %d", __func__, peer_addr, vdev_id);
@@ -1778,7 +1797,11 @@ static int wmi_unified_vdev_down_send(wmi_unified_t wmi, u_int8_t vdev_id)
 	cmd->vdev_id = vdev_id;
 	if (wmi_unified_cmd_send(wmi, buf, len, WMI_VDEV_DOWN_CMDID)) {
 		WMA_LOGP("%s: Failed to send vdev down", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	WMA_LOGD("%s: vdev_id %d", __func__, vdev_id);
@@ -2023,7 +2046,11 @@ void wma_hidden_ssid_vdev_restart_on_vdev_stop(tp_wma_handle wma_handle, u_int8_
 	if (ret < 0) {
 		WMA_LOGE("%s: Failed to send vdev restart command", __func__);
 		adf_os_atomic_set(&intr[sessionId].vdev_restart_params.hidden_ssid_restart_in_progress,0);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 }
 
@@ -4254,7 +4281,11 @@ static int wma_unified_link_peer_stats_event_handler(void *handle,
 	wmi_rate_stats *rate_stats;
 	tSirLLStatsResults *link_stats_results;
 	u_int8_t *results, *t_peer_stats, *t_rate_stats;
+<<<<<<< HEAD
 	u_int32_t count, num_rates=0, rate_cnt;
+=======
+	u_int32_t count, num_rates=0;
+>>>>>>> sultanxda/cm-13.0-sultan
 	u_int32_t next_res_offset, next_peer_offset, next_rate_offset;
 	size_t peer_info_size, peer_stats_size, rate_stats_size;
 	size_t link_stats_results_size;
@@ -4342,7 +4373,11 @@ static int wma_unified_link_peer_stats_event_handler(void *handle,
 	next_res_offset  = peer_stats_size;
 	next_peer_offset = WMI_TLV_HDR_SIZE;
 	next_rate_offset = WMI_TLV_HDR_SIZE;
+<<<<<<< HEAD
 	for (rate_cnt = 0; rate_cnt < fixed_param->num_peers; rate_cnt++) {
+=======
+	for (count = 0; count < fixed_param->num_peers; count++) {
+>>>>>>> sultanxda/cm-13.0-sultan
 		WMA_LOGD("Peer Info:");
 		WMA_LOGD("peer_type %u capabilities %u num_rates %u",
 				peer_stats->peer_type, peer_stats->capabilities,
@@ -4870,7 +4905,11 @@ static void wma_send_bcn_buf_ll(tp_wma_handle wma,
 	ret = adf_nbuf_map_single(pdev->osdev, bcn->buf,
 				  ADF_OS_DMA_TO_DEVICE);
 	if (ret != A_STATUS_OK) {
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		WMA_LOGE("%s: failed map beacon buf to DMA region",
 				__func__);
 		adf_os_spin_unlock_bh(&bcn->lock);
@@ -7176,8 +7215,11 @@ static VOS_STATUS wma_vdev_detach(tp_wma_handle wma_handle,
         if (!generateRsp) {
                 WMA_LOGE("Call txrx detach w/o callback for vdev %d", vdev_id);
                 ol_txrx_vdev_detach(iface->handle, NULL, NULL);
+<<<<<<< HEAD
                 iface->handle = NULL;
                 wma_handle->interfaces[vdev_id].is_vdev_valid = false;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
                 adf_os_spin_unlock_bh(&wma_handle->vdev_detach_lock);
                 goto out;
         }
@@ -7194,8 +7236,11 @@ static VOS_STATUS wma_vdev_detach(tp_wma_handle wma_handle,
         }
         WMA_LOGD("Call txrx detach with callback for vdev %d", vdev_id);
         ol_txrx_vdev_detach(iface->handle, NULL, NULL);
+<<<<<<< HEAD
         iface->handle = NULL;
         wma_handle->interfaces[vdev_id].is_vdev_valid = false;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         wma_vdev_detach_callback(iface);
         adf_os_spin_unlock_bh(&wma_handle->vdev_detach_lock);
         return status;
@@ -7238,7 +7283,11 @@ static int wmi_unified_peer_create_send(wmi_unified_t wmi,
 
 	if (wmi_unified_cmd_send(wmi, buf, len, WMI_PEER_CREATE_CMDID)) {
 		WMA_LOGP("%s: failed to send WMI_PEER_CREATE_CMDID", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	WMA_LOGD("%s: peer_addr %pM vdev_id %d", __func__, peer_addr, vdev_id);
@@ -7352,7 +7401,11 @@ static void wma_set_sta_keep_alive(tp_wma_handle wma, u_int8_t vdev_id,
 			WMA_LOGE("%s: received null pointer, hostv4addr:%p "
 			   "destv4addr:%p destmac:%p ", __func__,
 			   hostv4addr, destv4addr, destmac);
+<<<<<<< HEAD
 			wmi_buf_free(buf);
+=======
+			adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 			return;
 		}
 
@@ -7369,7 +7422,11 @@ static void wma_set_sta_keep_alive(tp_wma_handle wma, u_int8_t vdev_id,
 	if (wmi_unified_cmd_send(wma->wmi_handle, buf, len,
 				 WMI_STA_KEEPALIVE_CMDID)) {
 		WMA_LOGE("Failed to set KeepAlive");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 	WMA_LOGD("%s: Exit", __func__);
@@ -7482,7 +7539,11 @@ static VOS_STATUS wma_set_enable_disable_mcc_adaptive_scheduler(tANI_U32 mcc_ada
 	if (ret) {
 		WMA_LOGP("%s: Failed to send enable/disable MCC"
 			" adaptive scheduler command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 	return VOS_STATUS_SUCCESS;
 }
@@ -7588,7 +7649,11 @@ static VOS_STATUS wma_set_mcc_channel_time_latency
 	if (ret) {
 		WMA_LOGE("%s: Failed to send MCC Channel Time Latency command",
 			__func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		VOS_ASSERT(0);
 		return VOS_STATUS_E_FAILURE;
 	}
@@ -7718,7 +7783,11 @@ static VOS_STATUS wma_set_mcc_channel_time_quota
 				WMI_RESMGR_SET_CHAN_TIME_QUOTA_CMDID);
 	if (ret) {
 		WMA_LOGE("Failed to send MCC Channel Time Quota command");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		VOS_ASSERT(0);
 		return VOS_STATUS_E_FAILURE;
 	}
@@ -7746,7 +7815,10 @@ static ol_txrx_vdev_handle wma_vdev_attach(tp_wma_handle wma_handle,
         tANI_U16 val16;
 	int ret;
 	tSirMacHTCapabilityInfo *phtCapInfo;
+<<<<<<< HEAD
 	u_int8_t vdev_id;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	if (NULL == mac) {
 		WMA_LOGE("%s: Failed to get mac",__func__);
@@ -7766,7 +7838,10 @@ static ol_txrx_vdev_handle wma_vdev_attach(tp_wma_handle wma_handle,
 		status = VOS_STATUS_E_RESOURCES;
 		goto end;
 	}
+<<<<<<< HEAD
 	vdev_id = self_sta_req->sessionId;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	txrx_vdev_type = wma_get_txrx_vdev_type(self_sta_req->type);
 
@@ -7793,8 +7868,11 @@ static ol_txrx_vdev_handle wma_vdev_attach(tp_wma_handle wma_handle,
 						self_sta_req->sessionId);
 		goto end;
 	}
+<<<<<<< HEAD
 
 	wma_handle->interfaces[self_sta_req->sessionId].vdev_active = TRUE;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	wma_handle->interfaces[self_sta_req->sessionId].handle = txrx_vdev_handle;
 
 	wma_handle->interfaces[self_sta_req->sessionId].ptrn_match_enable =
@@ -7869,8 +7947,11 @@ static ol_txrx_vdev_handle wma_vdev_attach(tp_wma_handle wma_handle,
 					self_sta_req->sessionId);
 		}
 	}
+<<<<<<< HEAD
 	wma_handle->interfaces[vdev_id].is_vdev_valid = true;
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	ret = wmi_unified_vdev_set_param_send(wma_handle->wmi_handle,
 					      self_sta_req->sessionId,
 					      WMI_VDEV_PARAM_DISCONNECT_TH,
@@ -8275,10 +8356,14 @@ VOS_STATUS wma_get_buf_start_scan_cmd(tp_wma_handle wma_handle,
                         cmd->scan_ctrl_flags |= WMI_SCAN_ADD_BCAST_PROBE_REQ;
 		if (scan_req->scanType == eSIR_PASSIVE_SCAN)
 			cmd->scan_ctrl_flags |= WMI_SCAN_FLAG_PASSIVE;
+<<<<<<< HEAD
 
 		cmd->scan_ctrl_flags |= WMI_SCAN_ADD_TPC_IE_IN_PROBE_REQ;
 		cmd->scan_ctrl_flags |= WMI_SCAN_FILTER_PROBE_REQ;
 
+=======
+		cmd->scan_ctrl_flags |= WMI_SCAN_FILTER_PROBE_REQ;
+>>>>>>> sultanxda/cm-13.0-sultan
 		/*
 		 * Decide burst_duration and dwell_time_active based on
 		 * what type of devices are active.
@@ -8721,7 +8806,11 @@ static VOS_STATUS wma_capture_tsf(tp_wma_handle wma_handle, uint32_t vdev_id)
 
 error:
 	if (buf)
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	return vos_status;
 }
 
@@ -8774,7 +8863,11 @@ static VOS_STATUS wma_reset_tsf_gpio(tp_wma_handle wma_handle, uint32_t vdev_id)
 
 error:
 	if (buf)
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	return vos_status;
 }
 #else
@@ -8891,7 +8984,11 @@ VOS_STATUS wma_start_scan(tp_wma_handle wma_handle,
 error:
 	wma_reset_scan_info(wma_handle, cmd->vdev_id);
 	if (buf)
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 error0:
 	/* Stop the timer for scan completion */
 	if (vos_timer_stop(&wma_handle->wma_scan_comp_timer)
@@ -8959,7 +9056,11 @@ static VOS_STATUS wma_stop_scan(tp_wma_handle wma_handle,
 	return VOS_STATUS_SUCCESS;
 error:
 	if (buf)
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 error1:
 	return vos_status;
 }
@@ -11204,12 +11305,16 @@ static WLAN_PHY_MODE wma_chan_to_mode(u8 chan, ePhyChanBondState chan_offset,
 	if ((chan >= WMA_11A_CHANNEL_BEGIN) && (chan <= WMA_11A_CHANNEL_END)) {
 		switch (chan_offset) {
 		case PHY_SINGLE_CHANNEL_CENTERED:
+<<<<<<< HEAD
 			if (dot11_mode == WNI_CFG_DOT11_MODE_11A)
 				phymode = MODE_11A;
 			else
 				phymode = vht_capable ? MODE_11AC_VHT20 :
 					MODE_11NA_HT20;
 
+=======
+			phymode = vht_capable ? MODE_11AC_VHT20 :MODE_11NA_HT20;
+>>>>>>> sultanxda/cm-13.0-sultan
 			break;
 		case PHY_DOUBLE_CHANNEL_LOW_PRIMARY:
 		case PHY_DOUBLE_CHANNEL_HIGH_PRIMARY:
@@ -11314,6 +11419,7 @@ VOS_STATUS wma_vdev_start(tp_wma_handle wma,
 	intr[cmd->vdev_id].vht_capable = req->vht_capable;
 	intr[cmd->vdev_id].config.gtx_info.gtxRTMask[0] = CFG_TGT_DEFAULT_GTX_HT_MASK;
 	intr[cmd->vdev_id].config.gtx_info.gtxRTMask[1] = CFG_TGT_DEFAULT_GTX_VHT_MASK;
+<<<<<<< HEAD
 
 	if (wlan_cfgGetInt(pmac, WNI_CFG_TGT_GTX_USR_CFG,
 			   &intr[cmd->vdev_id].config.gtx_info.gtxUsrcfg)
@@ -11323,6 +11429,9 @@ VOS_STATUS wma_vdev_start(tp_wma_handle wma,
 					WNI_CFG_TGT_GTX_USR_CFG_STADEF;
 	}
 
+=======
+	intr[cmd->vdev_id].config.gtx_info.gtxUsrcfg = CFG_TGT_DEFAULT_GTX_USR_CFG;
+>>>>>>> sultanxda/cm-13.0-sultan
 	intr[cmd->vdev_id].config.gtx_info.gtxPERThreshold = CFG_TGT_DEFAULT_GTX_PER_THRESHOLD;
 	intr[cmd->vdev_id].config.gtx_info.gtxPERMargin = CFG_TGT_DEFAULT_GTX_PER_MARGIN;
 	intr[cmd->vdev_id].config.gtx_info.gtxTPCstep = CFG_TGT_DEFAULT_GTX_TPC_STEP;
@@ -11403,7 +11512,11 @@ VOS_STATUS wma_vdev_start(tp_wma_handle wma,
 							" Failed to send VDEV START command",
 							__func__, __LINE__);
 
+<<<<<<< HEAD
 				wmi_buf_free(buf);
+=======
+				adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 				return VOS_STATUS_E_FAILURE;
 			}
 
@@ -11505,7 +11618,11 @@ VOS_STATUS wma_vdev_start(tp_wma_handle wma,
 
 	if (ret < 0) {
 		WMA_LOGP("%s: Failed to send vdev start command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 
@@ -11570,12 +11687,15 @@ void wma_vdev_resp_timer(void *data)
 		adf_os_spin_lock_bh(&wma->roam_preauth_lock);
 		wma->roam_preauth_scan_id = -1;
 		adf_os_spin_unlock_bh(&wma->roam_preauth_lock);
+<<<<<<< HEAD
 		if (wma->interfaces[tgt_req->vdev_id].is_channel_switch)
 			wma->interfaces[tgt_req->vdev_id].is_channel_switch =
 				VOS_FALSE;
 		if (wma->interfaces[tgt_req->vdev_id].is_channel_switch)
 			wma->interfaces[tgt_req->vdev_id].is_channel_switch =
 				VOS_FALSE;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	} else if (tgt_req->msg_type == WDA_DELETE_BSS_REQ) {
 		tpDeleteBssParams params =
 			(tpDeleteBssParams)tgt_req->user_data;
@@ -12072,6 +12192,11 @@ static void wma_set_channel(tp_wma_handle wma, tpSwitchChannelParams params)
 		goto send_resp;
 	}
 
+<<<<<<< HEAD
+=======
+	if (wma->interfaces[req.vdev_id].is_channel_switch)
+		wma->interfaces[req.vdev_id].is_channel_switch = VOS_FALSE;
+>>>>>>> sultanxda/cm-13.0-sultan
 	return;
 send_resp:
 	WMA_LOGD("%s: channel %d offset %d txpower %d status %d", __func__,
@@ -12359,6 +12484,7 @@ static int32_t wmi_unified_send_peer_assoc(tp_wma_handle wma,
 	if (params->htCapable) {
 		cmd->peer_flags |= (WMI_PEER_HT | WMI_PEER_QOS);
 		cmd->peer_rate_caps |= WMI_RC_HT_FLAG;
+<<<<<<< HEAD
 
 		if (params->txChannelWidthSet) {
 			cmd->peer_flags |= WMI_PEER_40MHZ;
@@ -12369,6 +12495,17 @@ static int32_t wmi_unified_send_peer_assoc(tp_wma_handle wma,
 			cmd->peer_rate_caps |= WMI_RC_SGI_FLAG;
 		}
 	}
+=======
+	}
+
+	if (params->txChannelWidthSet) {
+		cmd->peer_flags |= WMI_PEER_40MHZ;
+		cmd->peer_rate_caps |= WMI_RC_CW40_FLAG;
+		if (params->fShortGI40Mhz)
+			cmd->peer_rate_caps |= WMI_RC_SGI_FLAG;
+	} else if (params->fShortGI20Mhz)
+		cmd->peer_rate_caps |= WMI_RC_SGI_FLAG;
+>>>>>>> sultanxda/cm-13.0-sultan
 
 #ifdef WLAN_FEATURE_11AC
 	if (params->vhtCapable) {
@@ -12447,7 +12584,11 @@ static int32_t wmi_unified_send_peer_assoc(tp_wma_handle wma,
 						FALSE);
 		if (ret) {
 			WMA_LOGE("Set WMI_VDEV_PARAM_DROP_UNENCRY Param status:%d\n", ret);
+<<<<<<< HEAD
 			wmi_buf_free(buf);
+=======
+			adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 			return ret;
 		}
 	}
@@ -12536,7 +12677,11 @@ static int32_t wmi_unified_send_peer_assoc(tp_wma_handle wma,
 	if (ret != EOK) {
 		WMA_LOGP("%s: Failed to send peer assoc command ret = %d",
 				__func__, ret);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 	return ret;
 }
@@ -12616,7 +12761,11 @@ VOS_STATUS wma_get_link_speed(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 		WMI_PEER_GET_ESTIMATED_LINKSPEED_CMDID)) {
 		WMA_LOGE("%s: failed to send link speed command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -12699,7 +12848,11 @@ wmi_unified_pdev_set_param(wmi_unified_t wmi_handle, WMI_PDEV_PARAM param_id,
 		       WMITLV_TAG_STRUC_wmi_pdev_set_param_cmd_fixed_param,
 		       WMITLV_GET_STRUCT_TLVLEN(
 			       wmi_pdev_set_param_cmd_fixed_param));
+<<<<<<< HEAD
 	cmd->reserved0 = 0;
+=======
+	cmd->pdev_id = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 	cmd->param_id = param_id;
 	cmd->param_value = param_value;
 	WMA_LOGD("Setting pdev param = %x, value = %u",
@@ -13096,7 +13249,11 @@ static int32_t wmi_unified_set_sta_ps_param(wmi_unified_t wmi_handle,
 			WMI_STA_POWERSAVE_PARAM_CMDID)) {
 		WMA_LOGE("Set Sta Ps param Failed vdevId %d Param %d val %d",
 			vdev_id, param, value);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	/* Store the PS Status */
@@ -13125,14 +13282,22 @@ static int32_t wmi_unified_pdev_green_ap_ps_enable_cmd(wmi_unified_t wmi_handle,
 			WMITLV_TAG_STRUC_wmi_pdev_green_ap_ps_enable_cmd_fixed_param,
 			WMITLV_GET_STRUCT_TLVLEN(
 				wmi_pdev_green_ap_ps_enable_cmd_fixed_param));
+<<<<<<< HEAD
 	cmd->reserved0 = 0;
+=======
+	cmd->pdev_id = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 	cmd->enable = value;
 
 	if (wmi_unified_cmd_send(wmi_handle, buf, len,
 				WMI_PDEV_GREEN_AP_PS_ENABLE_CMDID)) {
 		WMA_LOGE("Set Green AP PS param Failed val %d", value);
 
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	return 0;
@@ -13201,7 +13366,11 @@ static void wma_send_echo_request(tp_wma_handle wma)
 	if (wmi_unified_cmd_send(wma->wmi_handle, buf, len,
 				WMI_ECHO_CMDID)) {
 		WMA_LOGE("Failed to send Echo cmd to firmware");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 }
 
@@ -13285,10 +13454,13 @@ static void wma_process_cli_set_cmd(tp_wma_handle wma,
 
 	switch (privcmd->param_vp_dev) {
 	case VDEV_CMD:
+<<<<<<< HEAD
 		if (!wma->interfaces[privcmd->param_vdev_id].is_vdev_valid) {
 			WMA_LOGE("%s Vdev id is not valid", __func__);
 			return ;
 		}
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 		WMA_LOGD("vdev id %d pid %d pval %d", privcmd->param_vdev_id,
 				privcmd->param_id, privcmd->param_value);
 		ret = wmi_unified_vdev_set_param_send(wma->wmi_handle,
@@ -15069,7 +15241,11 @@ static int wmi_unified_vdev_up_send(wmi_unified_t wmi,
 	WMI_CHAR_ARRAY_TO_MAC_ADDR(bssid, &cmd->vdev_bssid);
 	if (wmi_unified_cmd_send(wmi, buf, len, WMI_VDEV_UP_CMDID)) {
 		WMA_LOGP("%s: Failed to send vdev up command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	return 0;
@@ -15101,7 +15277,11 @@ static int32_t wmi_unified_set_ap_ps_param(void *wma_ctx, u_int32_t vdev_id,
 				   sizeof(*cmd), WMI_AP_PS_PEER_PARAM_CMDID);
 	if (err) {
 		WMA_LOGE("Failed to send set_ap_ps_param cmd");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_os_mem_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	return 0;
@@ -16075,7 +16255,11 @@ static wmi_buf_t wma_setup_install_key_cmd(tp_wma_handle wma_handle,
 	default:
 		/* TODO: MFP ? */
 		WMA_LOGE("%s:Invalid encryption type:%d", __func__, key_params->key_type);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return NULL;
 	}
 
@@ -16232,7 +16416,11 @@ static void wma_set_bsskey(tp_wma_handle wma_handle, tpSetBssKeyParams key_info)
 		status = wmi_unified_cmd_send(wma_handle->wmi_handle, buf, len,
 					      WMI_VDEV_INSTALL_KEY_CMDID);
 		if (status) {
+<<<<<<< HEAD
 			wmi_buf_free(buf);
+=======
+			adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 			WMA_LOGE("%s:Failed to send install key command", __func__);
 			key_info->status = eHAL_STATUS_FAILURE;
 			goto out;
@@ -16312,7 +16500,11 @@ static void wma_set_ibsskey_helper(tp_wma_handle wma_handle, tpSetBssKeyParams k
                 status = wmi_unified_cmd_send(wma_handle->wmi_handle, buf, len,
                                               WMI_VDEV_INSTALL_KEY_CMDID);
                 if (status) {
+<<<<<<< HEAD
                         wmi_buf_free(buf);
+=======
+                        adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
                         WMA_LOGE("%s:Failed to send install key command", __func__);
                 }
         }
@@ -16418,7 +16610,11 @@ static void wma_set_stakey(tp_wma_handle wma_handle, tpSetStaKeyParams key_info)
 		status = wmi_unified_cmd_send(wma_handle->wmi_handle, buf, len,
 					      WMI_VDEV_INSTALL_KEY_CMDID);
 		if (status) {
+<<<<<<< HEAD
 			wmi_buf_free(buf);
+=======
+			adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 			WMA_LOGE("%s:Failed to send install key command", __func__);
 			key_info->status = eHAL_STATUS_FAILURE;
 			goto out;
@@ -16639,7 +16835,11 @@ static int32_t wmi_unified_vdev_stop_send(wmi_unified_t wmi, u_int8_t vdev_id)
 	cmd->vdev_id = vdev_id;
 	if (wmi_unified_cmd_send(wmi, buf, len, WMI_VDEV_STOP_CMDID)) {
 		WMA_LOGP("%s: Failed to send vdev stop command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	return 0;
@@ -17557,6 +17757,7 @@ static void wma_send_beacon(tp_wma_handle wma, tpSendbeaconParams bcn_info)
 		WMA_LOGE("%s : wma_store_bcn_tmpl Failed", __func__);
 		return;
 	}
+<<<<<<< HEAD
 	if (!((adf_os_atomic_read(
 		&wma->interfaces[vdev_id].vdev_restart_params.hidden_ssid_restart_in_progress)) ||
 		(wma->interfaces[vdev_id].is_channel_switch))) {
@@ -17569,6 +17770,16 @@ static void wma_send_beacon(tp_wma_handle wma, tpSendbeaconParams bcn_info)
 			wma->interfaces[vdev_id].vdev_up = TRUE;
 			wma_set_sap_keepalive(wma, vdev_id);
 		}
+=======
+	if (!wma->interfaces[vdev_id].vdev_up) {
+	      if (wmi_unified_vdev_up_send(wma->wmi_handle, vdev_id, 0,
+				      bcn_info->bssId) < 0) {
+		WMA_LOGE("%s : failed to send vdev up", __func__);
+		return;
+	     }
+	     wma->interfaces[vdev_id].vdev_up = TRUE;
+		wma_set_sap_keepalive(wma, vdev_id);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 }
 
@@ -17629,7 +17840,11 @@ static VOS_STATUS wma_pktlog_wmi_send_cmd(WMA_HANDLE handle,
 		      WMITLV_TAG_STRUC_wmi_pdev_pktlog_disable_cmd_fixed_param,
 		      WMITLV_GET_STRUCT_TLVLEN(
 			      wmi_pdev_pktlog_disable_cmd_fixed_param));
+<<<<<<< HEAD
 		disable_cmd->reserved0 = 0;
+=======
+		disable_cmd->pdev_id = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 		if (wmi_unified_cmd_send(wma_handle->wmi_handle, buf, len,
 					 WMI_PDEV_PKTLOG_DISABLE_CMDID)) {
 			WMA_LOGE("failed to send pktlog disable cmdid");
@@ -17679,7 +17894,11 @@ static int32_t wmi_unified_set_sta_ps(wmi_unified_t wmi_handle,
         {
                 WMA_LOGE("Set Sta Mode Ps Failed vdevId %d val %d",
                          vdev_id, val);
+<<<<<<< HEAD
                 wmi_buf_free(buf);
+=======
+                adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
                 return -EIO;
         }
         return 0;
@@ -19658,9 +19877,12 @@ static int wma_wow_wakeup_host_event(void *handle, u_int8_t *event,
 	tp_wma_handle wma = (tp_wma_handle) handle;
 	WMI_WOW_WAKEUP_HOST_EVENTID_param_tlvs *param_buf;
 	WOW_EVENT_INFO_fixed_param *wake_info;
+<<<<<<< HEAD
 #ifdef FEATURE_WLAN_TDLS
 	WMI_TDLS_PEER_EVENTID_param_tlvs tdls_param;
 #endif
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef FEATURE_WLAN_SCAN_PNO
 	struct wma_txrx_node *node;
 #endif
@@ -19895,6 +20117,7 @@ static int wma_wow_wakeup_host_event(void *handle, u_int8_t *event,
 		}
 		break;
 
+<<<<<<< HEAD
 #ifdef FEATURE_WLAN_TDLS
 	case WOW_REASON_TDLS_CONN_TRACKER_EVENT:
 		if (param_buf->wow_packet_buffer) {
@@ -19909,6 +20132,8 @@ static int wma_wow_wakeup_host_event(void *handle, u_int8_t *event,
 		}
 		break;
 #endif
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	default:
 		break;
 	}
@@ -19994,8 +20219,11 @@ static const u8 *wma_wow_wakeup_event_str(WOW_WAKE_EVENT_TYPE event)
 		return "WOW_IOAC_SOCK_EVENT";
 	case WOW_NLO_SCAN_COMPLETE_EVENT:
 		return "WOW_NLO_SCAN_COMPLETE_EVENT";
+<<<<<<< HEAD
 	case WOW_TDLS_CONN_TRACKER_EVENT:
 		return "WOW_TDLS_CONN_TRACKER_EVENT";
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	default:
 		return "UNSPECIFIED_EVENT";
 	}
@@ -20414,7 +20642,10 @@ int wma_enable_wow_in_fw(WMA_HANDLE handle, int runtime_pm)
 		WMA_LOGE("Credits:%d; Pending_Cmds: %d",
 			wmi_get_host_credits(wma->wmi_handle),
 			wmi_get_pending_cmds(wma->wmi_handle));
+<<<<<<< HEAD
 		wmi_set_target_suspend(wma->wmi_handle, FALSE);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 		if (!vos_is_logp_in_progress(VOS_MODULE_ID_VOSS, NULL)) {
 #ifdef CONFIG_CNSS
 			if (pMac->sme.enableSelfRecovery) {
@@ -20429,6 +20660,10 @@ int wma_enable_wow_in_fw(WMA_HANDLE handle, int runtime_pm)
 			WMA_LOGE("%s: LOGP is in progress, ignore!", __func__);
 		}
 
+<<<<<<< HEAD
+=======
+		wmi_set_target_suspend(wma->wmi_handle, FALSE);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 
@@ -20879,6 +21114,64 @@ pdev_resume:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * wma_feed_allowed_action_frame_patterns() - config action frame map to fw
+ * @wma: wma handler
+ *
+ * This is called to push action frames wow patterns from local
+ * cache to firmware.
+ *
+ * Return: VOS_STATUS
+ */
+static VOS_STATUS wma_feed_allowed_action_frame_patterns(tp_wma_handle wma)
+{
+	WMI_WOW_SET_ACTION_WAKE_UP_CMD_fixed_param *cmd;
+	u_int16_t len;
+	wmi_buf_t buf;
+	int ret;
+	int i;
+
+	len = sizeof(WMI_WOW_SET_ACTION_WAKE_UP_CMD_fixed_param);
+	buf = wmi_buf_alloc(wma->wmi_handle, len);
+	if (!buf) {
+		WMA_LOGE("%s: Failed to allocate buf for wow action frame map",
+			__func__);
+		return VOS_STATUS_E_NOMEM;
+	}
+
+	cmd = (WMI_WOW_SET_ACTION_WAKE_UP_CMD_fixed_param *) wmi_buf_data(buf);
+	WMITLV_SET_HDR(&cmd->tlv_header,
+		       WMITLV_TAG_STRUC_wmi_wow_set_action_wake_up_cmd_fixed_param,
+		       WMITLV_GET_STRUCT_TLVLEN(
+				WMI_WOW_SET_ACTION_WAKE_UP_CMD_fixed_param));
+	cmd->vdev_id = 0;
+	cmd->operation = wma->allowed_action_frames.operation;
+
+	for (i = 0; i < MAX_SUPPORTED_ACTION_CATEGORY_ELE_LIST; i++) {
+		if (i < (SIR_MAC_ACTION_MAX / 32))
+			cmd->action_category_map[i] =
+			     wma->allowed_action_frames.action_category_map[i];
+		else
+			cmd->action_category_map[i] = 0;
+
+		WMA_LOGD("%s: %d action Wakeup pattern 0x%x in fw",
+			__func__, i, cmd->action_category_map[i]);
+	}
+
+	ret = wmi_unified_cmd_send(wma->wmi_handle, buf, len,
+				   WMI_WOW_SET_ACTION_WAKE_UP_CMDID);
+	if (ret) {
+		WMA_LOGE("Failed to config wow action frame map, ret %d", ret);
+		wmi_buf_free(buf);
+		return VOS_STATUS_E_FAILURE;
+	}
+
+	return VOS_STATUS_SUCCESS;
+}
+
+>>>>>>> sultanxda/cm-13.0-sultan
 /*
  * Pushes wow patterns from local cache to FW and configures
  * wakeup trigger events.
@@ -21053,11 +21346,14 @@ static VOS_STATUS wma_feed_wow_config_to_fw(tp_wma_handle wma,
 	wma_add_wow_wakeup_event(wma, WOW_EXTSCAN_EVENT, extscan_in_progress);
 #endif
 
+<<<<<<< HEAD
 #ifdef FEATURE_WLAN_TDLS
 	/* configure TDLS based wakeup */
 	wma_add_wow_wakeup_event(wma, WOW_TDLS_CONN_TRACKER_EVENT, TRUE);
 #endif
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	/* Enable wow wakeup events in FW */
 	ret = wma_send_wakeup_mask(wma, TRUE);
 	if (ret) {
@@ -21354,6 +21650,11 @@ suspend_all_iface:
 	}
 #endif
 
+<<<<<<< HEAD
+=======
+	wma_feed_allowed_action_frame_patterns(wma);
+
+>>>>>>> sultanxda/cm-13.0-sultan
 	ret = wma_feed_wow_config_to_fw(wma, pno_in_progress,
 				extscan_in_progress, pno_matched,
 				info == NULL);
@@ -21924,7 +22225,11 @@ static void wma_start_oem_data_req(tp_wma_handle wma_handle,
 
 	WMA_LOGD("%s: Send OEM Data Request to target", __func__);
 
+<<<<<<< HEAD
 	if (!startOemDataReq || !startOemDataReq->data) {
+=======
+	if (!startOemDataReq) {
+>>>>>>> sultanxda/cm-13.0-sultan
 		WMA_LOGE("%s: startOemDataReq is null", __func__);
 		goto out;
 	}
@@ -21935,7 +22240,11 @@ static void wma_start_oem_data_req(tp_wma_handle wma_handle,
 	}
 
 	buf = wmi_buf_alloc(wma_handle->wmi_handle,
+<<<<<<< HEAD
 		                   (startOemDataReq->data_len + WMI_TLV_HDR_SIZE));
+=======
+		                   (OEM_DATA_REQ_SIZE + WMI_TLV_HDR_SIZE));
+>>>>>>> sultanxda/cm-13.0-sultan
 	if (!buf) {
 		WMA_LOGE("%s:wmi_buf_alloc failed", __func__);
 		goto out;
@@ -21944,6 +22253,7 @@ static void wma_start_oem_data_req(tp_wma_handle wma_handle,
 	cmd = (u_int8_t *)wmi_buf_data(buf);
 
 	WMITLV_SET_HDR(cmd, WMITLV_TAG_ARRAY_BYTE,
+<<<<<<< HEAD
 			       startOemDataReq->data_len);
 	cmd += WMI_TLV_HDR_SIZE;
 	vos_mem_copy(cmd, &startOemDataReq->data[0],
@@ -21954,21 +22264,41 @@ static void wma_start_oem_data_req(tp_wma_handle wma_handle,
 
 	ret = wmi_unified_cmd_send(wma_handle->wmi_handle, buf,
 			(startOemDataReq->data_len +
+=======
+			       OEM_DATA_REQ_SIZE);
+	cmd += WMI_TLV_HDR_SIZE;
+	vos_mem_copy(cmd, &startOemDataReq->oemDataReq[0], OEM_DATA_REQ_SIZE);
+
+	WMA_LOGI("%s: Sending OEM Data Request to target, data len (%d)",
+	         __func__, OEM_DATA_REQ_SIZE);
+
+	ret = wmi_unified_cmd_send(wma_handle->wmi_handle, buf,
+			(OEM_DATA_REQ_SIZE +
+>>>>>>> sultanxda/cm-13.0-sultan
 			 WMI_TLV_HDR_SIZE),
 			 WMI_OEM_REQ_CMDID);
 
 	if (ret != EOK) {
 		WMA_LOGE("%s:wmi cmd send failed", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 out:
 	/* free oem data req buffer received from UMAC */
+<<<<<<< HEAD
 	if (startOemDataReq) {
 		if (startOemDataReq->data)
 			vos_mem_free(startOemDataReq->data);
 		vos_mem_free(startOemDataReq);
 	}
+=======
+	if (startOemDataReq)
+		vos_mem_free(startOemDataReq);
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	/* Now send data resp back to PE/SME with message sub-type of
 	 * WMI_OEM_INTERNAL_RSP. This is required so that PE/SME clears
@@ -22165,7 +22495,11 @@ static void wma_set_ric_req(tp_wma_handle wma, void *msg, tANI_U8 is_add_ts)
 		WMA_LOGP("%s: Failed to send vdev Set RIC Req command", __func__);
 		if(is_add_ts)
 			((tAddTsParams *)msg)->status = eHAL_STATUS_FAILURE;
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 }
 #endif
@@ -22193,7 +22527,11 @@ static void wma_del_ts_req(tp_wma_handle wma, tDelTsParams *msg)
 	if (wmi_unified_cmd_send(wma->wmi_handle, buf, len,
 				WMI_VDEV_WMM_DELTS_CMDID)) {
 		WMA_LOGP("%s: Failed to send vdev DELTS command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 #ifdef WLAN_FEATURE_ROAM_OFFLOAD
@@ -22252,7 +22590,11 @@ static void wma_aggr_qos_req(tp_wma_handle wma, tAggrAddTsParams *pAggrQosRspMsg
                                 WMI_VDEV_WMM_ADDTS_CMDID)) {
                 WMA_LOGP("%s: Failed to send vdev ADDTS command", __func__);
                 pAggrQosRspMsg->status[i] = eHAL_STATUS_FAILURE;
+<<<<<<< HEAD
                 wmi_buf_free(buf);
+=======
+                adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
         }
       }
     }
@@ -22308,7 +22650,11 @@ static void wma_add_ts_req(tp_wma_handle wma, tAddTsParams *msg)
 				WMI_VDEV_WMM_ADDTS_CMDID)) {
 		WMA_LOGP("%s: Failed to send vdev ADDTS command", __func__);
 		msg->status = eHAL_STATUS_FAILURE;
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 #ifdef WLAN_FEATURE_ROAM_OFFLOAD
@@ -22459,7 +22805,11 @@ static int wma_set_base_macaddr_indicate(tp_wma_handle wma_handle,
 			sizeof(*cmd), WMI_PDEV_SET_BASE_MACADDR_CMDID);
 	if (err) {
 		WMA_LOGE("Failed to send set_base_macaddr cmd");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_os_mem_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	WMA_LOGD("Base MAC Addr: "MAC_ADDRESS_STR,
@@ -22600,7 +22950,11 @@ static int wma_add_clear_mcbc_filter(tp_wma_handle wma_handle, uint8_t vdev_id,
 					sizeof(*cmd), WMI_SET_MCASTBCAST_FILTER_CMDID);
 	if (err) {
 		WMA_LOGE("Failed to send set_param cmd");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_os_mem_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 	WMA_LOGD("Action:%d; vdev_id:%d; clearList:%d\n",
@@ -23599,6 +23953,7 @@ static void wma_process_update_userpos(tp_wma_handle wma_handle,
 }
 #endif
 
+<<<<<<< HEAD
 /*
  * FUNCTION: wma_find_ibss_vdev
  *  This function finds vdev_id based on input type
@@ -23950,6 +24305,8 @@ VOS_STATUS wma_process_rmc_action_period_ind(tp_wma_handle wma)
     return VOS_STATUS_SUCCESS;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /* function   : wma_process_init_thermal_info
  * Description : This function initializes the thermal management table in WMA,
                 sends down the initial temperature thresholds to the firmware and
@@ -24228,7 +24585,11 @@ VOS_STATUS wma_set_peer_rate_report_condition(WMA_HANDLE handle,
 	status = wmi_unified_cmd_send(wma_handle->wmi_handle, buf, len,
 			WMI_PEER_SET_RATE_REPORT_CONDITION_CMDID);
 	if (status) {
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		WMA_LOGE("%s:Failed to send peer_set_report_cond command",
 				__func__);
 		return eHAL_STATUS_FAILURE;
@@ -24338,7 +24699,11 @@ VOS_STATUS wma_ProcessAddPeriodicTxPtrnInd(WMA_HANDLE handle,
 		pAddPeriodicTxPtrnParams->macAddress, &vdev_id)) {
 		WMA_LOGE("%s: Failed to find vdev id for %pM",__func__,
 		pAddPeriodicTxPtrnParams->macAddress);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_INVAL;
 	}
 	buf_ptr = (u_int8_t *) wmi_buf_data(wmi_buf);
@@ -24369,7 +24734,11 @@ VOS_STATUS wma_ProcessAddPeriodicTxPtrnInd(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 		WMI_ADD_PROACTIVE_ARP_RSP_PATTERN_CMDID)) {
 		WMA_LOGE("%s: failed to add pattern set state command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -24403,7 +24772,11 @@ VOS_STATUS wma_ProcessDelPeriodicTxPtrnInd(WMA_HANDLE handle,
 		pDelPeriodicTxPtrnParams->macAddress, &vdev_id)) {
 		WMA_LOGE("%s: Failed to find vdev id for %pM",__func__,
 		pDelPeriodicTxPtrnParams->macAddress);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_INVAL;
 	}
 	cmd = (WMI_DEL_PROACTIVE_ARP_RSP_PATTERN_CMD_fixed_param *)wmi_buf_data(wmi_buf);
@@ -24420,7 +24793,11 @@ VOS_STATUS wma_ProcessDelPeriodicTxPtrnInd(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 		WMI_DEL_PROACTIVE_ARP_RSP_PATTERN_CMDID)) {
 		WMA_LOGE("%s: failed to send del pattern command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -24850,11 +25227,14 @@ static VOS_STATUS wma_process_ll_stats_getReq
 		return VOS_STATUS_E_FAILURE;
 	}
 
+<<<<<<< HEAD
 	if (!wma->interfaces[getReq->staId].vdev_active) {
 		WMA_LOGE("%s: vdev not created yet", __func__);
 		return VOS_STATUS_E_FAILURE;
 	}
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	len = sizeof(*cmd);
 	buf = wmi_buf_alloc(wma->wmi_handle, len);
 
@@ -25159,7 +25539,11 @@ VOS_STATUS wma_start_extscan(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, buf,
 				len, WMI_EXTSCAN_START_CMDID)) {
 		WMA_LOGE("%s: failed to send command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 
@@ -25207,7 +25591,11 @@ VOS_STATUS wma_stop_extscan(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, wmi_buf, len,
 		WMI_EXTSCAN_STOP_CMDID)) {
 		WMA_LOGE("%s: failed to  command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 
@@ -25353,7 +25741,11 @@ VOS_STATUS wma_get_buf_extscan_hotlist_cmd(tp_wma_handle wma_handle,
 		if (wmi_unified_cmd_send(wma_handle->wmi_handle, buf,
 					len, WMI_EXTSCAN_CONFIGURE_HOTLIST_MONITOR_CMDID)) {
 			WMA_LOGE("%s: failed to send command", __func__);
+<<<<<<< HEAD
 			wmi_buf_free(buf);
+=======
+			adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 			return VOS_STATUS_E_FAILURE;
 		}
 		index = index + min_entries;
@@ -25446,7 +25838,11 @@ VOS_STATUS wma_extscan_stop_hotlist_monitor(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, wmi_buf, len,
 			WMI_EXTSCAN_CONFIGURE_HOTLIST_MONITOR_CMDID)) {
 		WMA_LOGE("%s: failed to  command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -25551,7 +25947,11 @@ wma_set_ssid_hotlist(tp_wma_handle wma,
 		(wma->wmi_handle, wmi_buf, len,
 		 WMI_EXTSCAN_CONFIGURE_HOTLIST_SSID_MONITOR_CMDID)) {
 		WMA_LOGE("%s: failed to send command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -25658,7 +26058,11 @@ VOS_STATUS wma_extscan_start_change_monitor(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, buf,
 		len, WMI_EXTSCAN_CONFIGURE_WLAN_CHANGE_MONITOR_CMDID)) {
 		WMA_LOGE("%s: failed to send command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -25718,7 +26122,11 @@ VOS_STATUS wma_extscan_stop_change_monitor(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, wmi_buf, len,
 			WMI_EXTSCAN_CONFIGURE_WLAN_CHANGE_MONITOR_CMDID)) {
 		WMA_LOGE("%s: failed to  command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -25764,7 +26172,11 @@ VOS_STATUS  wma_extscan_get_cached_results(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, wmi_buf, len,
 			WMI_EXTSCAN_GET_CACHED_RESULTS_CMDID)) {
 		WMA_LOGE("%s: failed to  command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -25808,7 +26220,11 @@ VOS_STATUS  wma_extscan_get_capabilities(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, wmi_buf, len,
 		WMI_EXTSCAN_GET_CAPABILITIES_CMDID)) {
 		WMA_LOGE("%s: failed to  command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -26104,11 +26520,14 @@ VOS_STATUS  wma_ipa_offload_enable_disable(tp_wma_handle wma,
 		return VOS_STATUS_E_INVAL;
 	}
 
+<<<<<<< HEAD
 	if (vos_is_load_unload_in_progress(VOS_MODULE_ID_VOSS, NULL)) {
 		WMA_LOGE("%s: Driver load/unload in progress", __func__);
 		return VOS_STATUS_E_INVAL;
 	}
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	len  = sizeof(*cmd);
 	wmi_buf = wmi_buf_alloc(wma->wmi_handle, len);
 	if (!wmi_buf) {
@@ -26270,7 +26689,11 @@ static void wma_process_unit_test_cmd(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 				WMI_UNIT_TEST_CMDID)) {
 		WMA_LOGP("%s: failed to send unit test command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return;
 	}
 	return;
@@ -26313,7 +26736,11 @@ VOS_STATUS  wma_scan_probe_setoui(tp_wma_handle wma,
 	if (wmi_unified_cmd_send(wma->wmi_handle, wmi_buf, len,
 		WMI_SCAN_PROB_REQ_OUI_CMDID)) {
 		WMA_LOGE("%s: failed to send command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return VOS_STATUS_E_FAILURE;
 	}
 	return VOS_STATUS_SUCCESS;
@@ -26458,7 +26885,11 @@ static void wma_process_roam_invoke(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 				WMI_ROAM_INVOKE_CMDID)) {
 		WMA_LOGP("%s: failed to send roam invoke command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return;
 	}
 	return;
@@ -27467,6 +27898,7 @@ static VOS_STATUS wma_update_wep_default_key(tp_wma_handle wma,
 }
 
 /**
+<<<<<<< HEAD
 * wma_set_beacon_filter() - Issue WMI command to set beacon filter
 * @wma: wma handler
 * @filter_params: beacon_filter_param to set
@@ -27579,6 +28011,37 @@ static VOS_STATUS wma_remove_beacon_filter(tp_wma_handle wma,
 
 	return vos_status;
 }
+=======
+ * wma_process_set_allowed_action_frames_ind() - Set bitmap to wma cache
+ * @wma_handle: WMI handle
+ * @allowed_action_frames: sir_allowed_action_frames parameter
+ *
+ * This function is used to set the allowed action frames to wma cache,
+ * that will allow the fw to wake up the host about the expected action frame.
+ *
+ * Return: None
+ */
+void wma_process_set_allowed_action_frames_ind(tp_wma_handle wma_handle,
+		struct sir_allowed_action_frames *allowed_action_frames)
+{
+	uint32_t i;
+
+	wma_handle->allowed_action_frames.operation =
+			allowed_action_frames->operation;
+	WMA_LOGD("%s: action frames wow operation type = %d",
+			__func__, allowed_action_frames->operation);
+
+	for (i = 0; i < (SIR_MAC_ACTION_MAX / 32); i++) {
+		wma_handle->allowed_action_frames.action_category_map[i] =
+				allowed_action_frames->action_category_map[i];
+		WMA_LOGD("%s: action frames wow bitmap%d = 0x%x", __func__,
+			i, allowed_action_frames->action_category_map[i]);
+	}
+
+	return;
+}
+
+>>>>>>> sultanxda/cm-13.0-sultan
 
 /*
  * function   : wma_mc_process_msg
@@ -27962,6 +28425,7 @@ VOS_STATUS wma_mc_process_msg(v_VOID_t *vos_context, vos_msg_t *msg)
 			vos_mem_free(msg->bodyptr);
 			break;
 
+<<<<<<< HEAD
                case WDA_IBSS_CESIUM_ENABLE_IND:
                     wma_process_cesium_enable_ind(wma_handle);
                     break;
@@ -27985,6 +28449,8 @@ VOS_STATUS wma_mc_process_msg(v_VOID_t *vos_context, vos_msg_t *msg)
 		case WDA_RMC_ACTION_PERIOD_IND:
 			wma_process_rmc_action_period_ind(wma_handle);
 			break;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 
 		case WDA_INIT_THERMAL_INFO_CMD:
 			wma_process_init_thermal_info(wma_handle, (t_thermal_mgmt *)msg->bodyptr);
@@ -28389,6 +28855,7 @@ VOS_STATUS wma_mc_process_msg(v_VOID_t *vos_context, vos_msg_t *msg)
 			    (struct wep_update_default_key_idx *)msg->bodyptr);
 			vos_mem_free(msg->bodyptr);
 			break;
+<<<<<<< HEAD
 		case WDA_ADD_BCN_FILTER_CMDID:
 			wma_set_beacon_filter(wma_handle, msg->bodyptr);
 			vos_mem_free(msg->bodyptr);
@@ -28398,6 +28865,13 @@ VOS_STATUS wma_mc_process_msg(v_VOID_t *vos_context, vos_msg_t *msg)
 			vos_mem_free(msg->bodyptr);
 			break;
 
+=======
+		case SIR_HAL_SET_ALLOWED_ACTION_FRAMES:
+			wma_process_set_allowed_action_frames_ind(wma_handle,
+								  msg->bodyptr);
+			vos_mem_free(msg->bodyptr);
+			break;
+>>>>>>> sultanxda/cm-13.0-sultan
 		default:
 			WMA_LOGD("unknow msg type %x", msg->type);
 			/* Do Nothing? MSG Body should be freed at here */
@@ -28515,7 +28989,12 @@ static int wma_scan_event_callback(WMA_HANDLE handle, u_int8_t *data,
 	}
 
         /* Stop the scan completion timeout if the event is WMI_SCAN_EVENT_COMPLETED */
+<<<<<<< HEAD
         if (scan_event->event == (tSirScanEventType)WMI_SCAN_EVENT_COMPLETED) {
+=======
+        if (scan_event->event ==
+                          (enum lim_scan_event_type) WMI_SCAN_EVENT_COMPLETED) {
+>>>>>>> sultanxda/cm-13.0-sultan
                 WMA_LOGE(" scan complete - scan_id %x, vdev_id %x",
 		wmi_event->scan_id, vdev_id);
 		/*
@@ -28729,6 +29208,12 @@ static VOS_STATUS wma_tx_detach(tp_wma_handle wma_handle)
 			txrx_pdev);
 		}
 	}
+<<<<<<< HEAD
+=======
+	/* Destroy Tx Frame Complete event */
+	vos_event_destroy(&wma_handle->tx_frm_download_comp_event);
+
+>>>>>>> sultanxda/cm-13.0-sultan
 	/* Tx queue empty check event (dummy event) */
 	vos_event_destroy(&wma_handle->tx_queue_empty_event);
 
@@ -28977,7 +29462,11 @@ static int wma_nlo_scan_cmp_evt_handler(void *handle, u_int8_t *event,
 				      WIFI_POWER_EVENT_WAKELOCK_PNO);
 		vos_mem_zero(scan_event, sizeof(tSirScanOffloadEvent));
 		scan_event->reasonCode = eSIR_SME_SUCCESS;
+<<<<<<< HEAD
 		scan_event->event = SCAN_EVENT_COMPLETED;
+=======
+		scan_event->event = LIM_SCAN_EVENT_COMPLETED;
+>>>>>>> sultanxda/cm-13.0-sultan
 		scan_event->sessionId = nlo_event->vdev_id;
 		wma_send_msg(wma, WDA_RX_SCAN_EVENT,
 			     (void *) scan_event, 0);
@@ -29151,7 +29640,11 @@ static VOS_STATUS wma_set_thermal_mgmt(tp_wma_handle wma_handle,
 	status = wmi_unified_cmd_send(wma_handle->wmi_handle, buf, len,
 				  WMI_THERMAL_MGMT_CMDID);
 	if (status) {
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		WMA_LOGE("%s:Failed to send thermal mgmt command", __func__);
 		return eHAL_STATUS_FAILURE;
 	}
@@ -29401,6 +29894,7 @@ VOS_STATUS wma_process_ch_avoid_update_req(tp_wma_handle wma_handle,
 }
 #endif /* FEATURE_WLAN_CH_AVOID */
 
+<<<<<<< HEAD
 /* Handle IBSS peer info event from FW */
 static int wma_ibss_peer_info_event_handler(void *handle, u_int8_t *data,
     u_int32_t len)
@@ -29521,6 +30015,8 @@ static int wma_fast_tx_fail_event_handler(void *handle, u_int8_t *data,
     return 0;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /* function   :  wma_scan_completion_timeout
  * Description :
  * Args       :
@@ -29888,6 +30384,7 @@ VOS_STATUS wma_start(v_VOID_t *vos_ctx)
 		goto end;
 #endif
 
+<<<<<<< HEAD
     if (WMI_SERVICE_IS_ENABLED(wma_handle->wmi_service_bitmap,
            WMI_SERVICE_RMC))
     {
@@ -29919,6 +30416,8 @@ VOS_STATUS wma_start(v_VOID_t *vos_ctx)
         WMA_LOGE("Target does not support cesium network");
     }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	vos_status = wma_tx_attach(wma_handle);
 	if(vos_status != VOS_STATUS_SUCCESS) {
 		WMA_LOGP("%s: Failed to register tx management", __func__);
@@ -30287,10 +30786,13 @@ VOS_STATUS wma_close(v_VOID_t *vos_ctx)
 	vos_event_destroy(&wma_handle->wow_tx_complete);
 	vos_event_destroy(&wma_handle->runtime_suspend);
 	vos_event_destroy(&wma_handle->recovery_event);
+<<<<<<< HEAD
 
 	/* Destroy Tx Frame Complete event */
 	vos_event_destroy(&wma_handle->tx_frm_download_comp_event);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	wma_cleanup_vdev_resp(wma_handle);
 	for(idx = 0; idx < wma_handle->num_mem_chunks; ++idx) {
 		adf_os_mem_free_consistent(
@@ -30649,8 +31151,11 @@ static void wma_update_hdd_cfg(tp_wma_handle wma_handle)
 	hdd_tgt_cfg.lpss_support = wma_handle->lpss_support;
 #endif
 	hdd_tgt_cfg.ap_arpns_support = wma_handle->ap_arpns_support;
+<<<<<<< HEAD
 	hdd_tgt_cfg.fine_time_measurement_cap =
 		wma_handle->fine_time_measurement_cap;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	wma_handle->tgt_cfg_update_cb(hdd_ctx, &hdd_tgt_cfg);
 }
 static wmi_buf_t wma_setup_wmi_init_msg(tp_wma_handle wma_handle,
@@ -30697,7 +31202,11 @@ static wmi_buf_t wma_setup_wmi_init_msg(tp_wma_handle wma_handle,
 	/* allocate memory requested by FW */
 	if (ev->num_mem_reqs > WMI_MAX_MEM_REQS) {
 		VOS_ASSERT(0);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return NULL;
 	}
 
@@ -30810,8 +31319,11 @@ v_VOID_t wma_rx_service_ready_event(WMA_HANDLE handle, void *cmd_param_info)
 
 	wma_handle->target_fw_version = ev->fw_build_vers;
 
+<<<<<<< HEAD
 	wma_handle->fine_time_measurement_cap = ev->wmi_fw_sub_feat_caps;
 	WMA_LOGD(FL("FW fine time meas cap: 0x%x"), ev->wmi_fw_sub_feat_caps);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 	WMA_LOGE("%s: Firmware build version : %08x",
 			__func__, ev->fw_build_vers);
 
@@ -31038,7 +31550,11 @@ int wma_set_peer_param(void *wma_ctx, u_int8_t *peer_addr, u_int32_t param_id,
 				   WMI_PEER_SET_PARAM_CMDID);
 	if (err) {
 		WMA_LOGE("Failed to send set_param cmd");
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_os_mem_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -EIO;
 	}
 
@@ -31687,7 +32203,11 @@ int wma_suspend_target(WMA_HANDLE handle, int disable_target_intr)
 	vos_event_reset(&wma_handle->target_suspend);
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmibuf, len,
 				    WMI_PDEV_SUSPEND_CMDID)) {
+<<<<<<< HEAD
 		wmi_buf_free(wmibuf);
+=======
+		adf_nbuf_free(wmibuf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return -1;
 	}
 
@@ -31763,7 +32283,11 @@ int wma_resume_target(WMA_HANDLE handle, int runtime_pm)
 	WMITLV_SET_HDR(&cmd->tlv_header,
 			WMITLV_TAG_STRUC_wmi_pdev_resume_cmd_fixed_param,
 			WMITLV_GET_STRUCT_TLVLEN(wmi_pdev_resume_cmd_fixed_param));
+<<<<<<< HEAD
 	cmd->reserved0 = 0;
+=======
+	cmd->pdev_id = 0;
+>>>>>>> sultanxda/cm-13.0-sultan
 	ret = wmi_unified_cmd_send(wma_handle->wmi_handle, wmibuf, sizeof(*cmd),
 				WMI_PDEV_RESUME_CMDID);
 	if(ret != EOK) {
@@ -32268,7 +32792,11 @@ void wma_send_regdomain_info(u_int32_t reg_dmn, u_int16_t regdmn2G,
 				WMI_PDEV_SET_REGDOMAIN_CMDID)) {
 		WMA_LOGP("%s: Failed to send pdev set regdomain command",
 				__func__);
+<<<<<<< HEAD
 		wmi_buf_free(buf);
+=======
+		adf_nbuf_free(buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 	}
 
 	if ((((reg_dmn & ~COUNTRY_ERD_FLAG) == CTRY_JAPAN) ||
@@ -32498,7 +33026,11 @@ static int wma_set_tdls_offchan_mode(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 		WMI_TDLS_SET_OFFCHAN_MODE_CMDID)) {
 		WMA_LOGP("%s: failed to send tdls off chan command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		ret = -EIO;
 	}
 
@@ -32604,7 +33136,11 @@ static int wma_update_fw_tdls_state(WMA_HANDLE handle, void *pwmaTdlsparams)
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 		   WMI_TDLS_SET_STATE_CMDID)) {
 		WMA_LOGP("%s: failed to send tdls set state command", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		ret = -EIO;
 		goto end_fw_tdls_state;
 	}
@@ -32798,7 +33334,11 @@ static int wma_update_tdls_peer_state(WMA_HANDLE handle,
 	    WMI_TDLS_PEER_UPDATE_CMDID)) {
 		WMA_LOGE("%s: failed to send tdls peer update state command",
 		         __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		ret = -EIO;
 		goto end_tdls_peer_state;
 	}
@@ -33583,7 +34123,11 @@ void wma_process_roam_synch_complete(WMA_HANDLE handle,
 	if (wmi_unified_cmd_send(wma_handle->wmi_handle, wmi_buf, len,
 				WMI_ROAM_SYNCH_COMPLETE)) {
 		WMA_LOGP("%s: failed to send roam synch confirmation", __func__);
+<<<<<<< HEAD
 		wmi_buf_free(wmi_buf);
+=======
+		adf_nbuf_free(wmi_buf);
+>>>>>>> sultanxda/cm-13.0-sultan
 		return;
 	}
 	return;

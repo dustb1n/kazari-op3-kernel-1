@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -109,6 +113,7 @@ v_U8_t ccpRSNOui08[ HDD_RSN_OUI_SIZE ] = { 0x00, 0x0F, 0xAC, 0x05 };
 
 #define BEACON_FRAME_IES_OFFSET 12
 
+<<<<<<< HEAD
 #define NUM_BITS_IN_INT 32
 static const int beacon_filter_table[] = {
 	SIR_MAC_DS_PARAM_SET_EID,
@@ -126,6 +131,8 @@ static const int beacon_filter_table[] = {
 #endif
 };
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static eHalStatus hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter,
                                                 tCsrRoamInfo *pRoamInfo,
                                                 tANI_U32 roamId,
@@ -273,6 +280,7 @@ static inline void hdd_connSaveConnectedBssType( hdd_station_ctx_t *pHddStaCtx, 
 
 }
 
+<<<<<<< HEAD
 /**
  * hdd_unset_beacon_filter() - remove beacon filter
  * @adapter: Pointer to the hdd adapter
@@ -315,6 +323,8 @@ static int hdd_set_beacon_filter(hdd_adapter_t *adapter)
 	return 0;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static void
 hdd_connSaveConnectInfo(hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
                         eCsrRoamBssType eBssType)
@@ -903,9 +913,14 @@ static VOS_STATUS hdd_roamDeregisterSTA( hdd_adapter_t *pAdapter, tANI_U8 staId 
        // Need to cleanup all queues only if the last peer leaves
        if (eConnectionState_IbssDisconnected == pHddStaCtx->conn_info.connState)
        {
+<<<<<<< HEAD
        /* Do not set the carrier off when the last peer leaves.
         * We will set the carrier off while stopping the IBSS.
         */
+=======
+          netif_tx_disable(pAdapter->dev);
+          netif_carrier_off(pAdapter->dev);
+>>>>>>> sultanxda/cm-13.0-sultan
           hdd_disconnect_tx_rx(pAdapter);
        }
        else
@@ -973,7 +988,11 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
 
     /* HDD has initiated disconnect, do not send disconnect indication
      * to kernel. Sending disconnected event to kernel for userspace
+<<<<<<< HEAD
      * initiated disconnect will be handled by diconnect handler call
+=======
+     * initiated disconnect will be handled by hdd_DisConnectHandler call
+>>>>>>> sultanxda/cm-13.0-sultan
      * to cfg80211_disconnected
      */
     if ((eConnectionState_Disconnecting == pHddStaCtx->conn_info.connState) ||
@@ -1019,12 +1038,21 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                        pr_info(
                        "wlan: disconnected due to poor signal, rssi is %d dB\n",
                        pRoamInfo->rxRssi);
+<<<<<<< HEAD
                wlan_hdd_cfg80211_indicate_disconnect(dev, false,
                                                      pRoamInfo->reasonCode);
             }
             else
                wlan_hdd_cfg80211_indicate_disconnect(dev, false,
                                                      WLAN_REASON_UNSPECIFIED);
+=======
+               cfg80211_disconnected(dev, pRoamInfo->reasonCode, NULL, 0,
+                                      GFP_KERNEL);
+            }
+            else
+                cfg80211_disconnected(dev, WLAN_REASON_UNSPECIFIED, NULL, 0,
+                                      GFP_KERNEL);
+>>>>>>> sultanxda/cm-13.0-sultan
 
             hddLog(VOS_TRACE_LEVEL_INFO_HIGH,
                    FL("sent disconnected event to nl80211, reason code %d"),
@@ -1096,10 +1124,13 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
 #if defined(WLAN_FEATURE_VOWIFI_11R)
     sme_FTReset(WLAN_HDD_GET_HAL_CTX(pAdapter), pAdapter->sessionId);
 #endif
+<<<<<<< HEAD
     if (hdd_unset_beacon_filter(pAdapter) != 0)
         hddLog(LOGE,
                FL("hdd_unset_beacon_filter() failed"));
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     if (eCSR_ROAM_IBSS_LEAVE == roamStatus) {
         v_U8_t i;
 
@@ -1637,7 +1668,10 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
     hdd_adapter_t *sap_adapter;
     hdd_ap_ctx_t *hdd_ap_ctx;
     uint8_t default_sap_channel = 6;
+<<<<<<< HEAD
     u16 reason_code;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef WLAN_FEATURE_ROAM_OFFLOAD
     if (pRoamInfo && pRoamInfo->roamSynchInProgress) {
        /* change logging before release */
@@ -1676,11 +1710,14 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
 
         // Save the connection info from CSR...
         hdd_connSaveConnectInfo( pAdapter, pRoamInfo, eCSR_BSS_TYPE_INFRASTRUCTURE );
+<<<<<<< HEAD
 
         if (hdd_set_beacon_filter(pAdapter) != 0)
             hddLog(LOGE,
                    FL("hdd_set_beacon_filter() failed"));
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef FEATURE_WLAN_WAPI
         if ( pRoamInfo->u.pConnectedProfile->AuthType == eCSR_AUTH_TYPE_WAPI_WAI_CERTIFICATE ||
                 pRoamInfo->u.pConnectedProfile->AuthType == eCSR_AUTH_TYPE_WAPI_WAI_PSK )
@@ -1901,7 +1938,11 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
                     hddLog(LOG1, "%s ft_carrier_on is %d, sending connect "
                                  "indication", __FUNCTION__, ft_carrier_on);
 
+<<<<<<< HEAD
                     hdd_connect_result(dev, pRoamInfo->bssid, pRoamInfo,
+=======
+                    hdd_connect_result(dev, pRoamInfo->bssid,
+>>>>>>> sultanxda/cm-13.0-sultan
                                        pFTAssocReq, assocReqlen,
                                        pFTAssocRsp, assocRsplen,
                                        WLAN_STATUS_SUCCESS,
@@ -1931,12 +1972,20 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
 
                     {
                         hddLog(VOS_TRACE_LEVEL_INFO,
+<<<<<<< HEAD
                                "%s: sending connect indication to nl80211:for bssid " MAC_ADDRESS_STR " result:%d and Status:%d",
+=======
+                               "%s: sending connect indication to nl80211:for bssid " MAC_ADDRESS_STR " reason:%d and Status:%d",
+>>>>>>> sultanxda/cm-13.0-sultan
                                __func__, MAC_ADDR_ARRAY(pRoamInfo->bssid),
                                roamResult, roamStatus);
 
                         /* inform connect result to nl80211 */
+<<<<<<< HEAD
                         hdd_connect_result(dev, pRoamInfo->bssid, pRoamInfo,
+=======
+                        hdd_connect_result(dev, pRoamInfo->bssid,
+>>>>>>> sultanxda/cm-13.0-sultan
                                 reqRsnIe, reqRsnLength,
                                 rspRsnIe, rspRsnLength,
                                 WLAN_STATUS_SUCCESS,
@@ -2048,12 +2097,20 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
         hdd_wext_state_t *pWextState = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
         if (pRoamInfo)
             pr_info("wlan: connection failed with " MAC_ADDRESS_STR
+<<<<<<< HEAD
                     " result:%d and Status:%d\n",
+=======
+                    " reason:%d and Status:%d\n",
+>>>>>>> sultanxda/cm-13.0-sultan
                     MAC_ADDR_ARRAY(pRoamInfo->bssid),
                     roamResult, roamStatus);
         else
             pr_info("wlan: connection failed with " MAC_ADDRESS_STR
+<<<<<<< HEAD
                     " result:%d and Status:%d\n",
+=======
+                    " reason:%d and Status:%d\n",
+>>>>>>> sultanxda/cm-13.0-sultan
                     MAC_ADDR_ARRAY(pWextState->req_bssId),
                     roamResult, roamStatus);
 
@@ -2118,6 +2175,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
         {
             if (pRoamInfo)
                 hddLog(VOS_TRACE_LEVEL_ERROR,
+<<<<<<< HEAD
                        "%s: send connect failure to nl80211: for bssid " MAC_ADDRESS_STR" result:%d and Status:%d reasonCode %d" ,
                        __func__, MAC_ADDR_ARRAY(pRoamInfo->bssid),
                        roamResult, roamStatus, pRoamInfo->reasonCode);
@@ -2127,22 +2185,45 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
                        __func__, MAC_ADDR_ARRAY(pWextState->req_bssId),
                        roamResult, roamStatus);
 
+=======
+                       "%s: send connect failure to nl80211: for bssid " MAC_ADDRESS_STR" reason:%d and Status:%d " ,
+                       __func__, MAC_ADDR_ARRAY(pRoamInfo->bssid),
+                       roamResult, roamStatus);
+            else
+                hddLog(VOS_TRACE_LEVEL_ERROR,
+                       "%s: connect failed: for bssid " MAC_ADDRESS_STR " reason:%d and Status:%d " ,
+                       __func__, MAC_ADDR_ARRAY(pWextState->req_bssId),
+                       roamResult, roamStatus);
+
+            /* Clear the roam profile */
+            hdd_clearRoamProfileIe(pAdapter);
+
+>>>>>>> sultanxda/cm-13.0-sultan
             /* inform association failure event to nl80211 */
             if ( eCSR_ROAM_RESULT_ASSOC_FAIL_CON_CHANNEL == roamResult )
             {
                if (pRoamInfo)
+<<<<<<< HEAD
                    hdd_connect_result(dev, pRoamInfo->bssid, NULL,
+=======
+                   hdd_connect_result(dev, pRoamInfo->bssid,
+>>>>>>> sultanxda/cm-13.0-sultan
                         NULL, 0, NULL, 0,
                         WLAN_STATUS_ASSOC_DENIED_UNSPEC,
                         GFP_KERNEL);
                else
+<<<<<<< HEAD
                    hdd_connect_result(dev, pWextState->req_bssId, NULL,
+=======
+                   hdd_connect_result(dev, pWextState->req_bssId,
+>>>>>>> sultanxda/cm-13.0-sultan
                         NULL, 0, NULL, 0,
                         WLAN_STATUS_ASSOC_DENIED_UNSPEC,
                         GFP_KERNEL);
             }
             else
             {
+<<<<<<< HEAD
                 reason_code = WLAN_STATUS_UNSPECIFIED_FAILURE;
                 if (pRoamInfo && pRoamInfo->reasonCode)
                     reason_code = (u16)pRoamInfo->reasonCode;
@@ -2153,6 +2234,30 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
             /* Clear the roam profile */
             hdd_clearRoamProfileIe(pAdapter);
 
+=======
+                if (pRoamInfo) {
+                    eCsrAuthType authType =
+                        pWextState->roamProfile.AuthType.authType[0];
+                    v_BOOL_t isWep = (authType == eCSR_AUTH_TYPE_OPEN_SYSTEM) ||
+                                    (authType == eCSR_AUTH_TYPE_SHARED_KEY);
+
+                    /* In case of OPEN-WEP or SHARED-WEP authentication,
+                     * send exact protocol reason code. This enables user
+                     * applications to reconnect the station with correct
+                     * configuration.
+                     */
+                    hdd_connect_result(dev, pRoamInfo->bssid,
+                        NULL, 0, NULL, 0,
+                        isWep ? pRoamInfo->reasonCode :
+                            WLAN_STATUS_UNSPECIFIED_FAILURE,
+                        GFP_KERNEL);
+                } else
+                    hdd_connect_result(dev, pWextState->req_bssId,
+                        NULL, 0, NULL, 0,
+                        WLAN_STATUS_UNSPECIFIED_FAILURE,
+                        GFP_KERNEL);
+            }
+>>>>>>> sultanxda/cm-13.0-sultan
         }
 
         if (pRoamInfo) {
@@ -2342,10 +2447,13 @@ static void hdd_RoamIbssIndicationHandler( hdd_adapter_t *pAdapter,
                        pAdapter->dev->name,
                        (int)pRoamInfo->pBssDesc->channelId);
 #else
+<<<<<<< HEAD
 
             netif_carrier_on(pAdapter->dev);
             netif_tx_start_all_queues(pAdapter->dev);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
             cfg80211_ibss_joined(pAdapter->dev, bss->bssid, GFP_KERNEL);
 #endif
             cfg80211_put_bss(
@@ -2847,7 +2955,11 @@ static eHalStatus roamRoamConnectStatusUpdateHandler( hdd_adapter_t *pAdapter, t
   ===========================================================================*/
 VOS_STATUS hdd_roamRegisterTDLSSTA(hdd_adapter_t *pAdapter,
                                    const tANI_U8 *peerMac, tANI_U16 staId,
+<<<<<<< HEAD
                                    tANI_U8 ucastSig, uint8_t qos)
+=======
+                                   tANI_U8 ucastSig)
+>>>>>>> sultanxda/cm-13.0-sultan
 {
     hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
     v_CONTEXT_t pVosContext = (WLAN_HDD_GET_CTX(pAdapter))->pvosContext;
@@ -2878,7 +2990,12 @@ VOS_STATUS hdd_roamRegisterTDLSSTA(hdd_adapter_t *pAdapter,
     vos_copy_macaddr( &staDesc.vSelfMACAddress, &pAdapter->macAddressCurrent );
 
     /* set the QoS field appropriately ..*/
+<<<<<<< HEAD
     staDesc.ucQosEnabled = qos;
+=======
+    (hdd_wmm_is_active(pAdapter)) ? (staDesc.ucQosEnabled = 1)
+                                          : (staDesc.ucQosEnabled = 0) ;
+>>>>>>> sultanxda/cm-13.0-sultan
 
     VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO_HIGH,
                "HDD register TL QoS_enabled=%d", staDesc.ucQosEnabled );
@@ -2938,7 +3055,11 @@ VOS_STATUS hdd_roamRegisterTDLSSTA(hdd_adapter_t *pAdapter,
     return( vosStatus );
 }
 
+<<<<<<< HEAD
 VOS_STATUS hdd_roamDeregisterTDLSSTA( hdd_adapter_t *pAdapter, tANI_U8 staId )
+=======
+static VOS_STATUS hdd_roamDeregisterTDLSSTA( hdd_adapter_t *pAdapter, tANI_U8 staId )
+>>>>>>> sultanxda/cm-13.0-sultan
 {
     VOS_STATUS vosStatus;
     vosStatus = WLANTL_ClearSTAClient( (WLAN_HDD_GET_CTX(pAdapter))->pvosContext, staId );
@@ -3240,9 +3361,13 @@ hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
                                   curr_peer->isForcedPeer,
                                   pRoamInfo->reasonCode);
                     }
+<<<<<<< HEAD
                     pHddTdlsCtx->curr_candidate = curr_peer;
 
                     wlan_hdd_tdls_implicit_send_discovery_request(pHddTdlsCtx);
+=======
+                    wlan_hdd_tdls_pre_setup_init_work(pHddTdlsCtx, curr_peer);
+>>>>>>> sultanxda/cm-13.0-sultan
                 }
                 status = eHAL_STATUS_SUCCESS;
             }
@@ -4029,9 +4154,28 @@ hdd_smeRoamCallback(void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U32 roamId,
            }
            break;
 #endif
+<<<<<<< HEAD
         case eCSR_ROAM_REMAIN_CHAN_READY:
             hdd_remainChanReadyHandler( pAdapter );
             break;
+=======
+
+        case eCSR_ROAM_INDICATE_MGMT_FRAME:
+            hdd_indicateMgmtFrame( pAdapter,
+                                  pRoamInfo->nFrameLength,
+                                  pRoamInfo->pbFrames,
+                                  pRoamInfo->frameType,
+                                  pRoamInfo->rxChan,
+                                  pRoamInfo->rxRssi );
+            break;
+        case eCSR_ROAM_REMAIN_CHAN_READY:
+            hdd_remainChanReadyHandler( pAdapter );
+            break;
+        case eCSR_ROAM_SEND_ACTION_CNF:
+            hdd_sendActionCnf( pAdapter,
+               (roamResult == eCSR_ROAM_RESULT_NONE) ? TRUE : FALSE );
+            break;
+>>>>>>> sultanxda/cm-13.0-sultan
 #ifdef FEATURE_WLAN_TDLS
         case eCSR_ROAM_TDLS_STATUS_UPDATE:
             halStatus = hdd_RoamTdlsStatusUpdateHandler( pAdapter, pRoamInfo,

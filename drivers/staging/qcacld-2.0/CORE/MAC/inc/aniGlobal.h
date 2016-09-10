@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2012-2015 The Linux Foundation. All rights reserved.
+>>>>>>> sultanxda/cm-13.0-sultan
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -289,6 +293,7 @@ enum wifi_logging_ring_id {
 	RING_ID_FIRMWARE_DEBUG,
 };
 
+<<<<<<< HEAD
 /* vendor element ID */
 #define IE_EID_VENDOR        (221) /* 0xDD */
 #define IE_LEN_SIZE          (1)
@@ -296,6 +301,8 @@ enum wifi_logging_ring_id {
 /* Minimum size of vendor IE = 3 bytes of oui_data + 1 byte of data */
 #define IE_VENDOR_OUI_SIZE   (4)
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 // -------------------------------------------------------------------
 // Change channel generic scheme
 typedef void (*CHANGE_CHANNEL_CALLBACK)(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data,
@@ -987,7 +994,10 @@ tLimMlmOemDataRsp       *gpLimMlmOemDataRsp;
     tSirRemainOnChnReq  *gpLimRemainOnChanReq; //hold remain on chan request in this buf
     vos_list_t  gLimMgmtFrameRegistratinQueue;
     tANI_U32    mgmtFrameSessionId;
+<<<<<<< HEAD
     uint32_t tdls_frm_session_id;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     tSirBackgroundScanMode gLimBackgroundScanMode;
 
 #if  defined (WLAN_FEATURE_VOWIFI_11R) || defined (FEATURE_WLAN_ESE) || defined(FEATURE_WLAN_LFR)
@@ -1261,8 +1271,11 @@ typedef struct sAniSirGlobal
     t_auth_ack_status auth_ack_status;
     bool first_scan_done;
     int8_t first_scan_bucket_threshold;
+<<<<<<< HEAD
     sir_mgmt_frame_ind_callback mgmt_frame_ind_cb;
     sir_p2p_ack_ind_callback p2p_ack_ind_cb;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 } tAniSirGlobal;
 
 typedef enum

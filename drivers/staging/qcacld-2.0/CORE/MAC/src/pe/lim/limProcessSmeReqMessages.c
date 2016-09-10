@@ -111,10 +111,13 @@ static void limUpdateAddIEBuffer(tpAniSirGlobal pMac,
                              tANI_U16 *pDstDataLen,
                              tANI_U8 *pSrcData_buff,
                              tANI_U16 srcDataLen);
+<<<<<<< HEAD
 static tANI_BOOLEAN limUpdateIBssPropAddIEs(tpAniSirGlobal pMac,
                                             tANI_U8 **pDstData_buff,
                                             tANI_U16 *pDstDataLen,
                                             tSirModifyIE *pModifyIE);
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 static void limProcessModifyAddIEs(tpAniSirGlobal pMac, tANI_U32 *pMsg);
 
 static void limProcessUpdateAddIEs(tpAniSirGlobal pMac, tANI_U32 *pMsg);
@@ -1724,13 +1727,18 @@ static void __limProcessSmeOemDataReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
     pOemDataReq = (tpSirOemDataReq) pMsgBuf;
 
     //post the lim mlm message now
+<<<<<<< HEAD
     pMlmOemDataReq = vos_mem_malloc(sizeof(*pMlmOemDataReq));
+=======
+    pMlmOemDataReq = vos_mem_malloc(sizeof(tLimMlmOemDataReq));
+>>>>>>> sultanxda/cm-13.0-sultan
     if ( NULL == pMlmOemDataReq )
     {
         limLog(pMac, LOGP, FL("AllocateMemory failed for mlmOemDataReq"));
         return;
     }
 
+<<<<<<< HEAD
     pMlmOemDataReq->data = vos_mem_malloc(pOemDataReq->data_len);
     if (!pMlmOemDataReq->data) {
         limLog(pMac, LOGP, FL("memory allocation failed"));
@@ -1746,6 +1754,15 @@ static void __limProcessSmeOemDataReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
                  pOemDataReq->data_len);
     /* buffer from SME copied, free it now */
     vos_mem_free(pOemDataReq->data);
+=======
+    //Initialize this buffer
+    vos_mem_set( pMlmOemDataReq, (sizeof(tLimMlmOemDataReq)), 0);
+
+    vos_mem_copy( pMlmOemDataReq->selfMacAddr, pOemDataReq->selfMacAddr,
+                  sizeof(tSirMacAddr));
+    vos_mem_copy( pMlmOemDataReq->oemDataReq, pOemDataReq->oemDataReq,
+                  OEM_DATA_REQ_SIZE);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     //Issue LIM_MLM_OEM_DATA_REQ to MLM
     limPostMlmMessage(pMac, LIM_MLM_OEM_DATA_REQ, (tANI_U32*)pMlmOemDataReq);
@@ -1966,6 +1983,7 @@ __limProcessSmeJoinReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
         psessionEntry->enableAmpduPs = pSmeJoinReq->enableAmpduPs;
         psessionEntry->enableHtSmps = pSmeJoinReq->enableHtSmps;
         psessionEntry->htSmpsvalue = pSmeJoinReq->htSmps;
+<<<<<<< HEAD
         /*
          * By default supported NSS 1x1 is set to true
          * and later on updated while determining session
@@ -1979,6 +1997,12 @@ __limProcessSmeJoinReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
                psessionEntry->enableHtSmps,
                psessionEntry->htSmpsvalue,
                psessionEntry->supported_nss_1x1);
+=======
+
+        limLog(pMac, LOG1, FL("enableHtSmps: %d htSmps: %d"),
+               psessionEntry->enableHtSmps,
+               psessionEntry->htSmpsvalue);
+>>>>>>> sultanxda/cm-13.0-sultan
 
         /*Store Persona */
         psessionEntry->pePersona = pSmeJoinReq->staPersona;
@@ -2453,10 +2477,16 @@ __limProcessSmeReassocReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
 
     psessionEntry->enableHtSmps = pReassocReq->enableHtSmps;
     psessionEntry->htSmpsvalue = pReassocReq->htSmps;
+<<<<<<< HEAD
     limLog(pMac, LOG1, FL("enableHtSmps: %d htSmps: %d supported nss 1x1: %d"),
            psessionEntry->enableHtSmps,
            psessionEntry->htSmpsvalue,
            psessionEntry->supported_nss_1x1);
+=======
+    limLog(pMac, LOG1, FL("enableHtSmps: %d htSmps: %d"),
+           psessionEntry->enableHtSmps,
+           psessionEntry->htSmpsvalue);
+>>>>>>> sultanxda/cm-13.0-sultan
 
     /**
      * Reassociate request is expected
@@ -2615,12 +2645,15 @@ __limProcessSmeReassocReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
         limLog(pMac, LOGP,
                FL("could not retrieve Capabilities value"));
     }
+<<<<<<< HEAD
 
     lim_update_caps_info_for_bss(pMac, &caps,
                         pReassocReq->bssDescription.capabilityInfo);
 
     limLog(pMac, LOG1, FL("Capabilities info Reassoc: 0x%X"), caps);
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
     pMlmReassocReq->capabilityInfo = caps;
 
     /* Update PE sessionId*/
@@ -4845,6 +4878,7 @@ limSendVdevRestart(tpAniSirGlobal pMac,
         vos_mem_free(pHalHiddenSsidVdevRestart);
     }
 }
+<<<<<<< HEAD
 
 static void __lim_process_roam_scan_offload_req(tpAniSirGlobal mac_ctx,
 	tANI_U32 *msg_buf)
@@ -4864,16 +4898,46 @@ static void __lim_process_roam_scan_offload_req(tpAniSirGlobal mac_ctx,
 			msg->Command == ROAM_SCAN_OFFLOAD_STOP))
 	pe_session->roaming_in_progress = false;
 
+=======
+static void __lim_process_roam_restart_req(tpAniSirGlobal mac_ctx,
+	tANI_U32 *msg_buf)
+{
+	struct sir_sme_roam_restart_req *msg;
+	tSirRoamOffloadScanReq *req_buffer;
+	tpPESession pe_session;
+	tSirMsgQ       wma_msg;
+	tSirRetStatus  status;
+
+	msg = (struct sir_sme_roam_restart_req *)msg_buf;
+	pe_session = pe_find_session_by_sme_session_id(mac_ctx,
+			msg->sme_session_id);
+	if (NULL == pe_session) {
+		limLog(mac_ctx, LOGE,
+			FL("session does not exist for sme_session: %d"),
+			msg->sme_session_id);
+		return;
+	}
+	/* Add log for unset of the flag */
+	pe_session->roaming_in_progress = false;
+>>>>>>> sultanxda/cm-13.0-sultan
 	req_buffer = vos_mem_malloc(sizeof(tSirRoamOffloadScanReq));
 	if (NULL == req_buffer) {
 		limLog(mac_ctx, LOGE,
 			FL("Mem Alloc failed for req buffer"));
 		return;
 	}
+<<<<<<< HEAD
 
 	*req_buffer = *msg;
 
 	vos_mem_zero(&wma_msg, sizeof(tSirMsgQ));
+=======
+	vos_mem_zero(req_buffer, sizeof(tSirRoamOffloadScanReq));
+	vos_mem_zero(&wma_msg, sizeof(tSirMsgQ));
+	req_buffer->Command = msg->command;
+	req_buffer->reason = msg->reason;
+	req_buffer->sessionId = msg->sme_session_id;
+>>>>>>> sultanxda/cm-13.0-sultan
 	wma_msg.type = WDA_ROAM_SCAN_OFFLOAD_REQ;
 	wma_msg.bodyptr = req_buffer;
 
@@ -5740,6 +5804,7 @@ __limProcessSmeResetApCapsChange(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
     return;
 }
 
+<<<<<<< HEAD
 /* lim_register_p2p_ack_ind_cb() - Save the p2p ack indication callback.
  * @mac_ctx: Mac pointer
  * @msg_buf: Msg pointer containing the callback
@@ -5793,6 +5858,8 @@ static void lim_register_mgmt_frame_ind_cb(tpAniSirGlobal mac_ctx,
 		limLog(mac_ctx, LOGE, FL("sme_req->callback is null"));
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /**
  * limProcessSmeReqMessages()
  *
@@ -6027,8 +6094,13 @@ limProcessSmeReqMessages(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
        case eWNI_SME_HIDE_SSID_REQ:
             __limProcessSmeHideSSID(pMac, pMsgBuf);
             break;
+<<<<<<< HEAD
        case eWNI_SME_ROAM_SCAN_OFFLOAD_REQ:
             __lim_process_roam_scan_offload_req(pMac, pMsgBuf);
+=======
+       case eWNI_SME_ROAM_RESTART_REQ:
+            __lim_process_roam_restart_req(pMac, pMsgBuf);
+>>>>>>> sultanxda/cm-13.0-sultan
             break;
        case eWNI_SME_UPDATE_APWPSIE_REQ:
             __limProcessSmeUpdateAPWPSIEs(pMac, pMsgBuf);
@@ -6132,12 +6204,15 @@ limProcessSmeReqMessages(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
         case eWNI_SME_PDEV_SET_HT_VHT_IE:
             lim_process_set_pdev_IEs(pMac, pMsgBuf);
             break;
+<<<<<<< HEAD
         case eWNI_SME_REGISTER_MGMT_FRAME_CB:
             lim_register_mgmt_frame_ind_cb(pMac, pMsgBuf);
             break;
         case eWNI_SME_REGISTER_P2P_ACK_CB:
             lim_register_p2p_ack_ind_cb(pMac, pMsgBuf);
             break;
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
         default:
             vos_mem_free((v_VOID_t*)pMsg->bodyptr);
             pMsg->bodyptr = NULL;
@@ -6467,6 +6542,7 @@ limUpdateAddIEBuffer(tpAniSirGlobal pMac,
 
 }
 
+<<<<<<< HEAD
 /**
  * limUpdateIBssPropAddIEs() - update IBSS prop IE
  * @pMac          : Pointer to Global MAC structure
@@ -6505,6 +6581,8 @@ limUpdateIBssPropAddIEs(tpAniSirGlobal pMac, tANI_U8 **pDstData_buff,
     return TRUE;
 }
 
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
 /******************************************************************************
  * limProcessModifyAddIEs()
  *
@@ -6525,7 +6603,11 @@ static void
 limProcessModifyAddIEs(tpAniSirGlobal pMac, tANI_U32 *pMsg)
 {
     tpSirModifyIEsInd pModifyAddIEs = (tpSirModifyIEsInd)pMsg;
+<<<<<<< HEAD
     tANI_U8           sessionId;
+=======
+    tANI_U8     sessionId;
+>>>>>>> sultanxda/cm-13.0-sultan
     tANI_BOOLEAN      ret = FALSE;
 
     /* Incoming message has smeSession, use BSSID to find PE session*/
@@ -6545,12 +6627,15 @@ limProcessModifyAddIEs(tpAniSirGlobal pMac, tANI_U32 *pMsg)
             case eUPDATE_IE_PROBE_RESP:
             {
                 /* Probe resp */
+<<<<<<< HEAD
                 if (LIM_IS_IBSS_ROLE(psessionEntry)) {
                     limUpdateIBssPropAddIEs(pMac,
                         &psessionEntry->addIeParams.probeRespData_buff,
                         &psessionEntry->addIeParams.probeRespDataLen,
                         &pModifyAddIEs->modifyIE);
                 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
                 break;
             }
             case eUPDATE_IE_ASSOC_RESP:
@@ -6566,12 +6651,15 @@ limProcessModifyAddIEs(tpAniSirGlobal pMac, tANI_U32 *pMsg)
             case eUPDATE_IE_PROBE_BCN:
             {
                 /*probe beacon IE*/
+<<<<<<< HEAD
                 if (LIM_IS_IBSS_ROLE(psessionEntry)) {
                     ret = limUpdateIBssPropAddIEs(pMac,
                         &psessionEntry->addIeParams.probeRespBCNData_buff,
                         &psessionEntry->addIeParams.probeRespBCNDataLen,
                         &pModifyAddIEs->modifyIE);
                 }
+=======
+>>>>>>> sultanxda/cm-13.0-sultan
                 if (ret == TRUE && pModifyAddIEs->modifyIE.notify)
                 {
                     limHandleParamUpdate(pMac, pModifyAddIEs->updateType);

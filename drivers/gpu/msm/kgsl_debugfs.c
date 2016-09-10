@@ -149,7 +149,11 @@ static int print_mem_entry(int id, void *ptr, void *data)
 			(unsigned long *) m->useraddr,
 			m->size, entry->id, flags,
 			memtype_str(kgsl_memdesc_usermem_type(m)),
+<<<<<<< HEAD
 			usage, (m->sgt ? m->sgt->nents : 0), m->mapsize);
+=======
+			usage, (m->sgt ? m->sgt->nents : 0));
+>>>>>>> sultanxda/cm-13.0-sultan
 
 	if (entry->metadata[0] != 0)
 		seq_printf(s, " %s", entry->metadata);
