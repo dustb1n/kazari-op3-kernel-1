@@ -248,10 +248,6 @@ static void set_sampling_rate(struct dbs_data *dbs_data,
 		struct cs_dbs_tuners *cs_tuners = dbs_data->tuners;
 		cs_tuners->sampling_rate = max(cs_tuners->sampling_rate,
 			sampling_rate);
-	} else if (dbs_data->cdata->governor == GOV_NIGHTMARE) {
-		struct nm_dbs_tuners *nm_tuners = dbs_data->tuners;
-		nm_tuners->sampling_rate = max(nm_tuners->sampling_rate, 
-			sampling_rate);
 	} else {
 		struct od_dbs_tuners *od_tuners = dbs_data->tuners;
 		od_tuners->sampling_rate = max(od_tuners->sampling_rate, 
