@@ -14,6 +14,7 @@
 
 - **alucard** CPU Governor
 - **darkness** CPU Governor
+- **nightmare** CPU Governor
 - **sioplus** I/O Scheduler
 - DASH Charge
 
