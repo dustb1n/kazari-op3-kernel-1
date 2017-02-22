@@ -107,6 +107,10 @@ static int msm_cpufreq_target(struct cpufreq_policy *policy,
 
 	ret = set_cpu_freq(policy, table[index].frequency,
 			   table[index].driver_data);
+#ifdef CONFIG_MSM_TRACK_FREQ_TARGET_INDEX
+	if (!ret)
+		policy->cur_index = index;
+#endif
 done:
 	mutex_unlock(&per_cpu(suspend_data, policy->cpu).suspend_mutex);
 	return ret;
