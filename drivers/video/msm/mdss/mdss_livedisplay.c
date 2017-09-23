@@ -161,8 +161,19 @@ int mdss_livedisplay_update(struct mdss_dsi_ctrl_pdata *ctrl_pdata,
 	if ((mlc->caps & MODE_HIGH_BRIGHTNESS) && (types & MODE_HIGH_BRIGHTNESS))
 		len += mlc->hbm_enabled ? mlc->hbm_on_cmds_len : mlc->hbm_off_cmds_len;
 
-	if ((mlc->caps & MODE_SRGB) && (types & MODE_SRGB))
-		len += mlc->srgb_enabled ? mlc->srgb_on_cmds_len : mlc->srgb_off_cmds_len;
+	if ((mlc->caps & MODE_SRGB) && (types & MODE_SRGB)) {
+		if (mlc->srgb_enabled)
+			len += mlc->srgb_on_cmds_len;
+		else if (types != MODE_UPDATE_ALL)
+			len += mlc->srgb_off_cmds_len;
+	}
+
+	if ((mlc->caps & MODE_DCI_P3) && (types & MODE_DCI_P3)) {
+		if (mlc->dci_p3_enabled)
+			len += mlc->dci_p3_on_cmds_len;
+		else if (types != MODE_UPDATE_ALL)
+			len += mlc->dci_p3_off_cmds_len;
+	}
 
 	if (is_cabc_cmd(types) && is_cabc_cmd(mlc->caps)) {
 
@@ -236,9 +247,20 @@ int mdss_livedisplay_update(struct mdss_dsi_ctrl_pdata *ctrl_pdata,
 		if (mlc->srgb_enabled) {
 			memcpy(cmd_buf + dlen, mlc->srgb_on_cmds, mlc->srgb_on_cmds_len);
 			dlen += mlc->srgb_on_cmds_len;
-		} else {
+		} else if (types != MODE_UPDATE_ALL) {
 			memcpy(cmd_buf + dlen, mlc->srgb_off_cmds, mlc->srgb_off_cmds_len);
 			dlen += mlc->srgb_off_cmds_len;
+		}
+	}
+
+	// DCI-P3 mode
+	if ((mlc->caps & MODE_DCI_P3) && (types & MODE_DCI_P3)) {
+		if (mlc->dci_p3_enabled) {
+			memcpy(cmd_buf + dlen, mlc->dci_p3_on_cmds, mlc->dci_p3_on_cmds_len);
+			dlen += mlc->dci_p3_on_cmds_len;
+		} else if (types != MODE_UPDATE_ALL) {
+			memcpy(cmd_buf + dlen, mlc->dci_p3_off_cmds, mlc->dci_p3_off_cmds_len);
+			dlen += mlc->dci_p3_off_cmds_len;
 		}
 	}
 
@@ -284,7 +306,7 @@ int mdss_livedisplay_event(struct msm_fb_data_type *mfd, int types)
 		if (pdata->event_handler)
 			rc = pdata->event_handler(pdata, MDSS_EVENT_UPDATE_LIVEDISPLAY,
 					(void *)(unsigned long) types);
-		
+
 		pdata = pdata->next;
 	} while (!rc && pdata);
 
