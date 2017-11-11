@@ -22,6 +22,26 @@
 #include <linux/hardirq.h>
 #include <asm/qrwlock.h>
 
+/*
+ * This internal data structure is used for optimizing access to some of
+ * the subfields within the atomic_t cnts.
+ */
+struct __qrwlock {
+	union {
+		atomic_t cnts;
+		struct {
+#ifdef __LITTLE_ENDIAN
+			u8 wmode;	/* Writer mode   */
+			u8 rcnts[3];	/* Reader counts */
+#else
+			u8 rcnts[3];	/* Reader counts */
+			u8 wmode;	/* Writer mode   */
+#endif
+		};
+	};
+	arch_spinlock_t	lock;
+};
+
 /**
  * rspin_until_writer_unlock - inc reader count & spin until writer is gone
  * @lock  : Pointer to queue rwlock structure
@@ -40,22 +60,23 @@ rspin_until_writer_unlock(struct qrwlock *lock, u32 cnts)
 }
 
 /**
- * queue_read_lock_slowpath - acquire read lock of a queue rwlock
+ * queued_read_lock_slowpath - acquire read lock of a queue rwlock
  * @lock: Pointer to queue rwlock structure
+ * @cnts: Current qrwlock lock value
  */
-void queue_read_lock_slowpath(struct qrwlock *lock)
+void queued_read_lock_slowpath(struct qrwlock *lock, u32 cnts)
 {
-	u32 cnts;
-
 	/*
 	 * Readers come here when they cannot get the lock without waiting
 	 */
 	if (unlikely(in_interrupt())) {
 		/*
-		 * Readers in interrupt context will spin until the lock is
-		 * available without waiting in the queue.
+		 * Readers in interrupt context will get the lock immediately
+		 * if the writer is just waiting (not holding the lock yet).
+		 * The rspin_until_writer_unlock() function returns immediately
+		 * in this case. Otherwise, they will spin until the lock
+		 * is available without waiting in the queue.
 		 */
-		cnts = smp_load_acquire((u32 *)&lock->cnts);
 		rspin_until_writer_unlock(lock, cnts);
 		return;
 	}
@@ -84,13 +105,13 @@ void queue_read_lock_slowpath(struct qrwlock *lock)
 	 */
 	arch_spin_unlock(&lock->lock);
 }
-EXPORT_SYMBOL(queue_read_lock_slowpath);
+EXPORT_SYMBOL(queued_read_lock_slowpath);
 
 /**
- * queue_write_lock_slowpath - acquire write lock of a queue rwlock
+ * queued_write_lock_slowpath - acquire write lock of a queue rwlock
  * @lock : Pointer to queue rwlock structure
  */
-void queue_write_lock_slowpath(struct qrwlock *lock)
+void queued_write_lock_slowpath(struct qrwlock *lock)
 {
 	u32 cnts;
 
@@ -107,10 +128,10 @@ void queue_write_lock_slowpath(struct qrwlock *lock)
 	 * or wait for a previous writer to go away.
 	 */
 	for (;;) {
-		cnts = atomic_read(&lock->cnts);
-		if (!(cnts & _QW_WMASK) &&
-		    (atomic_cmpxchg(&lock->cnts, cnts,
-				    cnts | _QW_WAITING) == cnts))
+		struct __qrwlock *l = (struct __qrwlock *)lock;
+
+		if (!READ_ONCE(l->wmode) &&
+		   (cmpxchg(&l->wmode, 0, _QW_WAITING) == 0))
 			break;
 
 		cpu_relax_lowlatency();
@@ -129,4 +150,4 @@ void queue_write_lock_slowpath(struct qrwlock *lock)
 unlock:
 	arch_spin_unlock(&lock->lock);
 }
-EXPORT_SYMBOL(queue_write_lock_slowpath);
+EXPORT_SYMBOL(queued_write_lock_slowpath);
